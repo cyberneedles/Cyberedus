@@ -136,9 +136,18 @@ export default function Home() {
       <Header />
       
       {/* Revolutionary Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Subtle Background Grid */}
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-100/30 dark:from-slate-900/30 dark:via-slate-800/20 dark:to-slate-900/40">
+        {/* Clean Natural Bubbles Background */}
+        <div className="bubble-lg" style={{ top: '8%', left: '5%', animationDelay: '0s' }}></div>
+        <div className="bubble-md" style={{ top: '20%', right: '12%', animationDelay: '3s' }}></div>
+        <div className="bubble-sm" style={{ top: '35%', left: '8%', animationDelay: '6s' }}></div>
+        <div className="bubble-lg" style={{ top: '55%', right: '20%', animationDelay: '2s' }}></div>
+        <div className="bubble-md" style={{ bottom: '25%', left: '15%', animationDelay: '8s' }}></div>
+        <div className="bubble-sm" style={{ bottom: '40%', right: '8%', animationDelay: '4s' }}></div>
+        <div className="bubble-md" style={{ top: '75%', left: '25%', animationDelay: '10s' }}></div>
+        <div className="bubble-lg" style={{ bottom: '15%', right: '30%', animationDelay: '5s' }}></div>
+        <div className="bubble-sm" style={{ top: '65%', right: '35%', animationDelay: '7s' }}></div>
+        <div className="bubble-md" style={{ top: '45%', left: '35%', animationDelay: '12s' }}></div>
         
         {/* Clean Professional Floating Elements */}
         <div className="absolute top-20 left-10 opacity-20">
