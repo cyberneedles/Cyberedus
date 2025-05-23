@@ -211,7 +211,6 @@ export default function Home() {
                       💫 Begin Mastery
                     </Button>
                   </Link>
-                  </div>
                 </CardContent>
               </Card>
             ))}
