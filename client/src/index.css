@@ -15,16 +15,19 @@
   --border: 0 0% 89.8%; /* Light Border */
   --input: 0 0% 89.8%; /* Input Border */
   
-  /* Professional Colors with Strategic Accents */
-  --primary: 217 32% 17%; /* Professional Navy */
-  --primary-foreground: 0 0% 98%; /* Almost White */
-  --secondary: 220 14% 96%; /* Cool Light Gray */
-  --secondary-foreground: 220 9% 46%; /* Medium Gray */
-  --accent: 142 76% 36%; /* Professional Green */
-  --accent-foreground: 0 0% 98%; /* Almost White */
-  --success: 142 76% 36%; /* Green for success */
-  --warning: 38 92% 50%; /* Orange for warnings */
-  --info: 199 89% 48%; /* Blue for info */
+  /* Sophisticated Silent Theme with Dopamine Triggers */
+  --primary: 217 33% 16%; /* Deep Professional Navy */
+  --primary-foreground: 0 0% 98%; /* Crisp White */
+  --secondary: 220 16% 97%; /* Whisper Gray */
+  --secondary-foreground: 220 12% 42%; /* Sophisticated Gray */
+  --accent: 147 73% 44%; /* Dopamine Green */
+  --accent-foreground: 0 0% 98%; /* Pure White */
+  --success: 147 73% 44%; /* Success Green */
+  --warning: 35 91% 55%; /* Warm Orange */
+  --info: 200 91% 52%; /* Cool Blue */
+  --electric: 267 84% 70%; /* Electric Purple */
+  --neon: 158 100% 42%; /* Neon Cyan */
+  --glow: 47 100% 58%; /* Golden Glow */
   --destructive: 0 84.2% 60.2%; /* Red for errors only */
   --destructive-foreground: 0 0% 98%; /* Almost White */
   --ring: 0 0% 3.9%; /* Almost Black */
@@ -44,16 +47,19 @@
   --border: 0 0% 14.9%; /* Dark Border */
   --input: 0 0% 14.9%; /* Dark Input */
   
-  /* Dark Mode Professional Colors */
-  --primary: 0 0% 98%; /* Almost White */
-  --primary-foreground: 217 33% 8%; /* Dark Navy */
-  --secondary: 217 19% 18%; /* Dark Cool Gray */
-  --secondary-foreground: 0 0% 98%; /* Almost White */
-  --accent: 142 76% 36%; /* Professional Green */
-  --accent-foreground: 0 0% 98%; /* Almost White */
-  --success: 142 76% 36%; /* Green for success */
-  --warning: 38 92% 50%; /* Orange for warnings */
-  --info: 199 89% 48%; /* Blue for info */
+  /* Dark Mode Sophisticated Silent */
+  --primary: 0 0% 98%; /* Pure White */
+  --primary-foreground: 217 33% 8%; /* Deep Navy */
+  --secondary: 217 22% 16%; /* Dark Sophisticated */
+  --secondary-foreground: 0 0% 98%; /* Pure White */
+  --accent: 147 73% 44%; /* Dopamine Green */
+  --accent-foreground: 0 0% 98%; /* Pure White */
+  --success: 147 73% 44%; /* Success Green */
+  --warning: 35 91% 55%; /* Warm Orange */
+  --info: 200 91% 52%; /* Cool Blue */
+  --electric: 267 84% 70%; /* Electric Purple */
+  --neon: 158 100% 42%; /* Neon Cyan */
+  --glow: 47 100% 58%; /* Golden Glow */
   --destructive: 0 62.8% 30.6%; /* Dark Red */
   --destructive-foreground: 0 0% 98%; /* Almost White */
   --ring: 0 0% 83.1%; /* Light Gray */
@@ -173,32 +179,75 @@
     scroll-behavior: smooth;
   }
 
-  /* Professional Card Animation */
+  /* Sophisticated Responsive Card Animation */
   .card-professional {
-    transform: perspective(1000px) rotateX(0deg);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: perspective(1200px) rotateX(0deg) translateZ(0);
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    backface-visibility: hidden;
+    will-change: transform;
   }
 
   .card-professional:hover {
-    transform: perspective(1000px) rotateX(2deg) translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    transform: perspective(1200px) rotateX(3deg) translateY(-8px) translateZ(20px);
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.12),
+      0 8px 16px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(147, 73, 44, 0.1);
   }
 
-  /* Counter Animation */
+  /* Dopamine Counter Animation */
   .counter-animation {
-    animation: countUp 2s ease-out;
+    animation: countUpDopamine 2.5s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
-  /* Scroll Reveal */
+  /* Sophisticated Scroll Reveal */
   .scroll-reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(40px) scale(0.96);
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .scroll-reveal.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
+  }
+
+  /* Gen-Z Micro Interactions */
+  .dopamine-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dopamine-hover:hover {
+    transform: translateY(-1px) scale(1.02);
+    filter: brightness(1.05) saturate(1.1);
+  }
+
+  /* Sophisticated Button Glow */
+  .btn-glow {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-glow:hover::before {
+    left: 100%;
+  }
+
+  /* Responsive Mobile Optimized */
+  @media (max-width: 768px) {
+    .card-professional:hover {
+      transform: perspective(1200px) rotateX(1deg) translateY(-4px) translateZ(10px);
+    }
   }
 }
 
@@ -253,14 +302,60 @@
   }
 }
 
-@keyframes countUp {
+@keyframes countUpDopamine {
   0% {
     opacity: 0;
-    transform: translateY(20px) scale(0.8);
+    transform: translateY(30px) scale(0.7) rotateX(45deg);
+    filter: blur(2px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateY(-5px) scale(1.05) rotateX(0deg);
+    filter: blur(0px);
+  }
+  70% {
+    transform: translateY(2px) scale(0.98);
   }
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+@keyframes sophisticatedFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(60px) scale(0.8);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateY(-10px) scale(1.02);
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(147, 73, 44, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(147, 73, 44, 0.6), 0 0 30px rgba(147, 73, 44, 0.3);
+  }
+}
+
+@keyframes shimmerEffect {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
   }
 }
 

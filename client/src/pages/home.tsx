@@ -56,20 +56,25 @@ export default function Home() {
         {/* Subtle Background Grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
         
-        {/* Animated Code Lines */}
-        <div className="absolute top-20 left-10 code-line opacity-30">
-          <div className="text-xs font-mono text-info/70">
+        {/* Sophisticated Floating Code Elements */}
+        <div className="absolute top-20 left-10 code-line opacity-40">
+          <div className="text-xs font-mono text-info font-medium px-3 py-1 bg-info/10 rounded-lg border border-info/20 backdrop-blur-sm">
             $ sudo nmap -sS target.com
           </div>
         </div>
-        <div className="absolute top-40 right-20 code-line opacity-30" style={{animationDelay: '2s'}}>
-          <div className="text-xs font-mono text-warning/70">
+        <div className="absolute top-40 right-20 code-line opacity-40" style={{animationDelay: '2s'}}>
+          <div className="text-xs font-mono text-warning font-medium px-3 py-1 bg-warning/10 rounded-lg border border-warning/20 backdrop-blur-sm">
             [+] Vulnerability detected
           </div>
         </div>
-        <div className="absolute bottom-32 left-20 code-line opacity-30" style={{animationDelay: '4s'}}>
-          <div className="text-xs font-mono text-success/70">
+        <div className="absolute bottom-32 left-20 code-line opacity-40" style={{animationDelay: '4s'}}>
+          <div className="text-xs font-mono text-success font-medium px-3 py-1 bg-success/10 rounded-lg border border-success/20 backdrop-blur-sm">
             Firewall: ACTIVE
+          </div>
+        </div>
+        <div className="absolute top-60 right-10 code-line opacity-35" style={{animationDelay: '6s'}}>
+          <div className="text-xs font-mono text-electric font-medium px-3 py-1 bg-electric/10 rounded-lg border border-electric/20 backdrop-blur-sm">
+            SSH tunnel established
           </div>
         </div>
         
@@ -102,22 +107,28 @@ export default function Home() {
                 </Button>
               </div>
               
-              {/* Professional Stats */}
-              <div className="grid grid-cols-3 gap-8 pt-8">
-                <div className="text-center p-6 border border-border rounded-lg card-professional">
-                  <div className="text-4xl font-bold text-foreground mb-2 counter-animation">1200+</div>
+              {/* Sophisticated Dopamine Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
+                <div className="text-center p-6 border border-border rounded-xl card-professional bg-gradient-to-br from-card to-secondary/20 backdrop-blur-sm">
+                  <div className="text-4xl md:text-5xl font-bold text-foreground mb-2 counter-animation bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">
+                    1200+
+                  </div>
                   <div className="text-sm text-muted-foreground font-medium">Students Trained</div>
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mt-3"></div>
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent mt-4"></div>
                 </div>
-                <div className="text-center p-6 border border-border rounded-lg card-professional">
-                  <div className="text-4xl font-bold text-foreground mb-2 counter-animation">95%</div>
+                <div className="text-center p-6 border border-border rounded-xl card-professional bg-gradient-to-br from-card to-info/10 backdrop-blur-sm">
+                  <div className="text-4xl md:text-5xl font-bold text-foreground mb-2 counter-animation bg-gradient-to-r from-info to-electric bg-clip-text text-transparent" style={{animationDelay: '0.2s'}}>
+                    95%
+                  </div>
                   <div className="text-sm text-muted-foreground font-medium">Placement Rate</div>
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mt-3"></div>
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-info/30 to-transparent mt-4"></div>
                 </div>
-                <div className="text-center p-6 border border-border rounded-lg card-professional">
-                  <div className="text-4xl font-bold text-foreground mb-2 counter-animation">40+</div>
+                <div className="text-center p-6 border border-border rounded-xl card-professional bg-gradient-to-br from-card to-warning/10 backdrop-blur-sm">
+                  <div className="text-4xl md:text-5xl font-bold text-foreground mb-2 counter-animation bg-gradient-to-r from-warning to-glow bg-clip-text text-transparent" style={{animationDelay: '0.4s'}}>
+                    40+
+                  </div>
                   <div className="text-sm text-muted-foreground font-medium">Industry Partners</div>
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mt-3"></div>
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-warning/30 to-transparent mt-4"></div>
                 </div>
               </div>
             </div>
