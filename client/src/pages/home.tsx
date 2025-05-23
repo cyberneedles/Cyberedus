@@ -228,7 +228,7 @@ export default function Home() {
   const featuredTestimonials = testimonials.slice(0, 3);
 
   return (
-    <div className={`min-h-screen relative overflow-hidden mood-${backgroundMood}`}>
+    <div className={`relative overflow-hidden mood-${backgroundMood}`} style={{ minHeight: '100vh' }}>
       {/* Ultimate Responsive Background with Dynamic Mood - Full Page Coverage */}
       <div className="ultimate-homepage-bg">
         <div className="mesh-gradient"></div>
@@ -238,6 +238,8 @@ export default function Home() {
         <div className="gradient-orb gradient-orb-4"></div>
         <div className="gradient-orb gradient-orb-5"></div>
         <div className="gradient-orb gradient-orb-6"></div>
+        <div className="gradient-orb gradient-orb-7"></div>
+        <div className="gradient-orb gradient-orb-8"></div>
       </div>
       
       <Header />
