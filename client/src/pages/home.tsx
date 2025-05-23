@@ -18,9 +18,24 @@ export default function Home() {
   const { mousePosition } = useMouseParallax();
   const parallaxData = useParallax();
   
-  // Scroll reveal animation system
+  // Intelligent scroll animation system
   useEffect(() => {
-    const elements = document.querySelectorAll('.scroll-animate');
+    let scrollDirection = 'down';
+    let lastScrollY = window.scrollY;
+    let scrollSpeed = 0;
+    
+    // Track scroll behavior
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+      scrollSpeed = Math.abs(currentScrollY - lastScrollY);
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Intelligent animation observer
+    const elements = document.querySelectorAll('.intelligent-animate, .scroll-animate');
     
     const observer = new IntersectionObserver(
       (entries) => {
@@ -30,9 +45,36 @@ export default function Home() {
             const delay = parseInt(element.dataset.delay || '0');
             const animation = element.dataset.animation || 'fade-up';
             
+            // Intelligent animation selection based on element position and scroll behavior
+            let intelligentAnimation = animation;
+            const rect = element.getBoundingClientRect();
+            const isLeft = rect.left < window.innerWidth / 3;
+            const isRight = rect.right > (window.innerWidth * 2) / 3;
+            
+            // Apply intelligent animation logic
+            if (element.classList.contains('intelligent-animate')) {
+              if (isLeft && scrollDirection === 'down') {
+                intelligentAnimation = 'slide-left';
+              } else if (isRight && scrollDirection === 'down') {
+                intelligentAnimation = 'slide-right';
+              } else if (scrollSpeed > 5) {
+                intelligentAnimation = 'glow-in';
+              } else {
+                intelligentAnimation = 'fade-up';
+              }
+            }
+            
             setTimeout(() => {
               element.classList.remove('scroll-hidden');
-              element.classList.add('scroll-visible', `animate-${animation}`);
+              element.classList.add('scroll-visible', `animate-${intelligentAnimation}`);
+              
+              // Add intelligent completion callback
+              const handleAnimationEnd = () => {
+                element.style.transform = 'none';
+                element.style.opacity = '1';
+                element.removeEventListener('animationend', handleAnimationEnd);
+              };
+              element.addEventListener('animationend', handleAnimationEnd);
             }, delay);
             
             observer.unobserve(element);
@@ -40,8 +82,8 @@ export default function Home() {
         });
       },
       {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
+        threshold: 0.15,
+        rootMargin: '0px 0px -80px 0px'
       }
     );
 
@@ -50,7 +92,10 @@ export default function Home() {
       observer.observe(element);
     });
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
   
   // Enhanced parallax tracking for different layers
@@ -179,21 +224,21 @@ export default function Home() {
                 </Button>
               </div>
               
-              {/* Compact Rectangle Stats with Balloon Animation */}
+              {/* Compact Rectangle Stats with Intelligent Animation */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
-                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 scroll-animate animate-gentle-bounce" data-animation="balloon-float" data-delay="700" style={{animationDelay: '0.2s'}}>
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 intelligent-animate animate-gentle-bounce" data-animation="balloon-float" data-delay="800" style={{animationDelay: '0.2s'}}>
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     1200+
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Students<br/>Trained</div>
                 </div>
-                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 scroll-animate animate-gentle-bounce" data-animation="balloon-float" data-delay="850" style={{animationDelay: '0.4s'}}>
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 intelligent-animate animate-gentle-bounce" data-animation="glow-in" data-delay="950" style={{animationDelay: '0.4s'}}>
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     95%
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Placement Rate</div>
                 </div>
-                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 scroll-animate animate-gentle-bounce" data-animation="balloon-float" data-delay="1000" style={{animationDelay: '0.6s'}}>
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 intelligent-animate animate-gentle-bounce" data-animation="scale-in" data-delay="1100" style={{animationDelay: '0.6s'}}>
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     40+
                   </div>
@@ -239,7 +284,7 @@ export default function Home() {
       <section className="py-20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="text-center mb-12 scroll-animate" data-animation="fade-up" data-delay="200">
+          <div className="text-center mb-12 intelligent-animate" data-animation="fade-up" data-delay="200">
             <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
               Our Popular Courses
             </h2>
@@ -409,7 +454,7 @@ export default function Home() {
           </div>
 
           {/* Explore Courses Button */}
-          <div className="text-center mt-12 scroll-animate" data-animation="scale-in" data-delay="400">
+          <div className="text-center mt-12 intelligent-animate" data-animation="glow-in" data-delay="600">
             <Button 
               size="lg"
               className="bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
@@ -482,7 +527,7 @@ export default function Home() {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Enhanced Header */}
-          <div className="text-center mb-20 scroll-animate" data-animation="fade-up" data-delay="200">
+          <div className="text-center mb-20 intelligent-animate" data-animation="fade-up" data-delay="200">
             <div className="inline-block p-3 bg-slate-100 dark:bg-slate-800 rounded-full mb-6 animate-bounce">
               <svg className="w-8 h-8 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -510,8 +555,8 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Feature 1 - Practical Approach */}
             <div 
-              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50 scroll-animate"
-              data-animation="slide-up"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50 intelligent-animate"
+              data-animation="slide-left"
               data-delay="400"
               style={{
                 transform: `translate3d(${parallaxLayers.floating.x * 0.05}px, ${parallaxLayers.floating.y * 0.05}px, 0)`,

@@ -554,6 +554,67 @@
   }
 }
 
+/* Intelligent scroll-triggered animations */
+@keyframes intelligentFadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes intelligentSlideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-60px) rotateY(-15deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotateY(0deg);
+  }
+}
+
+@keyframes intelligentSlideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(60px) rotateY(15deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotateY(0deg);
+  }
+}
+
+@keyframes intelligentScaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) rotate(-5deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes intelligentGlowIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(59, 130, 246, 0);
+  }
+}
+
 @keyframes bubble-drift {
   0% {
     transform: translateX(0) translateY(0) scale(1);
@@ -569,7 +630,7 @@
   }
 }
 
-/* Scroll reveal classes */
+/* Intelligent scroll reveal classes */
 .scroll-hidden {
   opacity: 0;
   transform: translateY(40px);
@@ -579,6 +640,31 @@
 .scroll-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+.intelligent-animate {
+  opacity: 0;
+  transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.intelligent-animate.animate-fade-up {
+  animation: intelligentFadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.intelligent-animate.animate-slide-left {
+  animation: intelligentSlideInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.intelligent-animate.animate-slide-right {
+  animation: intelligentSlideInRight 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.intelligent-animate.animate-scale-in {
+  animation: intelligentScaleIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.intelligent-animate.animate-glow-in {
+  animation: intelligentGlowIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .animate-fade-up {
