@@ -281,8 +281,11 @@ export default function Home() {
       </section>
 
       {/* Enhanced Course Carousel with Fade Effects */}
-      <section className="py-20 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 relative overflow-hidden">
+        {/* Sliding Curve Background */}
+        <div className="sliding-curve"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Section Header */}
           <div className="text-center mb-12 intelligent-animate" data-animation="fade-up" data-delay="200">
             <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
