@@ -34,33 +34,33 @@
 }
 
 .dark {
-  /* Revolutionary Cyber Theme - Dark Mode */
-  --background: 220 71% 3%; /* Deep Cyber Space */
-  --foreground: 220 9% 98%; /* Pure Light */
-  --muted: 220 39% 8%; /* Dark Muted */
-  --muted-foreground: 220 9% 65%; /* Light Gray */
-  --popover: 220 71% 4%; /* Dark Popup */
-  --popover-foreground: 220 9% 98%; /* Light Text */
-  --card: 220 63% 6%; /* Dark Card */
-  --card-foreground: 220 9% 98%; /* Light Text */
-  --border: 220 39% 11%; /* Dark Border */
-  --input: 220 39% 11%; /* Dark Input */
+  /* Clean Minimal Theme - Dark Mode */
+  --background: 0 0% 3%; /* Almost black */
+  --foreground: 0 0% 98%; /* Almost white */
+  --muted: 0 0% 8%; /* Dark gray */
+  --muted-foreground: 0 0% 65%; /* Light gray */
+  --popover: 0 0% 4%; /* Very dark */
+  --popover-foreground: 0 0% 98%; /* Almost white */
+  --card: 0 0% 5%; /* Dark card */
+  --card-foreground: 0 0% 98%; /* Almost white */
+  --border: 0 0% 12%; /* Dark border */
+  --input: 0 0% 12%; /* Dark input */
   
-  /* Dark Mode Cyber Colors */
-  --primary: 271 91% 65%; /* Bright Cyber Purple */
-  --primary-foreground: 220 71% 3%; /* Dark Text */
-  --secondary: 198 100% 70%; /* Bright Electric Cyan */
-  --secondary-foreground: 220 71% 3%; /* Dark Text */
-  --accent: 142 86% 55%; /* Bright Matrix Green */
-  --accent-foreground: 220 71% 3%; /* Dark Text */
-  --destructive: 0 84% 60%; /* Alert Red */
-  --destructive-foreground: 220 9% 98%; /* Light Text */
-  --ring: 271 91% 65%; /* Bright Purple Ring */
+  /* Dark Monochrome Colors */
+  --primary: 0 0% 85%; /* Light gray */
+  --primary-foreground: 0 0% 8%; /* Dark */
+  --secondary: 0 0% 10%; /* Dark gray */
+  --secondary-foreground: 0 0% 98%; /* Almost white */
+  --accent: 0 0% 15%; /* Medium dark */
+  --accent-foreground: 0 0% 98%; /* Almost white */
+  --destructive: 0 0% 20%; /* Dark gray */
+  --destructive-foreground: 0 0% 98%; /* Almost white */
+  --ring: 0 0% 85%; /* Light ring */
   
-  /* Dark Mode Gradients */
-  --gradient-cyber: linear-gradient(135deg, #A855F7 0%, #06B6D4 50%, #10B981 100%);
-  --gradient-dark: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-  --gradient-glow: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+  /* Dark Minimal Gradients */
+  --gradient-minimal: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+  --gradient-subtle: linear-gradient(135deg, #0a0a0a 0%, #050505 100%);
+  --gradient-clean: linear-gradient(135deg, #121212 0%, #080808 100%);
 }
 
 @layer base {
@@ -99,35 +99,35 @@
     @apply opacity-100 translate-y-0;
   }
 
-  /* Cyber Gradients */
-  .gradient-cyber {
-    background: var(--gradient-cyber);
+  /* Clean Minimal Gradients */
+  .gradient-minimal {
+    background: var(--gradient-minimal);
   }
 
-  .gradient-cyber-text {
-    background: var(--gradient-cyber);
+  .gradient-minimal-text {
+    background: var(--gradient-minimal);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .gradient-glow {
-    background: var(--gradient-glow);
+  .gradient-subtle {
+    background: var(--gradient-subtle);
   }
 
-  /* Glass Morphism 2.0 */
+  /* Clean Glass Effect */
   .glass-morphism {
-    backdrop-filter: blur(20px) saturate(180%);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   }
 
   .dark .glass-morphism {
-    background: rgba(15, 23, 42, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    background: rgba(8, 8, 8, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
 
   /* Advanced Hover Effects */
@@ -150,49 +150,32 @@
     box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
   }
 
-  /* Revolutionary Buttons */
+  /* Clean Minimal Buttons */
   .btn-primary {
-    @apply relative overflow-hidden font-semibold px-8 py-4 rounded-xl;
-    background: var(--gradient-cyber);
-    color: white;
+    @apply relative overflow-hidden font-medium px-8 py-4 rounded-lg;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
     border: none;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-  }
-
-  .btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-  }
-
-  .btn-primary:hover::before {
-    left: 100%;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   }
 
   .btn-secondary {
-    @apply relative font-semibold px-8 py-4 rounded-xl border-2 transition-all duration-300;
-    border-color: hsl(var(--primary));
-    color: hsl(var(--primary));
+    @apply relative font-medium px-8 py-4 rounded-lg border transition-all duration-200;
+    border-color: hsl(var(--border));
+    color: hsl(var(--foreground));
     background: transparent;
-    overflow: hidden;
   }
 
   .btn-secondary:hover {
-    background: var(--gradient-cyber);
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+    background: hsl(var(--muted));
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
   /* Floating Elements */
