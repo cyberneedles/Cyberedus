@@ -149,13 +149,6 @@ export default function QuizComponent({ courseId }: QuizComponentProps) {
   if (currentStep === "lead") {
     return (
       <div className="animate-on-scroll">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-foreground mb-4">Test Your Knowledge</h2>
-          <p className="text-xl text-muted-foreground">
-            Take our quick assessment to see which course is perfect for you
-          </p>
-        </div>
-        
         <LeadForm
           source="quiz"
           title="Get Your Personalized Results"
