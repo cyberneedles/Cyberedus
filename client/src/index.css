@@ -963,6 +963,75 @@
   }
 }
 
+/* Dark mode mood variants */
+.dark .mood-energetic .gradient-orb {
+  opacity: 0.15;
+  filter: blur(80px);
+}
+
+.dark .mood-energetic .gradient-orb-1 {
+  background: linear-gradient(45deg, #dc2626, #ea580c);
+}
+
+.dark .mood-energetic .gradient-orb-2 {
+  background: linear-gradient(45deg, #0891b2, #0ea5e9);
+}
+
+.dark .mood-energetic .gradient-orb-3 {
+  background: linear-gradient(45deg, #c026d3, #db2777);
+}
+
+.dark .mood-calm .gradient-orb {
+  opacity: 0.06;
+  filter: blur(140px);
+}
+
+.dark .mood-calm .gradient-orb-1 {
+  background: linear-gradient(45deg, #065f46, #047857);
+}
+
+.dark .mood-calm .gradient-orb-2 {
+  background: linear-gradient(45deg, #1e3a8a, #1d4ed8);
+}
+
+.dark .mood-calm .gradient-orb-3 {
+  background: linear-gradient(45deg, #581c87, #7c3aed);
+}
+
+.dark .mood-focused .gradient-orb {
+  opacity: 0.12;
+  filter: blur(100px);
+}
+
+.dark .mood-focused .gradient-orb-1 {
+  background: linear-gradient(45deg, #1e40af, #3730a3);
+}
+
+.dark .mood-focused .gradient-orb-2 {
+  background: linear-gradient(45deg, #be185d, #9d174d);
+}
+
+.dark .mood-focused .gradient-orb-3 {
+  background: linear-gradient(45deg, #0369a1, #0284c7);
+}
+
+.dark .mood-interactive .gradient-orb {
+  opacity: 0.18;
+  filter: blur(60px);
+}
+
+.dark .mood-interactive .gradient-orb-1 {
+  background: linear-gradient(45deg, #059669, #10b981);
+}
+
+.dark .mood-interactive .gradient-orb-2 {
+  background: linear-gradient(45deg, #7c3aed, #8b5cf6);
+}
+
+.dark .mood-interactive .gradient-orb-3 {
+  background: linear-gradient(45deg, #dc2626, #ef4444);
+}
+
 /* Responsive mesh gradient overlay */
 .mesh-gradient {
   position: absolute;
