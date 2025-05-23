@@ -66,18 +66,29 @@ export default function FloatingCTA({
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
           className="fab-container"
         >
-          <button
+          <motion.button
             onClick={onClick}
-            className="fab-premium flex items-center gap-2 group"
+            className="btn-premium flex items-center gap-3 group shadow-2xl"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            animate={{ y: [0, -5, 0] }}
+            transition={{ 
+              y: { duration: 3, repeat: Infinity, ease: "easeInOut" }
+            }}
           >
-            {getIcon()}
-            <span className="hidden sm:inline">{getText()}</span>
             <motion.div
-              className="w-1 h-1 bg-current rounded-full opacity-60"
-              animate={{ scale: [1, 1.5, 1] }}
+              animate={{ rotate: [0, 360] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
+              {getIcon()}
+            </motion.div>
+            <span className="hidden sm:inline font-semibold">{getText()}</span>
+            <motion.div
+              className="w-2 h-2 bg-white/60 rounded-full"
+              animate={{ scale: [1, 1.5, 1], opacity: [0.6, 1, 0.6] }}
               transition={{ duration: 2, repeat: Infinity }}
             />
-          </button>
+          </motion.button>
         </motion.div>
       )}
     </AnimatePresence>
