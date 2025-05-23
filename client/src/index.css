@@ -785,6 +785,109 @@
   }
 }
 
+/* Ultimate responsive homepage background */
+.ultimate-homepage-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, 
+    #f8fafc 0%, 
+    #f1f5f9 25%, 
+    #e2e8f0 50%, 
+    #f8fafc 75%, 
+    #ffffff 100%);
+  z-index: -100;
+  overflow: hidden;
+}
+
+.dark .ultimate-homepage-bg {
+  background: linear-gradient(135deg, 
+    #0f172a 0%, 
+    #1e293b 25%, 
+    #334155 50%, 
+    #1e293b 75%, 
+    #0f172a 100%);
+}
+
+/* Floating gradient orbs */
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: floatGently 20s ease-in-out infinite;
+  opacity: 0.15;
+}
+
+.gradient-orb-1 {
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.gradient-orb-2 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(45deg, #ec4899, #f97316);
+  top: 60%;
+  right: 10%;
+  animation-delay: 7s;
+}
+
+.gradient-orb-3 {
+  width: 250px;
+  height: 250px;
+  background: linear-gradient(45deg, #10b981, #06b6d4);
+  bottom: 20%;
+  left: 30%;
+  animation-delay: 14s;
+}
+
+.dark .gradient-orb {
+  opacity: 0.08;
+  filter: blur(100px);
+}
+
+@keyframes floatGently {
+  0%, 100% {
+    transform: translateX(0) translateY(0) scale(1);
+  }
+  25% {
+    transform: translateX(30px) translateY(-20px) scale(1.1);
+  }
+  50% {
+    transform: translateX(-20px) translateY(-40px) scale(0.9);
+  }
+  75% {
+    transform: translateX(20px) translateY(-10px) scale(1.05);
+  }
+}
+
+/* Responsive mesh gradient overlay */
+.mesh-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+  z-index: -99;
+}
+
+.dark .mesh-gradient {
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+}
+
 @keyframes sophisticatedFadeIn {
   0% {
     opacity: 0;

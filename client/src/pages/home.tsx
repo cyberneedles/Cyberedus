@@ -177,7 +177,15 @@ export default function Home() {
   const featuredTestimonials = testimonials.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Ultimate Responsive Background */}
+      <div className="ultimate-homepage-bg">
+        <div className="mesh-gradient"></div>
+        <div className="gradient-orb gradient-orb-1"></div>
+        <div className="gradient-orb gradient-orb-2"></div>
+        <div className="gradient-orb gradient-orb-3"></div>
+      </div>
+      
       <Header />
       
       {/* Revolutionary Hero Section */}
