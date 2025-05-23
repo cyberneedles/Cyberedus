@@ -879,27 +879,32 @@
   }
 }
 
-/* Dynamic mood states */
+/* Dynamic mood states with smooth transitions */
+.gradient-orb {
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .mood-energetic .gradient-orb {
-  animation-duration: 8s;
+  animation: floatGently 8s ease-in-out infinite, energeticPulse 3s ease-in-out infinite;
   opacity: 0.25;
   filter: blur(60px);
+  transform-origin: center;
 }
 
 .mood-calm .gradient-orb {
-  animation-duration: 30s;
+  animation: floatGently 30s ease-in-out infinite;
   opacity: 0.08;
   filter: blur(120px);
 }
 
 .mood-focused .gradient-orb {
-  animation-duration: 15s;
+  animation: floatGently 15s ease-in-out infinite, focusedGlow 4s ease-in-out infinite;
   opacity: 0.18;
   filter: blur(90px);
 }
 
 .mood-interactive .gradient-orb {
-  animation-duration: 5s;
+  animation: floatGently 5s ease-in-out infinite, interactiveBounce 2s ease-in-out infinite;
   opacity: 0.3;
   filter: blur(40px);
   transform-origin: center;
@@ -908,39 +913,47 @@
 /* Dynamic color transitions */
 .mood-energetic .gradient-orb-1 {
   background: linear-gradient(45deg, #ff6b6b, #ffa726);
-  animation: energeticPulse 3s ease-in-out infinite;
+  transition: background 1.5s ease, transform 0.3s ease;
 }
 
 .mood-energetic .gradient-orb-2 {
   background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+  transition: background 1.5s ease, transform 0.3s ease;
 }
 
 .mood-energetic .gradient-orb-3 {
   background: linear-gradient(45deg, #f093fb, #f5576c);
+  transition: background 1.5s ease, transform 0.3s ease;
 }
 
 .mood-calm .gradient-orb-1 {
   background: linear-gradient(45deg, #a8e6cf, #dcedc1);
+  transition: background 1.5s ease, opacity 1.5s ease;
 }
 
 .mood-calm .gradient-orb-2 {
   background: linear-gradient(45deg, #b8c6db, #f5f7fa);
+  transition: background 1.5s ease, opacity 1.5s ease;
 }
 
 .mood-calm .gradient-orb-3 {
   background: linear-gradient(45deg, #e0c3fc, #9bb5ff);
+  transition: background 1.5s ease, opacity 1.5s ease;
 }
 
 .mood-focused .gradient-orb-1 {
   background: linear-gradient(45deg, #667eea, #764ba2);
+  transition: background 1.5s ease, filter 1.5s ease;
 }
 
 .mood-focused .gradient-orb-2 {
   background: linear-gradient(45deg, #f093fb, #f5576c);
+  transition: background 1.5s ease, filter 1.5s ease;
 }
 
 .mood-focused .gradient-orb-3 {
   background: linear-gradient(45deg, #4facfe, #00f2fe);
+  transition: background 1.5s ease, filter 1.5s ease;
 }
 
 @keyframes energeticPulse {
@@ -949,6 +962,30 @@
   }
   50% {
     transform: scale(1.2);
+  }
+}
+
+@keyframes focusedGlow {
+  0%, 100% {
+    filter: blur(90px) brightness(1);
+  }
+  50% {
+    filter: blur(80px) brightness(1.3);
+  }
+}
+
+@keyframes interactiveBounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  75% {
+    transform: scale(1.05);
   }
 }
 
@@ -963,22 +1000,26 @@
   }
 }
 
-/* Dark mode mood variants */
+/* Dark mode mood variants with animations */
 .dark .mood-energetic .gradient-orb {
   opacity: 0.15;
   filter: blur(80px);
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .mood-energetic .gradient-orb-1 {
   background: linear-gradient(45deg, #dc2626, #ea580c);
+  transition: background 1.5s ease, transform 0.3s ease;
 }
 
 .dark .mood-energetic .gradient-orb-2 {
   background: linear-gradient(45deg, #0891b2, #0ea5e9);
+  transition: background 1.5s ease, transform 0.3s ease;
 }
 
 .dark .mood-energetic .gradient-orb-3 {
   background: linear-gradient(45deg, #c026d3, #db2777);
+  transition: background 1.5s ease, transform 0.3s ease;
 }
 
 .dark .mood-calm .gradient-orb {
