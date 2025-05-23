@@ -256,6 +256,9 @@ export default function Home() {
               <Card 
                 key={`first-${course.id}`}
                 className="group cursor-pointer glass-morphism hover-lift border-primary/20 transition-all duration-500 min-w-[320px] max-w-[320px] relative overflow-hidden flex-shrink-0"
+                style={{
+                  transform: `translate3d(0, ${Math.sin((mousePosition.x + index * 100) * 0.005) * 10}px, 0) rotateY(${parallaxLayers.background.x * 0.01}deg)`
+                }}
               >
                 {/* Animated Background Pattern */}
                 <div className="absolute inset-0 opacity-5 text-4xl overflow-hidden pointer-events-none">
@@ -428,14 +431,53 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Test Your Knowledge */}
-      <section className="py-20 bg-muted/50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-foreground mb-4">Test Your Knowledge</h2>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+      {/* Test Your Knowledge with Parallax */}
+      <section className="py-20 bg-muted/50 relative overflow-hidden">
+        {/* Floating Parallax Elements */}
+        <div 
+          className="absolute top-10 left-10 w-20 h-20 bg-primary/5 rounded-full transition-transform duration-500 ease-out"
+          style={{
+            transform: `translate3d(${parallaxLayers.background.x * 0.8}px, ${parallaxLayers.background.y * 0.8}px, 0)`
+          }}
+        ></div>
+        <div 
+          className="absolute top-32 right-20 w-16 h-16 bg-accent/10 rounded-full transition-transform duration-700 ease-out"
+          style={{
+            transform: `translate3d(${parallaxLayers.midground.x * -0.6}px, ${parallaxLayers.midground.y * 0.6}px, 0)`
+          }}
+        ></div>
+        <div 
+          className="absolute bottom-20 left-32 w-12 h-12 bg-success/10 rounded-full transition-transform duration-400 ease-out"
+          style={{
+            transform: `translate3d(${parallaxLayers.floating.x * 0.4}px, ${parallaxLayers.floating.y * -0.4}px, 0)`
+          }}
+        ></div>
+        
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+          <h2 
+            className="text-4xl font-bold text-foreground mb-4 transition-transform duration-300 ease-out"
+            style={{
+              transform: `translate3d(${parallaxLayers.midground.x * 0.1}px, ${parallaxLayers.midground.y * 0.1}px, 0)`
+            }}
+          >
+            Test Your Knowledge
+          </h2>
+          <p 
+            className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto transition-transform duration-400 ease-out"
+            style={{
+              transform: `translate3d(${parallaxLayers.foreground.x * 0.05}px, ${parallaxLayers.foreground.y * 0.05}px, 0)`
+            }}
+          >
             Take our quick assessment to see which course is perfect for you
           </p>
-          <QuizComponent />
+          <div
+            className="transition-transform duration-500 ease-out"
+            style={{
+              transform: `translate3d(${parallaxLayers.background.x * 0.2}px, ${parallaxLayers.background.y * 0.2}px, 0) scale(${1 + Math.abs(parallaxLayers.midground.y) * 0.0003})`
+            }}
+          >
+            <QuizComponent />
+          </div>
         </div>
       </section>
 
@@ -555,16 +597,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* WhatsApp Float Button */}
+      {/* Enhanced WhatsApp Float Button with Parallax */}
       <a 
         href="https://wa.me/919876543210" 
         target="_blank" 
         rel="noopener noreferrer"
-        className="whatsapp-float"
+        className="whatsapp-float transition-transform duration-300 ease-out"
+        style={{
+          transform: `translate3d(${parallaxLayers.floating.x * 0.3}px, ${parallaxLayers.floating.y * 0.3}px, 0) scale(${1 + Math.abs(parallaxLayers.floating.x) * 0.0008})`
+        }}
         onClick={() => trackEvent("whatsapp_click", "contact", "float_button")}
       >
         <i className="fab fa-whatsapp text-2xl"></i>
       </a>
+
+      {/* Premium Floating Parallax Decorative Elements */}
+      <div 
+        className="fixed top-20 right-10 w-6 h-6 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full blur-sm pointer-events-none transition-transform duration-700 ease-out z-0"
+        style={{
+          transform: `translate3d(${parallaxLayers.background.x * 1.2}px, ${parallaxLayers.background.y * 1.2}px, 0)`
+        }}
+      ></div>
+      <div 
+        className="fixed bottom-40 left-20 w-8 h-8 bg-gradient-to-r from-success/15 to-info/15 rounded-full blur-sm pointer-events-none transition-transform duration-500 ease-out z-0"
+        style={{
+          transform: `translate3d(${parallaxLayers.midground.x * -0.8}px, ${parallaxLayers.midground.y * 0.8}px, 0)`
+        }}
+      ></div>
+      <div 
+        className="fixed top-1/2 right-32 w-4 h-4 bg-gradient-to-r from-warning/20 to-electric/20 rounded-full blur-sm pointer-events-none transition-transform duration-600 ease-out z-0"
+        style={{
+          transform: `translate3d(${parallaxLayers.foreground.x * 0.9}px, ${parallaxLayers.foreground.y * -0.7}px, 0)`
+        }}
+      ></div>
 
       <Footer />
     </div>
