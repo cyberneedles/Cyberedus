@@ -167,59 +167,68 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Auto-Scrolling Interactive Cards */}
+      {/* Mouse-Controlled Scrolling Course Cards */}
       <section className="py-20 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { 
-                icon: "📱", 
-                title: "iOS Security", 
-                theme: "iOS",
-                color: "from-blue-500 to-indigo-600",
-                feature: "Advanced Mobile Penetration"
-              },
-              { 
-                icon: "🐧", 
-                title: "Linux Mastery", 
-                theme: "Terminal",
-                color: "from-green-500 to-emerald-600",
-                feature: "Command Line Expertise"
-              },
-              { 
-                icon: "🔥", 
-                title: "Ethical Hacking", 
-                theme: "Penetration",
-                color: "from-red-500 to-rose-600",
-                feature: "Real-world Attack Simulation"
-              },
-              { 
-                icon: "🛡️", 
-                title: "Cloud Security", 
-                theme: "AWS/Azure",
-                color: "from-purple-500 to-violet-600",
-                feature: "Infrastructure Protection"
-              }
-            ].map((item, index) => (
+        <div className="max-w-full">
+          <div 
+            className="flex gap-8 transition-transform duration-300 ease-out px-8"
+            style={{ 
+              transform: `translateX(${mousePosition.x * -0.5}px)`,
+              width: 'fit-content'
+            }}
+          >
+            {featuredCourses.map((course, index) => (
               <Card 
-                key={index} 
-                className="group cursor-pointer glass-morphism hover-lift border-primary/20 transition-all duration-500 animate-on-scroll"
-                style={{ animationDelay: `${index * 0.2}s` }}
+                key={course.id} 
+                className="group cursor-pointer glass-morphism hover-lift border-primary/20 transition-all duration-500 min-w-[320px] max-w-[320px]"
+                style={{ 
+                  transform: `translateY(${mousePosition.y * 0.1}px) scale(${1 + mousePosition.x * 0.0001})`
+                }}
               >
                 <CardContent className="p-6 text-center">
                   <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                    {item.icon}
+                    {course.icon}
                   </div>
-                  <h3 className="font-bold text-lg mb-2 text-foreground">{item.title}</h3>
-                  <div className="text-sm text-muted-foreground mb-4">{item.theme}</div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">{course.title}</h3>
+                  <div className="text-sm text-muted-foreground mb-4">{course.level}</div>
                   
-                  {/* Interactive Element */}
-                  <div className={`h-2 bg-gradient-to-r ${item.color} rounded-full mb-3 opacity-70 group-hover:opacity-100 transition-opacity`}></div>
+                  {/* Interactive Progress Bar */}
+                  <div className="relative h-2 bg-secondary rounded-full overflow-hidden mb-3">
+                    <div 
+                      className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-1000 ease-out group-hover:from-green-500 group-hover:to-blue-500"
+                      style={{ width: `${85 + (index * 5)}%` }}
+                    ></div>
+                  </div>
                   
-                  <p className="text-xs text-muted-foreground">{item.feature}</p>
+                  <p className="text-xs text-muted-foreground mb-4">{course.description}</p>
+                  
+                  {/* Course Features */}
+                  {course.features && course.features.length > 0 && (
+                    <div className="text-xs text-primary">
+                      ⚡ {course.features.slice(0, 2).join(' • ')}
+                    </div>
+                  )}
+                  
+                  {/* Duration & Price */}
+                  <div className="mt-4 pt-4 border-t border-border flex justify-between items-center">
+                    <span className="text-sm text-muted-foreground">{course.duration}</span>
+                    {course.price && (
+                      <span className="text-lg font-bold text-primary">₹{course.price}</span>
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+        
+        {/* Mouse Movement Indicator */}
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center">
+          <p className="text-sm text-muted-foreground">Move your mouse to explore courses</p>
+          <div className="w-8 h-8 mx-auto mt-2 opacity-50">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C8.69 2 6 4.69 6 8v8c0 3.31 2.69 6 6 6s6-2.69 6-6V8c0-3.31-2.69-6-6-6zm0 2c2.21 0 4 1.79 4 4v8c0 2.21-1.79 4-4 4s-4-1.79-4-4V8c0-2.21 1.79-4 4-4zm0 3v3l-1.5-1.5L12 6z"/>
+            </svg>
           </div>
         </div>
       </section>
