@@ -377,7 +377,119 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Why Choose Master in InfoSec */}
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
+        {/* Subtle Background Elements */}
+        <div 
+          className="absolute top-20 left-10 w-32 h-32 bg-blue-100 dark:bg-blue-900/20 rounded-full opacity-20 transition-transform duration-700 ease-out"
+          style={{
+            transform: `translate3d(${parallaxLayers.background.x * 0.3}px, ${parallaxLayers.background.y * 0.3}px, 0)`
+          }}
+        ></div>
+        <div 
+          className="absolute bottom-20 right-20 w-24 h-24 bg-purple-100 dark:bg-purple-900/20 rounded-full opacity-20 transition-transform duration-500 ease-out"
+          style={{
+            transform: `translate3d(${parallaxLayers.midground.x * -0.2}px, ${parallaxLayers.midground.y * 0.2}px, 0)`
+          }}
+        ></div>
+        
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Header */}
+          <div className="text-center mb-16">
+            <h2 
+              className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4 transition-transform duration-300 ease-out"
+              style={{
+                transform: `translate3d(${parallaxLayers.foreground.x * 0.05}px, ${parallaxLayers.foreground.y * 0.05}px, 0)`
+              }}
+            >
+              Why Choose Master in InfoSec?
+            </h2>
+            <p 
+              className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto transition-transform duration-400 ease-out"
+              style={{
+                transform: `translate3d(${parallaxLayers.midground.x * 0.03}px, ${parallaxLayers.midground.y * 0.03}px, 0)`
+              }}
+            >
+              What makes us different from other institutes
+            </p>
+          </div>
 
+          {/* Features Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Feature 1 */}
+            <div 
+              className="text-center p-6 transition-transform duration-500 ease-out hover:scale-105"
+              style={{
+                transform: `translate3d(${parallaxLayers.floating.x * 0.1}px, ${parallaxLayers.floating.y * 0.1}px, 0)`
+              }}
+            >
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
+                <span className="text-2xl text-blue-600 dark:text-blue-400">🎯</span>
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                80% Practical Approach
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Unlike traditional institutes, 80% of our curriculum is hands-on practice with real projects and industry tools.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div 
+              className="text-center p-6 transition-transform duration-500 ease-out hover:scale-105"
+              style={{
+                transform: `translate3d(${parallaxLayers.background.x * 0.08}px, ${parallaxLayers.background.y * 0.08}px, 0)`
+              }}
+            >
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
+                <span className="text-2xl text-green-600 dark:text-green-400">💼</span>
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                Real Industry Projects
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Work on actual client projects and build a portfolio that impresses employers from day one.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div 
+              className="text-center p-6 transition-transform duration-500 ease-out hover:scale-105"
+              style={{
+                transform: `translate3d(${parallaxLayers.midground.x * 0.06}px, ${parallaxLayers.midground.y * 0.06}px, 0)`
+              }}
+            >
+              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
+                <span className="text-2xl text-purple-600 dark:text-purple-400">👨‍🏫</span>
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                Industry Mentorship
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Learn directly from industry professionals currently working in top companies.
+              </p>
+            </div>
+
+            {/* Feature 4 */}
+            <div 
+              className="text-center p-6 transition-transform duration-500 ease-out hover:scale-105"
+              style={{
+                transform: `translate3d(${parallaxLayers.foreground.x * 0.04}px, ${parallaxLayers.foreground.y * 0.04}px, 0)`
+              }}
+            >
+              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
+                <span className="text-2xl text-orange-600 dark:text-orange-400">🚀</span>
+              </div>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
+                Placement Support
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Comprehensive placement assistance including resume building, interview prep, and direct company connections.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-20 bg-card">
