@@ -147,22 +147,22 @@ export default function Home() {
                 </Button>
               </div>
               
-              {/* Clean Professional Stats */}
+              {/* Elegant Gradient Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
-                <div className="text-center p-6 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800">
-                  <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                <div className="text-center p-8 border border-slate-200/50 dark:border-slate-700/50 rounded-xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
+                  <div className="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     1200+
                   </div>
                   <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Students Trained</div>
                 </div>
-                <div className="text-center p-6 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800">
-                  <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                <div className="text-center p-8 border border-slate-200/50 dark:border-slate-700/50 rounded-xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
+                  <div className="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     95%
                   </div>
                   <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Placement Rate</div>
                 </div>
-                <div className="text-center p-6 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800">
-                  <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+                <div className="text-center p-8 border border-slate-200/50 dark:border-slate-700/50 rounded-xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
+                  <div className="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     40+
                   </div>
                   <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Industry Partners</div>
