@@ -44,6 +44,10 @@ export default function Home() {
     trackEvent("cta_click", "engagement", ctaType);
   };
 
+  // Enhanced mouse and parallax effects
+  const mousePosition = { x: 0, y: 0 };
+  const scrollY = 0;
+  
   const featuredCourses = courses.slice(0, 3);
   const featuredTestimonials = testimonials.slice(0, 3);
 
@@ -163,14 +167,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Revolutionary Featured Courses */}
-      <section className="py-32 relative">
+      {/* Revolutionary Featured Courses with Theme Transition */}
+      <section className="py-32 relative theme-transition section-cyber">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20 animate-on-scroll">
+          <div className="text-center mb-20 animate-on-scroll sticky-transform">
             <h2 className="text-5xl lg:text-6xl font-bold mb-8">
-              <span className="gradient-cyber-text">Elite Training</span> Arsenal
+              <span className="gradient-cyber-text text-reveal">Elite Training</span> Arsenal
             </h2>
-            <p className="text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+            <p className="text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed slide-in-left">
               Master cutting-edge skills with our <span className="text-primary font-semibold">industry-leading</span> curriculum 
               designed by cybersecurity legends and tech innovators
             </p>
