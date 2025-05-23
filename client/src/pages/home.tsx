@@ -9,10 +9,42 @@ import QuizComponent from "@/components/quiz/quiz-component";
 import { trackEvent } from "@/lib/analytics";
 import { useQuery } from "@tanstack/react-query";
 import { Course, Testimonial } from "@shared/schema";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useMouseParallax, useParallax } from "@/hooks/use-parallax";
 
 export default function Home() {
   const observerRef = useRef<IntersectionObserver>();
+  const { mousePosition } = useMouseParallax();
+  const parallaxData = useParallax();
+  
+  // Enhanced parallax tracking for different layers
+  const [parallaxLayers, setParallaxLayers] = useState({
+    background: { x: 0, y: 0 },
+    midground: { x: 0, y: 0 },
+    foreground: { x: 0, y: 0 },
+    floating: { x: 0, y: 0 }
+  });
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { clientX, clientY } = e;
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      
+      const normalizedX = (clientX - centerX) / centerX;
+      const normalizedY = (clientY - centerY) / centerY;
+      
+      setParallaxLayers({
+        background: { x: normalizedX * 15, y: normalizedY * 15 },
+        midground: { x: normalizedX * 30, y: normalizedY * 30 },
+        foreground: { x: normalizedX * 45, y: normalizedY * 45 },
+        floating: { x: normalizedX * 60, y: normalizedY * 60 }
+      });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const { data: courses = [] } = useQuery<Course[]>({
     queryKey: ["/api/courses"],
@@ -44,9 +76,8 @@ export default function Home() {
     trackEvent("cta_click", "engagement", ctaType);
   };
 
-  // Enhanced mouse and parallax effects
-  const mousePosition = { x: 0, y: 0 };
-  const scrollY = 0;
+  // Get scroll position
+  const scrollY = parallaxData.offset;
   
   const featuredCourses = courses.slice(0, 3);
   const featuredTestimonials = testimonials.slice(0, 3);
@@ -60,28 +91,57 @@ export default function Home() {
         {/* Subtle Background Grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
         
-        {/* Sophisticated Floating Code Elements */}
-        <div className="absolute top-20 left-10 code-line opacity-40 float-sophisticated">
+        {/* Smooth Mouse-Tracking Parallax Code Elements */}
+        <div 
+          className="absolute top-20 left-10 code-line opacity-40 float-sophisticated transition-transform duration-300 ease-out"
+          style={{
+            transform: `translate3d(${parallaxLayers.background.x}px, ${parallaxLayers.background.y}px, 0)`
+          }}
+        >
           <div className="text-xs font-mono text-info font-medium px-3 py-1 bg-info/10 rounded-lg border border-info/20 backdrop-blur-sm dopamine-hover">
             $ sudo nmap -sS target.com
           </div>
         </div>
-        <div className="absolute top-40 right-20 code-line opacity-40 float-sophisticated" style={{animationDelay: '2s'}}>
+        <div 
+          className="absolute top-40 right-20 code-line opacity-40 float-sophisticated transition-transform duration-500 ease-out" 
+          style={{
+            transform: `translate3d(${parallaxLayers.midground.x}px, ${parallaxLayers.midground.y}px, 0)`,
+            animationDelay: '2s'
+          }}
+        >
           <div className="text-xs font-mono text-warning font-medium px-3 py-1 bg-warning/10 rounded-lg border border-warning/20 backdrop-blur-sm dopamine-hover">
             [+] Vulnerability detected
           </div>
         </div>
-        <div className="absolute bottom-32 left-20 code-line opacity-40 float-sophisticated" style={{animationDelay: '4s'}}>
+        <div 
+          className="absolute bottom-32 left-20 code-line opacity-40 float-sophisticated transition-transform duration-700 ease-out" 
+          style={{
+            transform: `translate3d(${parallaxLayers.foreground.x}px, ${parallaxLayers.foreground.y}px, 0)`,
+            animationDelay: '4s'
+          }}
+        >
           <div className="text-xs font-mono text-success font-medium px-3 py-1 bg-success/10 rounded-lg border border-success/20 backdrop-blur-sm pulse-glow">
             Firewall: ACTIVE
           </div>
         </div>
-        <div className="absolute top-60 right-10 code-line opacity-35 float-sophisticated" style={{animationDelay: '6s'}}>
+        <div 
+          className="absolute top-60 right-10 code-line opacity-35 float-sophisticated transition-transform duration-400 ease-out" 
+          style={{
+            transform: `translate3d(${parallaxLayers.floating.x}px, ${parallaxLayers.floating.y}px, 0)`,
+            animationDelay: '6s'
+          }}
+        >
           <div className="text-xs font-mono text-electric font-medium px-3 py-1 bg-electric/10 rounded-lg border border-electric/20 backdrop-blur-sm dopamine-hover">
             SSH tunnel established
           </div>
         </div>
-        <div className="absolute bottom-60 right-32 code-line opacity-30 float-sophisticated" style={{animationDelay: '8s'}}>
+        <div 
+          className="absolute bottom-60 right-32 code-line opacity-30 float-sophisticated transition-transform duration-600 ease-out" 
+          style={{
+            transform: `translate3d(${parallaxLayers.background.x * -1}px, ${parallaxLayers.background.y * -1}px, 0)`,
+            animationDelay: '8s'
+          }}
+        >
           <div className="text-xs font-mono text-neon font-medium px-3 py-1 bg-neon/10 rounded-lg border border-neon/20 backdrop-blur-sm pulse-glow">
             🔐 Encrypted connection
           </div>
@@ -142,15 +202,28 @@ export default function Home() {
               </div>
             </div>
             
-            <div className="mt-16 lg:mt-0 relative">
+            <div 
+              className="mt-16 lg:mt-0 relative transition-transform duration-500 ease-out"
+              style={{
+                transform: `translate3d(${parallaxLayers.midground.x * 0.5}px, ${parallaxLayers.midground.y * 0.5}px, 0) rotateY(${parallaxLayers.midground.x * 0.02}deg)`
+              }}
+            >
               <div className="relative border border-border rounded-lg p-8 card-professional">
                 <img 
                   src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600" 
                   alt="Cybersecurity expert working with advanced security systems" 
                   className="rounded-lg w-full h-auto transition-transform duration-500"
+                  style={{
+                    transform: `scale(${1 + Math.abs(parallaxLayers.foreground.x) * 0.001})`
+                  }}
                 />
-                {/* InfoSec Terminal Overlay */}
-                <div className="absolute top-12 left-12 bg-black/80 rounded p-2 text-success font-mono text-xs opacity-80">
+                {/* InfoSec Terminal Overlay with Parallax */}
+                <div 
+                  className="absolute top-12 left-12 bg-black/80 rounded p-2 text-success font-mono text-xs opacity-80 transition-transform duration-300"
+                  style={{
+                    transform: `translate3d(${parallaxLayers.floating.x * 0.3}px, ${parallaxLayers.floating.y * 0.3}px, 0)`
+                  }}
+                >
                   <div>root@infosec:~$ nmap -sS target</div>
                   <div className="text-red-400">[!] Vulnerabilities found</div>
                 </div>
