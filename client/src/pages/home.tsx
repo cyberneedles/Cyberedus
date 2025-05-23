@@ -178,7 +178,13 @@ export default function Home() {
           
           <div className="grid lg:grid-cols-3 gap-12">
             {featuredCourses.map((course, index) => (
-              <Card key={course.id} className={`glass-morphism hover-lift hover-glow group cursor-pointer relative overflow-hidden ${index === 1 ? 'lg:scale-110 z-10' : ''}`}>
+              <Card 
+                key={course.id} 
+                className={`glass-morphism hover-lift hover-glow group cursor-pointer relative overflow-hidden tilt-card mouse-trail ${index === 1 ? 'lg:scale-110 z-10' : ''}`}
+                style={{
+                  transform: `translate3d(${mousePosition.x * (index + 1) * 0.02}px, ${mousePosition.y * (index + 1) * 0.02}px, 0) translateY(${scrollY * (index + 1) * -0.1}px)`
+                }}
+              >
                 <div className="absolute inset-0 gradient-cyber opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
                 <CardContent className="p-10 relative z-10">
                   

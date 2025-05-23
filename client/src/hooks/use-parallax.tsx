@@ -32,9 +32,10 @@ export function useParallax(speed: number = 0.5) {
   return { ref, offset };
 }
 
-// Magnetic mouse follow effect
+// Enhanced Magnetic mouse follow effect
 export function useMagneticEffect(strength: number = 0.3) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isHovered, setIsHovered] = useState(false);
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -52,8 +53,79 @@ export function useMagneticEffect(strength: number = 0.3) {
       setPosition({ x: deltaX, y: deltaY });
     };
 
+    const handleMouseEnter = () => {
+      setIsHovered(true);
+    };
+
     const handleMouseLeave = () => {
       setPosition({ x: 0, y: 0 });
+      setIsHovered(false);
+    };
+
+    element.addEventListener('mousemove', handleMouseMove);
+    element.addEventListener('mouseenter', handleMouseEnter);
+    element.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      element.removeEventListener('mousemove', handleMouseMove);
+      element.removeEventListener('mouseenter', handleMouseEnter);
+      element.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [strength]);
+
+  return { ref, position, isHovered };
+}
+
+// Mouse parallax effect for scroll
+export function useMouseParallax() {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 50;
+      const y = (e.clientY / window.innerHeight - 0.5) * 50;
+      setMousePosition({ x, y });
+    };
+
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  return { mousePosition, scrollY };
+}
+
+// Enhanced tilt effect
+export function useTiltEffect(intensity: number = 10) {
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = element.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      
+      const rotateX = ((e.clientY - centerY) / rect.height) * intensity;
+      const rotateY = ((centerX - e.clientX) / rect.width) * intensity;
+      
+      setTilt({ x: rotateX, y: rotateY });
+    };
+
+    const handleMouseLeave = () => {
+      setTilt({ x: 0, y: 0 });
     };
 
     element.addEventListener('mousemove', handleMouseMove);
@@ -63,9 +135,9 @@ export function useMagneticEffect(strength: number = 0.3) {
       element.removeEventListener('mousemove', handleMouseMove);
       element.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [strength]);
+  }, [intensity]);
 
-  return { ref, position };
+  return { ref, tilt };
 }
 
 // Smooth scroll to element
