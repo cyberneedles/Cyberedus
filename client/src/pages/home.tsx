@@ -139,33 +139,32 @@ export default function Home() {
                   Start Learning
                 </Button>
                 <Button 
-                  variant="outline" 
-                  className="btn-secondary text-lg px-10 py-4"
+                  className="bg-white hover:bg-black text-black hover:text-white border border-slate-300 hover:border-black text-lg px-10 py-4 transition-all duration-300"
                   onClick={() => handleCTAClick("connect_counsellor")}
                 >
                   Schedule Consultation
                 </Button>
               </div>
               
-              {/* Elegant Gradient Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
-                <div className="text-center p-8 border border-slate-200/50 dark:border-slate-700/50 rounded-xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
-                  <div className="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
+              {/* Compact Rectangle Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
+                  <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     1200+
                   </div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Students Trained</div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Students<br/>Trained</div>
                 </div>
-                <div className="text-center p-8 border border-slate-200/50 dark:border-slate-700/50 rounded-xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
-                  <div className="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
+                  <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     95%
                   </div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Placement Rate</div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Placement Rate</div>
                 </div>
-                <div className="text-center p-8 border border-slate-200/50 dark:border-slate-700/50 rounded-xl bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
-                  <div className="text-5xl md:text-6xl font-bold mb-3 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
+                  <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     40+
                   </div>
-                  <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Industry Partners</div>
+                  <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Industry<br/>Partners</div>
                 </div>
               </div>
             </div>
