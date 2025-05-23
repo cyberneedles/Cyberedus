@@ -3,64 +3,54 @@
 @tailwind utilities;
 
 :root {
-  /* Revolutionary Cyber Theme - Light Mode */
-  --background: 220 26% 98%; /* Ultra Clean White */
-  --foreground: 220 39% 8%; /* Deep Cyber Black */
-  --muted: 220 14% 96%; /* Soft Muted */
-  --muted-foreground: 220 9% 46%; /* Elegant Gray */
+  /* Clean Minimal Theme - Light Mode */
+  --background: 0 0% 100%; /* Pure White */
+  --foreground: 0 0% 3.9%; /* Almost Black */
+  --muted: 0 0% 96.1%; /* Light Gray */
+  --muted-foreground: 0 0% 45.1%; /* Medium Gray */
   --popover: 0 0% 100%; /* Pure White */
-  --popover-foreground: 220 39% 8%; /* Deep Black */
+  --popover-foreground: 0 0% 3.9%; /* Almost Black */
   --card: 0 0% 100%; /* Pure White */
-  --card-foreground: 220 39% 8%; /* Deep Black */
-  --border: 220 13% 91%; /* Subtle Border */
-  --input: 220 13% 91%; /* Input Border */
+  --card-foreground: 0 0% 3.9%; /* Almost Black */
+  --border: 0 0% 89.8%; /* Light Border */
+  --input: 0 0% 89.8%; /* Input Border */
   
-  /* Cybersecurity Inspired Gradient Colors */
-  --primary: 271 81% 56%; /* Cyber Purple */
-  --primary-foreground: 0 0% 100%; /* White Text */
-  --secondary: 198 93% 60%; /* Electric Cyan */
-  --secondary-foreground: 220 39% 8%; /* Dark Text */
-  --accent: 142 86% 50%; /* Matrix Green */
-  --accent-foreground: 220 39% 8%; /* Dark Text */
-  --destructive: 0 84% 60%; /* Alert Red */
-  --destructive-foreground: 0 0% 98%; /* White Text */
-  --ring: 271 81% 56%; /* Purple Ring */
-  --radius: 12px; /* Modern Rounded */
-  
-  /* Advanced Gradients */
-  --gradient-cyber: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 50%, #10B981 100%);
-  --gradient-dark: linear-gradient(135deg, #1E293B 0%, #334155 100%);
-  --gradient-glow: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+  /* Monochrome Colors Only */
+  --primary: 0 0% 9%; /* Dark Gray */
+  --primary-foreground: 0 0% 98%; /* Almost White */
+  --secondary: 0 0% 96.1%; /* Light Gray */
+  --secondary-foreground: 0 0% 9%; /* Dark Gray */
+  --accent: 0 0% 96.1%; /* Light Gray */
+  --accent-foreground: 0 0% 9%; /* Dark Gray */
+  --destructive: 0 84.2% 60.2%; /* Red for errors only */
+  --destructive-foreground: 0 0% 98%; /* Almost White */
+  --ring: 0 0% 3.9%; /* Almost Black */
+  --radius: 8px; /* Clean Rounded */
 }
 
 .dark {
   /* Clean Minimal Theme - Dark Mode */
-  --background: 0 0% 3%; /* Almost black */
-  --foreground: 0 0% 98%; /* Almost white */
-  --muted: 0 0% 8%; /* Dark gray */
-  --muted-foreground: 0 0% 65%; /* Light gray */
-  --popover: 0 0% 4%; /* Very dark */
-  --popover-foreground: 0 0% 98%; /* Almost white */
-  --card: 0 0% 5%; /* Dark card */
-  --card-foreground: 0 0% 98%; /* Almost white */
-  --border: 0 0% 12%; /* Dark border */
-  --input: 0 0% 12%; /* Dark input */
+  --background: 0 0% 3.9%; /* Almost Black */
+  --foreground: 0 0% 98%; /* Almost White */
+  --muted: 0 0% 14.9%; /* Dark Gray */
+  --muted-foreground: 0 0% 63.9%; /* Medium Gray */
+  --popover: 0 0% 3.9%; /* Almost Black */
+  --popover-foreground: 0 0% 98%; /* Almost White */
+  --card: 0 0% 3.9%; /* Almost Black */
+  --card-foreground: 0 0% 98%; /* Almost White */
+  --border: 0 0% 14.9%; /* Dark Border */
+  --input: 0 0% 14.9%; /* Dark Input */
   
   /* Dark Monochrome Colors */
-  --primary: 0 0% 85%; /* Light gray */
-  --primary-foreground: 0 0% 8%; /* Dark */
-  --secondary: 0 0% 10%; /* Dark gray */
-  --secondary-foreground: 0 0% 98%; /* Almost white */
-  --accent: 0 0% 15%; /* Medium dark */
-  --accent-foreground: 0 0% 98%; /* Almost white */
-  --destructive: 0 0% 20%; /* Dark gray */
-  --destructive-foreground: 0 0% 98%; /* Almost white */
-  --ring: 0 0% 85%; /* Light ring */
-  
-  /* Dark Minimal Gradients */
-  --gradient-minimal: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
-  --gradient-subtle: linear-gradient(135deg, #0a0a0a 0%, #050505 100%);
-  --gradient-clean: linear-gradient(135deg, #121212 0%, #080808 100%);
+  --primary: 0 0% 98%; /* Almost White */
+  --primary-foreground: 0 0% 9%; /* Dark Gray */
+  --secondary: 0 0% 14.9%; /* Dark Gray */
+  --secondary-foreground: 0 0% 98%; /* Almost White */
+  --accent: 0 0% 14.9%; /* Dark Gray */
+  --accent-foreground: 0 0% 98%; /* Almost White */
+  --destructive: 0 62.8% 30.6%; /* Dark Red */
+  --destructive-foreground: 0 0% 98%; /* Almost White */
+  --ring: 0 0% 83.1%; /* Light Gray */
 }
 
 @layer base {
@@ -100,54 +90,35 @@
   }
 
   /* Clean Minimal Gradients */
-  .gradient-minimal {
-    background: var(--gradient-minimal);
-  }
-
-  .gradient-minimal-text {
-    background: var(--gradient-minimal);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
   .gradient-subtle {
-    background: var(--gradient-subtle);
+    background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--background)) 100%);
   }
 
-  /* Clean Glass Effect */
+  /* Clean Minimal Card */
   .glass-morphism {
-    backdrop-filter: blur(8px);
-    background: rgba(255, 255, 255, 0.95);
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
-  .dark .glass-morphism {
-    background: rgba(8, 8, 8, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Advanced Hover Effects */
+  /* Clean Hover Effects */
   .hover-lift {
-    @apply transition-all duration-500 ease-out;
-    transform: translateY(0) scale(1);
+    @apply transition-all duration-200 ease-out;
+    transform: translateY(0);
   }
 
   .hover-lift:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .hover-glow {
-    @apply transition-all duration-300;
-    box-shadow: 0 0 0 rgba(139, 92, 246, 0);
+    @apply transition-all duration-200;
   }
 
   .hover-glow:hover {
-    box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
 
   /* Clean Minimal Buttons */
