@@ -499,9 +499,9 @@ export default function Home() {
                     />
                     <div>
                       <h4 className="font-semibold text-foreground">{testimonial.name}</h4>
-                      <div className="flex text-yellow-400">
+                      <div className="flex text-amber-400">
                         {[...Array(testimonial.rating)].map((_, i) => (
-                          <i key={i} className="fas fa-star text-sm"></i>
+                          <span key={i} className="text-sm">★</span>
                         ))}
                       </div>
                     </div>
@@ -551,7 +551,7 @@ export default function Home() {
         }}
         onClick={() => trackEvent("whatsapp_click", "contact", "float_button")}
       >
-        <i className="fab fa-whatsapp text-2xl"></i>
+        <span className="text-2xl">💬</span>
       </a>
 
       {/* Premium Floating Parallax Decorative Elements */}
