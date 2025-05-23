@@ -18,12 +18,10 @@ export default function Home() {
   const { mousePosition } = useMouseParallax();
   const parallaxData = useParallax();
   
-  // Dynamic background mood generator with performance optimization
+  // Dynamic background mood generator
   const [backgroundMood, setBackgroundMood] = useState('calm');
   const [userInteractionCount, setUserInteractionCount] = useState(0);
-  const [performanceMode, setPerformanceMode] = useState('high');
   const lastInteractionTime = useRef(Date.now());
-  const frameRate = useRef(60);
 
   // Intelligent scroll animation system
   useEffect(() => {
@@ -150,52 +148,6 @@ export default function Home() {
       document.removeEventListener('keydown', handleUserInteraction);
     };
   }, []);
-
-  // Performance monitoring and optimization
-  useEffect(() => {
-    let frameCount = 0;
-    let lastTime = performance.now();
-    
-    const performanceMonitor = () => {
-      const currentTime = performance.now();
-      frameCount++;
-      
-      if (currentTime - lastTime >= 1000) {
-        frameRate.current = frameCount;
-        frameCount = 0;
-        lastTime = currentTime;
-        
-        // Adaptive performance optimization
-        if (frameRate.current < 30) {
-          setPerformanceMode('low');
-        } else if (frameRate.current < 45) {
-          setPerformanceMode('medium');
-        } else {
-          setPerformanceMode('high');
-        }
-      }
-      
-      requestAnimationFrame(performanceMonitor);
-    };
-    
-    // Device capability detection
-    const detectDeviceCapability = () => {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const isLowEnd = navigator.hardwareConcurrency <= 2;
-      const hasReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      
-      if (isMobile || isLowEnd || hasReducedMotion) {
-        setPerformanceMode('low');
-      }
-    };
-    
-    detectDeviceCapability();
-    requestAnimationFrame(performanceMonitor);
-    
-    return () => {
-      // Cleanup handled by requestAnimationFrame
-    };
-  }, []);
   
   // Enhanced parallax tracking for different layers
   const [parallaxLayers, setParallaxLayers] = useState({
@@ -276,32 +228,13 @@ export default function Home() {
   const featuredTestimonials = testimonials.slice(0, 3);
 
   return (
-    <div className={`relative overflow-hidden mood-${backgroundMood} performance-${performanceMode}`} style={{ minHeight: '100vh' }}>
-      {/* Ultimate Responsive Background with Dynamic Mood - Performance Optimized */}
+    <div className={`min-h-screen relative overflow-hidden mood-${backgroundMood}`}>
+      {/* Ultimate Responsive Background with Dynamic Mood */}
       <div className="ultimate-homepage-bg">
         <div className="mesh-gradient"></div>
-        {performanceMode !== 'low' && (
-          <>
-            <div className="gradient-orb gradient-orb-1"></div>
-            <div className="gradient-orb gradient-orb-2"></div>
-            <div className="gradient-orb gradient-orb-3"></div>
-          </>
-        )}
-        {performanceMode === 'high' && (
-          <>
-            <div className="gradient-orb gradient-orb-4"></div>
-            <div className="gradient-orb gradient-orb-5"></div>
-            <div className="gradient-orb gradient-orb-6"></div>
-            <div className="gradient-orb gradient-orb-7"></div>
-            <div className="gradient-orb gradient-orb-8"></div>
-          </>
-        )}
-        {performanceMode === 'medium' && (
-          <>
-            <div className="gradient-orb gradient-orb-4"></div>
-            <div className="gradient-orb gradient-orb-5"></div>
-          </>
-        )}
+        <div className="gradient-orb gradient-orb-1"></div>
+        <div className="gradient-orb gradient-orb-2"></div>
+        <div className="gradient-orb gradient-orb-3"></div>
       </div>
       
       <Header />
