@@ -15,19 +15,19 @@
   --border: 0 0% 89.8%; /* Light Border */
   --input: 0 0% 89.8%; /* Input Border */
   
-  /* Sophisticated Silent Theme with Dopamine Triggers */
-  --primary: 217 33% 16%; /* Deep Professional Navy */
-  --primary-foreground: 0 0% 98%; /* Crisp White */
-  --secondary: 220 16% 97%; /* Whisper Gray */
-  --secondary-foreground: 220 12% 42%; /* Sophisticated Gray */
-  --accent: 147 73% 44%; /* Dopamine Green */
-  --accent-foreground: 0 0% 98%; /* Pure White */
-  --success: 147 73% 44%; /* Success Green */
-  --warning: 35 91% 55%; /* Warm Orange */
-  --info: 200 91% 52%; /* Cool Blue */
-  --electric: 267 84% 70%; /* Electric Purple */
-  --neon: 158 100% 42%; /* Neon Cyan */
-  --glow: 47 100% 58%; /* Golden Glow */
+  /* Ultra-Premium Light Theme */
+  --primary: 214 100% 50%; /* Premium Blue #0066ff */
+  --primary-foreground: 0 0% 100%; /* Pure White */
+  --secondary: 210 40% 98%; /* Ultra Light Blue #f8fafc */
+  --secondary-foreground: 215 25% 27%; /* Professional Dark Blue */
+  --accent: 214 95% 55%; /* Light Blue Accent #1a73e8 */
+  --accent-foreground: 0 0% 100%; /* Pure White */
+  --success: 142 71% 45%; /* Clean Green */
+  --warning: 38 92% 50%; /* Professional Orange */
+  --info: 214 100% 60%; /* Soft Blue */
+  --premium-bg: 210 17% 98%; /* #f0f7ff Ultra Light */
+  --card-shadow: 210 40% 95%; /* Soft Shadow */
+  --border-light: 210 20% 94%; /* Light Border */
   --destructive: 0 84.2% 60.2%; /* Red for errors only */
   --destructive-foreground: 0 0% 98%; /* Almost White */
   --ring: 0 0% 3.9%; /* Almost Black */
@@ -47,19 +47,19 @@
   --border: 0 0% 14.9%; /* Dark Border */
   --input: 0 0% 14.9%; /* Dark Input */
   
-  /* Dark Mode Sophisticated Silent */
-  --primary: 0 0% 98%; /* Pure White */
-  --primary-foreground: 217 33% 8%; /* Deep Navy */
-  --secondary: 217 22% 16%; /* Dark Sophisticated */
-  --secondary-foreground: 0 0% 98%; /* Pure White */
-  --accent: 147 73% 44%; /* Dopamine Green */
-  --accent-foreground: 0 0% 98%; /* Pure White */
-  --success: 147 73% 44%; /* Success Green */
-  --warning: 35 91% 55%; /* Warm Orange */
-  --info: 200 91% 52%; /* Cool Blue */
-  --electric: 267 84% 70%; /* Electric Purple */
-  --neon: 158 100% 42%; /* Neon Cyan */
-  --glow: 47 100% 58%; /* Golden Glow */
+  /* Elegant Dark Mode */
+  --primary: 214 100% 55%; /* Bright Blue for Dark */
+  --primary-foreground: 0 0% 100%; /* Pure White */
+  --secondary: 217 32% 17%; /* Dark Navy */
+  --secondary-foreground: 210 40% 98%; /* Light Text */
+  --accent: 214 95% 60%; /* Bright Accent */
+  --accent-foreground: 0 0% 100%; /* Pure White */
+  --success: 142 71% 45%; /* Clean Green */
+  --warning: 38 92% 50%; /* Professional Orange */
+  --info: 214 100% 65%; /* Bright Blue */
+  --premium-bg: 217 33% 10%; /* Dark Premium */
+  --card-shadow: 217 32% 5%; /* Dark Shadow */
+  --border-light: 217 32% 20%; /* Dark Border */
   --destructive: 0 62.8% 30.6%; /* Dark Red */
   --destructive-foreground: 0 0% 98%; /* Almost White */
   --ring: 0 0% 83.1%; /* Light Gray */
@@ -179,20 +179,25 @@
     scroll-behavior: smooth;
   }
 
-  /* Sophisticated Responsive Card Animation */
-  .card-professional {
-    transform: perspective(1200px) rotateX(0deg) translateZ(0);
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-    backface-visibility: hidden;
-    will-change: transform;
+  /* Apple-Level Premium Card Animation */
+  .card-premium {
+    transform: translateY(0) scale(1);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 
+      0 1px 3px rgba(0, 0, 0, 0.05),
+      0 1px 2px rgba(0, 0, 0, 0.02);
+    border: 1px solid hsl(var(--border-light));
+    background: hsl(var(--card));
+    border-radius: 16px;
   }
 
-  .card-professional:hover {
-    transform: perspective(1200px) rotateX(3deg) translateY(-8px) translateZ(20px);
+  .card-premium:hover {
+    transform: translateY(-4px) scale(1.02);
     box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.12),
-      0 8px 16px rgba(0, 0, 0, 0.08),
-      0 0 0 1px rgba(147, 73, 44, 0.1);
+      0 20px 40px rgba(0, 0, 0, 0.08),
+      0 8px 24px rgba(0, 0, 0, 0.04),
+      0 4px 12px rgba(214, 100%, 50%, 0.15);
+    border-color: hsl(var(--accent) / 0.2);
   }
 
   /* Dopamine Counter Animation */
@@ -222,25 +227,46 @@
     filter: brightness(1.05) saturate(1.1);
   }
 
-  /* Sophisticated Button Glow */
-  .btn-glow {
-    position: relative;
-    overflow: hidden;
+  /* Premium Button Styles */
+  .btn-premium {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 
+      0 1px 3px rgba(0, 0, 0, 0.1),
+      0 1px 2px rgba(0, 0, 0, 0.06);
   }
 
-  .btn-glow::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.5s;
+  .btn-premium:hover {
+    background: hsl(var(--primary) / 0.9);
+    transform: translateY(-1px);
+    box-shadow: 
+      0 4px 12px rgba(214, 100%, 50%, 0.4),
+      0 2px 6px rgba(0, 0, 0, 0.1);
   }
 
-  .btn-glow:hover::before {
-    left: 100%;
+  .btn-secondary {
+    background: hsl(var(--secondary));
+    color: hsl(var(--secondary-foreground));
+    border: 1px solid hsl(var(--border));
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .btn-secondary:hover {
+    background: hsl(var(--accent) / 0.05);
+    border-color: hsl(var(--accent) / 0.3);
+    color: hsl(var(--accent));
+    transform: translateY(-1px);
   }
 
   /* Sophisticated Scroll Animations */
