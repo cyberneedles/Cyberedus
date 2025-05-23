@@ -229,12 +229,15 @@ export default function Home() {
 
   return (
     <div className={`min-h-screen relative overflow-hidden mood-${backgroundMood}`}>
-      {/* Ultimate Responsive Background with Dynamic Mood */}
+      {/* Ultimate Responsive Background with Dynamic Mood - Full Page Coverage */}
       <div className="ultimate-homepage-bg">
         <div className="mesh-gradient"></div>
         <div className="gradient-orb gradient-orb-1"></div>
         <div className="gradient-orb gradient-orb-2"></div>
         <div className="gradient-orb gradient-orb-3"></div>
+        <div className="gradient-orb gradient-orb-4"></div>
+        <div className="gradient-orb gradient-orb-5"></div>
+        <div className="gradient-orb gradient-orb-6"></div>
       </div>
       
       <Header />

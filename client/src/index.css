@@ -785,13 +785,13 @@
   }
 }
 
-/* Ultimate responsive homepage background */
+/* Ultimate responsive homepage background - Extended for full page */
 .ultimate-homepage-bg {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
-  height: 100vh;
+  height: 200vh; /* Extended height for full page coverage */
   background: linear-gradient(135deg, 
     #fefefe 0%, 
     #f8fafc 25%, 
@@ -809,15 +809,17 @@
     #111827 50%, 
     #0c1220 75%, 
     #020617 100%);
+  height: 200vh; /* Extended for full page coverage */
 }
 
-/* Floating gradient orbs */
+/* Floating gradient orbs - Enhanced for full page */
 .gradient-orb {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
   animation: floatGently 20s ease-in-out infinite;
   opacity: 0.15;
+  z-index: -90;
 }
 
 .gradient-orb-1 {
@@ -847,6 +849,34 @@
   animation-delay: 14s;
 }
 
+/* Additional orbs for full page coverage */
+.gradient-orb-4 {
+  width: 350px;
+  height: 350px;
+  background: linear-gradient(45deg, #ec4899, #8b5cf6);
+  top: 120%;
+  left: 20%;
+  animation-delay: 21s;
+}
+
+.gradient-orb-5 {
+  width: 280px;
+  height: 280px;
+  background: linear-gradient(45deg, #06b6d4, #10b981);
+  top: 140%;
+  right: 15%;
+  animation-delay: 28s;
+}
+
+.gradient-orb-6 {
+  width: 320px;
+  height: 320px;
+  background: linear-gradient(45deg, #f59e0b, #ef4444);
+  top: 180%;
+  left: 40%;
+  animation-delay: 35s;
+}
+
 .dark .gradient-orb {
   opacity: 0.12;
   filter: blur(120px);
@@ -862,6 +892,18 @@
 
 .dark .gradient-orb-3 {
   background: linear-gradient(45deg, #d97706, #ea580c);
+}
+
+.dark .gradient-orb-4 {
+  background: linear-gradient(45deg, #be185d, #7c3aed);
+}
+
+.dark .gradient-orb-5 {
+  background: linear-gradient(45deg, #0891b2, #059669);
+}
+
+.dark .gradient-orb-6 {
+  background: linear-gradient(45deg, #d97706, #dc2626);
 }
 
 @keyframes floatGently {
