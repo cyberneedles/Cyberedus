@@ -509,7 +509,7 @@ export default function Home() {
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Enhanced Header */}
-          <div className="text-center mb-20">
+          <div className="text-center mb-20 scroll-animate" data-animation="fade-up" data-delay="200">
             <div className="inline-block p-3 bg-slate-100 dark:bg-slate-800 rounded-full mb-6 animate-bounce">
               <svg className="w-8 h-8 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -537,7 +537,9 @@ export default function Home() {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Feature 1 - Practical Approach */}
             <div 
-              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50 scroll-animate"
+              data-animation="slide-up"
+              data-delay="400"
               style={{
                 transform: `translate3d(${parallaxLayers.floating.x * 0.05}px, ${parallaxLayers.floating.y * 0.05}px, 0)`,
                 animationDelay: '0.1s'
@@ -561,7 +563,9 @@ export default function Home() {
 
             {/* Feature 2 - Industry Projects */}
             <div 
-              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50 scroll-animate"
+              data-animation="slide-up"
+              data-delay="550"
               style={{
                 transform: `translate3d(${parallaxLayers.background.x * 0.04}px, ${parallaxLayers.background.y * 0.04}px, 0)`,
                 animationDelay: '0.2s'
@@ -585,7 +589,9 @@ export default function Home() {
 
             {/* Feature 3 - Mentorship */}
             <div 
-              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50 scroll-animate"
+              data-animation="slide-up"
+              data-delay="700"
               style={{
                 transform: `translate3d(${parallaxLayers.midground.x * 0.03}px, ${parallaxLayers.midground.y * 0.03}px, 0)`,
                 animationDelay: '0.3s'
@@ -609,7 +615,9 @@ export default function Home() {
 
             {/* Feature 4 - Placement Support */}
             <div 
-              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50 scroll-animate"
+              data-animation="slide-up"
+              data-delay="850"
               style={{
                 transform: `translate3d(${parallaxLayers.foreground.x * 0.02}px, ${parallaxLayers.foreground.y * 0.02}px, 0)`,
                 animationDelay: '0.4s'
