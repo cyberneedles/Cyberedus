@@ -443,115 +443,156 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Why Choose Master in InfoSec */}
-      <section className="py-20 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 relative overflow-hidden">
-        {/* Subtle Background Elements */}
+      {/* Why Choose Master in InfoSec - Professional Version */}
+      <section className="py-24 bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
+        {/* Animated Background Elements */}
         <div 
-          className="absolute top-20 left-10 w-32 h-32 bg-blue-100 dark:bg-blue-900/20 rounded-full opacity-20 transition-transform duration-700 ease-out"
+          className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900/20 dark:to-blue-800/10 rounded-full opacity-30 animate-pulse"
           style={{
-            transform: `translate3d(${parallaxLayers.background.x * 0.3}px, ${parallaxLayers.background.y * 0.3}px, 0)`
+            transform: `translate3d(${parallaxLayers.background.x * 0.4}px, ${parallaxLayers.background.y * 0.4}px, 0) rotate(${parallaxLayers.background.x * 0.1}deg)`,
+            animationDelay: '0s',
+            animationDuration: '4s'
           }}
         ></div>
         <div 
-          className="absolute bottom-20 right-20 w-24 h-24 bg-purple-100 dark:bg-purple-900/20 rounded-full opacity-20 transition-transform duration-500 ease-out"
+          className="absolute top-40 right-32 w-24 h-24 bg-gradient-to-r from-purple-100 to-purple-200 dark:from-purple-900/20 dark:to-purple-800/10 rounded-full opacity-25 animate-pulse"
           style={{
-            transform: `translate3d(${parallaxLayers.midground.x * -0.2}px, ${parallaxLayers.midground.y * 0.2}px, 0)`
+            transform: `translate3d(${parallaxLayers.midground.x * -0.3}px, ${parallaxLayers.midground.y * 0.3}px, 0) rotate(${parallaxLayers.midground.x * -0.05}deg)`,
+            animationDelay: '1s',
+            animationDuration: '3s'
+          }}
+        ></div>
+        <div 
+          className="absolute bottom-32 left-32 w-32 h-32 bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/20 dark:to-green-800/10 rounded-full opacity-20 animate-pulse"
+          style={{
+            transform: `translate3d(${parallaxLayers.floating.x * 0.2}px, ${parallaxLayers.floating.y * -0.2}px, 0) rotate(${parallaxLayers.floating.x * 0.08}deg)`,
+            animationDelay: '2s',
+            animationDuration: '5s'
           }}
         ></div>
         
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Header */}
-          <div className="text-center mb-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          {/* Enhanced Header */}
+          <div className="text-center mb-20">
+            <div className="inline-block p-3 bg-slate-100 dark:bg-slate-800 rounded-full mb-6 animate-bounce">
+              <svg className="w-8 h-8 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
             <h2 
-              className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-4 transition-transform duration-300 ease-out"
+              className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-slate-100 mb-6 transition-all duration-500 ease-out"
               style={{
-                transform: `translate3d(${parallaxLayers.foreground.x * 0.05}px, ${parallaxLayers.foreground.y * 0.05}px, 0)`
+                transform: `translate3d(${parallaxLayers.foreground.x * 0.02}px, ${parallaxLayers.foreground.y * 0.02}px, 0)`
               }}
             >
               Why Choose Master in InfoSec?
             </h2>
             <p 
-              className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto transition-transform duration-400 ease-out"
+              className="text-xl text-slate-600 dark:text-slate-400 max-w-4xl mx-auto leading-relaxed transition-all duration-600 ease-out"
               style={{
-                transform: `translate3d(${parallaxLayers.midground.x * 0.03}px, ${parallaxLayers.midground.y * 0.03}px, 0)`
+                transform: `translate3d(${parallaxLayers.midground.x * 0.01}px, ${parallaxLayers.midground.y * 0.01}px, 0)`
               }}
             >
               What makes us different from other institutes
             </p>
           </div>
 
-          {/* Features Grid */}
+          {/* Professional Features Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Feature 1 */}
+            {/* Feature 1 - Practical Approach */}
             <div 
-              className="text-center p-6 transition-transform duration-500 ease-out hover:scale-105"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50"
               style={{
-                transform: `translate3d(${parallaxLayers.floating.x * 0.1}px, ${parallaxLayers.floating.y * 0.1}px, 0)`
+                transform: `translate3d(${parallaxLayers.floating.x * 0.05}px, ${parallaxLayers.floating.y * 0.05}px, 0)`,
+                animationDelay: '0.1s'
               }}
             >
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                <span className="text-2xl text-blue-600 dark:text-blue-400">🎯</span>
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/10 dark:to-blue-800/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-center">
+                  80% Practical Approach
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-center text-sm">
+                  Unlike traditional institutes, 80% of our curriculum is hands-on practice with real projects and industry tools.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                80% Practical Approach
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Unlike traditional institutes, 80% of our curriculum is hands-on practice with real projects and industry tools.
-              </p>
             </div>
 
-            {/* Feature 2 */}
+            {/* Feature 2 - Industry Projects */}
             <div 
-              className="text-center p-6 transition-transform duration-500 ease-out hover:scale-105"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50"
               style={{
-                transform: `translate3d(${parallaxLayers.background.x * 0.08}px, ${parallaxLayers.background.y * 0.08}px, 0)`
+                transform: `translate3d(${parallaxLayers.background.x * 0.04}px, ${parallaxLayers.background.y * 0.04}px, 0)`,
+                animationDelay: '0.2s'
               }}
             >
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                <span className="text-2xl text-green-600 dark:text-green-400">💼</span>
+              <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/10 dark:to-green-800/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-center">
+                  Real Industry Projects
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-center text-sm">
+                  Work on actual client projects and build a portfolio that impresses employers from day one.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Real Industry Projects
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Work on actual client projects and build a portfolio that impresses employers from day one.
-              </p>
             </div>
 
-            {/* Feature 3 */}
+            {/* Feature 3 - Mentorship */}
             <div 
-              className="text-center p-6 transition-transform duration-500 ease-out hover:scale-105"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50"
               style={{
-                transform: `translate3d(${parallaxLayers.midground.x * 0.06}px, ${parallaxLayers.midground.y * 0.06}px, 0)`
+                transform: `translate3d(${parallaxLayers.midground.x * 0.03}px, ${parallaxLayers.midground.y * 0.03}px, 0)`,
+                animationDelay: '0.3s'
               }}
             >
-              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                <span className="text-2xl text-purple-600 dark:text-purple-400">👨‍🏫</span>
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/10 dark:to-purple-800/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-center">
+                  Industry Mentorship
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-center text-sm">
+                  Learn directly from industry professionals currently working in top companies.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Industry Mentorship
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Learn directly from industry professionals currently working in top companies.
-              </p>
             </div>
 
-            {/* Feature 4 */}
+            {/* Feature 4 - Placement Support */}
             <div 
-              className="text-center p-6 transition-transform duration-500 ease-out hover:scale-105"
+              className="group relative bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 ease-out transform hover:-translate-y-2 border border-slate-200/50 dark:border-slate-700/50"
               style={{
-                transform: `translate3d(${parallaxLayers.foreground.x * 0.04}px, ${parallaxLayers.foreground.y * 0.04}px, 0)`
+                transform: `translate3d(${parallaxLayers.foreground.x * 0.02}px, ${parallaxLayers.foreground.y * 0.02}px, 0)`,
+                animationDelay: '0.4s'
               }}
             >
-              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300">
-                <span className="text-2xl text-orange-600 dark:text-orange-400">🚀</span>
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/10 dark:to-orange-800/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-6 transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4 text-center">
+                  Placement Support
+                </h3>
+                <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-center text-sm">
+                  Comprehensive placement assistance including resume building, interview prep, and direct company connections.
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-3">
-                Placement Support
-              </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                Comprehensive placement assistance including resume building, interview prep, and direct company connections.
-              </p>
             </div>
           </div>
         </div>
