@@ -147,28 +147,25 @@ export default function Home() {
                 </Button>
               </div>
               
-              {/* Sophisticated Dopamine Stats */}
+              {/* Clean Professional Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8">
-                <div className="text-center p-6 border border-border rounded-xl card-professional bg-gradient-to-br from-card to-secondary/20 backdrop-blur-sm">
-                  <div className="text-4xl md:text-5xl font-bold text-foreground mb-2 counter-animation bg-gradient-to-r from-accent to-success bg-clip-text text-transparent">
+                <div className="text-center p-6 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800">
+                  <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-2">
                     1200+
                   </div>
-                  <div className="text-sm text-muted-foreground font-medium">Students Trained</div>
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-accent/30 to-transparent mt-4"></div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Students Trained</div>
                 </div>
-                <div className="text-center p-6 border border-border rounded-xl card-professional bg-gradient-to-br from-card to-info/10 backdrop-blur-sm">
-                  <div className="text-4xl md:text-5xl font-bold text-foreground mb-2 counter-animation bg-gradient-to-r from-info to-electric bg-clip-text text-transparent" style={{animationDelay: '0.2s'}}>
+                <div className="text-center p-6 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800">
+                  <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-2">
                     95%
                   </div>
-                  <div className="text-sm text-muted-foreground font-medium">Placement Rate</div>
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-info/30 to-transparent mt-4"></div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Placement Rate</div>
                 </div>
-                <div className="text-center p-6 border border-border rounded-xl card-professional bg-gradient-to-br from-card to-warning/10 backdrop-blur-sm">
-                  <div className="text-4xl md:text-5xl font-bold text-foreground mb-2 counter-animation bg-gradient-to-r from-warning to-glow bg-clip-text text-transparent" style={{animationDelay: '0.4s'}}>
+                <div className="text-center p-6 border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-800">
+                  <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 mb-2">
                     40+
                   </div>
-                  <div className="text-sm text-muted-foreground font-medium">Industry Partners</div>
-                  <div className="w-full h-px bg-gradient-to-r from-transparent via-warning/30 to-transparent mt-4"></div>
+                  <div className="text-sm text-slate-600 dark:text-slate-400 font-medium">Industry Partners</div>
                 </div>
               </div>
             </div>
