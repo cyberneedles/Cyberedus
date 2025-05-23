@@ -91,60 +91,18 @@ export default function Home() {
         {/* Subtle Background Grid */}
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
         
-        {/* Smooth Mouse-Tracking Parallax Code Elements */}
-        <div 
-          className="absolute top-20 left-10 code-line opacity-40 float-sophisticated transition-transform duration-300 ease-out"
-          style={{
-            transform: `translate3d(${parallaxLayers.background.x}px, ${parallaxLayers.background.y}px, 0)`
-          }}
-        >
-          <div className="text-xs font-mono text-info font-medium px-3 py-1 bg-info/10 rounded-lg border border-info/20 backdrop-blur-sm dopamine-hover">
-            $ sudo nmap -sS target.com
-          </div>
+        {/* Clean Professional Floating Elements */}
+        <div className="absolute top-20 left-10 opacity-20">
+          <div className="w-16 h-16 border border-slate-200 dark:border-slate-700 rounded-lg bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm"></div>
         </div>
-        <div 
-          className="absolute top-40 right-20 code-line opacity-40 float-sophisticated transition-transform duration-500 ease-out" 
-          style={{
-            transform: `translate3d(${parallaxLayers.midground.x}px, ${parallaxLayers.midground.y}px, 0)`,
-            animationDelay: '2s'
-          }}
-        >
-          <div className="text-xs font-mono text-warning font-medium px-3 py-1 bg-warning/10 rounded-lg border border-warning/20 backdrop-blur-sm dopamine-hover">
-            [+] Vulnerability detected
-          </div>
+        <div className="absolute top-40 right-20 opacity-15" style={{animationDelay: '2s'}}>
+          <div className="w-12 h-12 border border-slate-200 dark:border-slate-700 rounded-full bg-slate-50/50 dark:bg-slate-800/50 backdrop-blur-sm"></div>
         </div>
-        <div 
-          className="absolute bottom-32 left-20 code-line opacity-40 float-sophisticated transition-transform duration-700 ease-out" 
-          style={{
-            transform: `translate3d(${parallaxLayers.foreground.x}px, ${parallaxLayers.foreground.y}px, 0)`,
-            animationDelay: '4s'
-          }}
-        >
-          <div className="text-xs font-mono text-success font-medium px-3 py-1 bg-success/10 rounded-lg border border-success/20 backdrop-blur-sm pulse-glow">
-            Firewall: ACTIVE
-          </div>
+        <div className="absolute bottom-32 left-20 opacity-10" style={{animationDelay: '4s'}}>
+          <div className="w-20 h-20 border border-slate-200 dark:border-slate-700 rounded-xl bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm"></div>
         </div>
-        <div 
-          className="absolute top-60 right-10 code-line opacity-35 float-sophisticated transition-transform duration-400 ease-out" 
-          style={{
-            transform: `translate3d(${parallaxLayers.floating.x}px, ${parallaxLayers.floating.y}px, 0)`,
-            animationDelay: '6s'
-          }}
-        >
-          <div className="text-xs font-mono text-electric font-medium px-3 py-1 bg-electric/10 rounded-lg border border-electric/20 backdrop-blur-sm dopamine-hover">
-            SSH tunnel established
-          </div>
-        </div>
-        <div 
-          className="absolute bottom-60 right-32 code-line opacity-30 float-sophisticated transition-transform duration-600 ease-out" 
-          style={{
-            transform: `translate3d(${parallaxLayers.background.x * -1}px, ${parallaxLayers.background.y * -1}px, 0)`,
-            animationDelay: '8s'
-          }}
-        >
-          <div className="text-xs font-mono text-neon font-medium px-3 py-1 bg-neon/10 rounded-lg border border-neon/20 backdrop-blur-sm pulse-glow">
-            🔐 Encrypted connection
-          </div>
+        <div className="absolute top-60 right-10 opacity-15" style={{animationDelay: '6s'}}>
+          <div className="w-14 h-14 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50/40 dark:bg-slate-800/40 backdrop-blur-sm"></div>
         </div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
@@ -248,32 +206,17 @@ export default function Home() {
             className="flex gap-6 animate-scroll-left"
             style={{ 
               width: 'calc(200% + 48px)', // Double width for seamless loop
-              animation: 'scroll-left 30s linear infinite'
+              animation: 'scroll-left 45s linear infinite'
             }}
           >
             {/* First set of courses */}
             {courses.map((course, index) => (
               <Card 
                 key={`first-${course.id}`}
-                className="group cursor-pointer glass-morphism hover-lift border-primary/20 transition-all duration-500 min-w-[320px] max-w-[320px] relative overflow-hidden flex-shrink-0"
-                style={{
-                  transform: `translate3d(0, ${Math.sin((mousePosition.x + index * 100) * 0.005) * 10}px, 0) rotateY(${parallaxLayers.background.x * 0.01}deg)`
-                }}
+                className="group cursor-pointer border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-lg transition-all duration-300 min-w-[320px] max-w-[320px] relative overflow-hidden flex-shrink-0"
               >
-                {/* Animated Background Pattern */}
-                <div className="absolute inset-0 opacity-5 text-4xl overflow-hidden pointer-events-none">
-                  <div className="absolute transform transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-12">
-                    {course.icon}{course.icon}{course.icon}
-                  </div>
-                </div>
-
-                {/* Dynamic Gradient Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${
-                  index % 4 === 0 ? 'from-blue-500/10 to-purple-500/10' :
-                  index % 4 === 1 ? 'from-green-500/10 to-teal-500/10' :
-                  index % 4 === 2 ? 'from-orange-500/10 to-red-500/10' :
-                  'from-violet-500/10 to-indigo-500/10'
-                } opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+                {/* Clean Professional Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-50/30 to-white/30 dark:from-slate-700/30 dark:to-slate-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 
                 <CardContent className="p-6 text-center relative z-10">
                   <div className="text-4xl mb-4 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">

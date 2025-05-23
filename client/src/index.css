@@ -15,19 +15,19 @@
   --border: 0 0% 89.8%; /* Light Border */
   --input: 0 0% 89.8%; /* Input Border */
   
-  /* Ultra-Premium Light Theme */
-  --primary: 0 0% 10%; /* Premium Black #1a1a1a */
+  /* Professional Minimalistic Theme */
+  --primary: 215 25% 27%; /* Professional Dark Blue #334155 */
   --primary-foreground: 0 0% 100%; /* Pure White */
-  --secondary: 210 40% 98%; /* Ultra Light Blue #f8fafc */
-  --secondary-foreground: 214 100% 70%; /* Light Blue Text #4da6ff */
-  --accent: 214 100% 65%; /* Light Blue Accent #3399ff */
+  --secondary: 210 20% 98%; /* Light Gray #f8fafc */
+  --secondary-foreground: 215 16% 47%; /* Medium Gray #64748b */
+  --accent: 215 20% 65%; /* Soft Blue Gray #94a3b8 */
   --accent-foreground: 0 0% 100%; /* Pure White */
-  --success: 142 71% 45%; /* Clean Green */
-  --warning: 38 92% 50%; /* Professional Orange */
-  --info: 214 100% 60%; /* Soft Blue */
-  --premium-bg: 210 20% 99%; /* #f9fbfd Ultra Light */
-  --card-shadow: 210 40% 95%; /* Soft Shadow */
-  --border-light: 210 20% 94%; /* Light Border */
+  --success: 142 76% 36%; /* Professional Green #059669 */
+  --warning: 25 95% 53%; /* Professional Orange #f97316 */
+  --info: 213 94% 68%; /* Professional Blue #3b82f6 */
+  --premium-bg: 0 0% 100%; /* Pure White */
+  --card-shadow: 215 25% 95%; /* Soft Shadow */
+  --border-light: 215 25% 92%; /* Light Border */
   --destructive: 0 84.2% 60.2%; /* Red for errors only */
   --destructive-foreground: 0 0% 98%; /* Almost White */
   --ring: 0 0% 3.9%; /* Almost Black */
