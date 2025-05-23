@@ -21,6 +21,8 @@ import {
   type FAQ,
   type InsertFAQ
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -58,6 +60,154 @@ export interface IStorage {
   // FAQ operations
   getAllFAQs(active?: boolean): Promise<FAQ[]>;
   createFAQ(faq: InsertFAQ): Promise<FAQ>;
+}
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getAllCourses(): Promise<Course[]> {
+    return await db.select().from(courses);
+  }
+
+  async getCourseBySlug(slug: string): Promise<Course | undefined> {
+    const [course] = await db.select().from(courses).where(eq(courses.slug, slug));
+    return course || undefined;
+  }
+
+  async createCourse(insertCourse: InsertCourse): Promise<Course> {
+    const [course] = await db
+      .insert(courses)
+      .values(insertCourse)
+      .returning();
+    return course;
+  }
+
+  async updateCourse(id: number, courseUpdate: Partial<InsertCourse>): Promise<Course | undefined> {
+    const [course] = await db
+      .update(courses)
+      .set(courseUpdate)
+      .where(eq(courses.id, id))
+      .returning();
+    return course || undefined;
+  }
+
+  async getQuizByCourseId(courseId: number): Promise<Quiz | undefined> {
+    const [quiz] = await db.select().from(quizzes).where(eq(quizzes.courseId, courseId));
+    return quiz || undefined;
+  }
+
+  async createQuiz(insertQuiz: InsertQuiz): Promise<Quiz> {
+    const [quiz] = await db
+      .insert(quizzes)
+      .values(insertQuiz)
+      .returning();
+    return quiz;
+  }
+
+  async updateQuiz(id: number, quizUpdate: Partial<InsertQuiz>): Promise<Quiz | undefined> {
+    const [quiz] = await db
+      .update(quizzes)
+      .set(quizUpdate)
+      .where(eq(quizzes.id, id))
+      .returning();
+    return quiz || undefined;
+  }
+
+  async createLead(insertLead: InsertLead): Promise<Lead> {
+    const [lead] = await db
+      .insert(leads)
+      .values(insertLead)
+      .returning();
+    return lead;
+  }
+
+  async getAllLeads(): Promise<Lead[]> {
+    return await db.select().from(leads);
+  }
+
+  async getAllBlogPosts(published?: boolean): Promise<BlogPost[]> {
+    if (published !== undefined) {
+      return await db.select().from(blogPosts).where(eq(blogPosts.isPublished, published));
+    }
+    return await db.select().from(blogPosts);
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+    return post || undefined;
+  }
+
+  async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
+    const [post] = await db
+      .insert(blogPosts)
+      .values(insertPost)
+      .returning();
+    return post;
+  }
+
+  async updateBlogPost(id: number, postUpdate: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
+    const [post] = await db
+      .update(blogPosts)
+      .set(postUpdate)
+      .where(eq(blogPosts.id, id))
+      .returning();
+    return post || undefined;
+  }
+
+  async deleteBlogPost(id: number): Promise<boolean> {
+    const result = await db.delete(blogPosts).where(eq(blogPosts.id, id));
+    return result.rowCount > 0;
+  }
+
+  async getAllTestimonials(approved?: boolean): Promise<Testimonial[]> {
+    if (approved !== undefined) {
+      return await db.select().from(testimonials).where(eq(testimonials.isApproved, approved));
+    }
+    return await db.select().from(testimonials);
+  }
+
+  async getTestimonialsByCourse(courseId: number): Promise<Testimonial[]> {
+    return await db.select().from(testimonials).where(eq(testimonials.courseId, courseId));
+  }
+
+  async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
+    const [testimonial] = await db
+      .insert(testimonials)
+      .values(insertTestimonial)
+      .returning();
+    return testimonial;
+  }
+
+  async getAllFAQs(active?: boolean): Promise<FAQ[]> {
+    if (active !== undefined) {
+      return await db.select().from(faqs).where(eq(faqs.isActive, active));
+    }
+    return await db.select().from(faqs);
+  }
+
+  async createFAQ(insertFaq: InsertFAQ): Promise<FAQ> {
+    const [faq] = await db
+      .insert(faqs)
+      .values(insertFaq)
+      .returning();
+    return faq;
+  }
 }
 
 export class MemStorage implements IStorage {
@@ -471,4 +621,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
