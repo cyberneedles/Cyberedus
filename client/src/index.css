@@ -879,6 +879,90 @@
   }
 }
 
+/* Dynamic mood states */
+.mood-energetic .gradient-orb {
+  animation-duration: 8s;
+  opacity: 0.25;
+  filter: blur(60px);
+}
+
+.mood-calm .gradient-orb {
+  animation-duration: 30s;
+  opacity: 0.08;
+  filter: blur(120px);
+}
+
+.mood-focused .gradient-orb {
+  animation-duration: 15s;
+  opacity: 0.18;
+  filter: blur(90px);
+}
+
+.mood-interactive .gradient-orb {
+  animation-duration: 5s;
+  opacity: 0.3;
+  filter: blur(40px);
+  transform-origin: center;
+}
+
+/* Dynamic color transitions */
+.mood-energetic .gradient-orb-1 {
+  background: linear-gradient(45deg, #ff6b6b, #ffa726);
+  animation: energeticPulse 3s ease-in-out infinite;
+}
+
+.mood-energetic .gradient-orb-2 {
+  background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+}
+
+.mood-energetic .gradient-orb-3 {
+  background: linear-gradient(45deg, #f093fb, #f5576c);
+}
+
+.mood-calm .gradient-orb-1 {
+  background: linear-gradient(45deg, #a8e6cf, #dcedc1);
+}
+
+.mood-calm .gradient-orb-2 {
+  background: linear-gradient(45deg, #b8c6db, #f5f7fa);
+}
+
+.mood-calm .gradient-orb-3 {
+  background: linear-gradient(45deg, #e0c3fc, #9bb5ff);
+}
+
+.mood-focused .gradient-orb-1 {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+}
+
+.mood-focused .gradient-orb-2 {
+  background: linear-gradient(45deg, #f093fb, #f5576c);
+}
+
+.mood-focused .gradient-orb-3 {
+  background: linear-gradient(45deg, #4facfe, #00f2fe);
+}
+
+@keyframes energeticPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes interactiveRipple {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
 /* Responsive mesh gradient overlay */
 .mesh-gradient {
   position: absolute;

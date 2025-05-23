@@ -18,6 +18,11 @@ export default function Home() {
   const { mousePosition } = useMouseParallax();
   const parallaxData = useParallax();
   
+  // Dynamic background mood generator
+  const [backgroundMood, setBackgroundMood] = useState('calm');
+  const [userInteractionCount, setUserInteractionCount] = useState(0);
+  const lastInteractionTime = useRef(Date.now());
+
   // Intelligent scroll animation system
   useEffect(() => {
     let scrollDirection = 'down';
@@ -95,6 +100,52 @@ export default function Home() {
     return () => {
       observer.disconnect();
       window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  // Dynamic mood generator based on user interaction
+  useEffect(() => {
+    const handleUserInteraction = (e: Event) => {
+      const now = Date.now();
+      const timeSinceLastInteraction = now - lastInteractionTime.current;
+      
+      setUserInteractionCount(prev => prev + 1);
+      lastInteractionTime.current = now;
+
+      // Determine mood based on interaction patterns
+      if (timeSinceLastInteraction < 1000) {
+        // Rapid interactions - energetic mood
+        setBackgroundMood('energetic');
+      } else if (e.type === 'click' || e.type === 'touchstart') {
+        // Deliberate clicks - focused mood
+        setBackgroundMood('focused');
+      } else if (e.type === 'mousemove') {
+        // Mouse movement - interactive mood
+        setBackgroundMood('interactive');
+      }
+
+      // Reset to calm after 5 seconds of no interaction
+      setTimeout(() => {
+        const currentTime = Date.now();
+        if (currentTime - lastInteractionTime.current >= 4800) {
+          setBackgroundMood('calm');
+        }
+      }, 5000);
+    };
+
+    // Add interaction listeners
+    document.addEventListener('click', handleUserInteraction);
+    document.addEventListener('mousemove', handleUserInteraction);
+    document.addEventListener('scroll', handleUserInteraction);
+    document.addEventListener('touchstart', handleUserInteraction);
+    document.addEventListener('keydown', handleUserInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleUserInteraction);
+      document.removeEventListener('mousemove', handleUserInteraction);
+      document.removeEventListener('scroll', handleUserInteraction);
+      document.removeEventListener('touchstart', handleUserInteraction);
+      document.removeEventListener('keydown', handleUserInteraction);
     };
   }, []);
   
@@ -177,8 +228,8 @@ export default function Home() {
   const featuredTestimonials = testimonials.slice(0, 3);
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Ultimate Responsive Background */}
+    <div className={`min-h-screen relative overflow-hidden mood-${backgroundMood}`}>
+      {/* Ultimate Responsive Background with Dynamic Mood */}
       <div className="ultimate-homepage-bg">
         <div className="mesh-gradient"></div>
         <div className="gradient-orb gradient-orb-1"></div>
