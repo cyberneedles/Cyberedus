@@ -149,19 +149,7 @@ export default function Home() {
         <div className="bubble-sm" style={{ top: '65%', right: '35%', animationDelay: '7s' }}></div>
         <div className="bubble-md" style={{ top: '45%', left: '35%', animationDelay: '12s' }}></div>
         
-        {/* Clean Professional Floating Elements */}
-        <div className="absolute top-20 left-10 opacity-20">
-          <div className="w-16 h-16 border border-slate-200 dark:border-slate-700 rounded-lg bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm"></div>
-        </div>
-        <div className="absolute top-40 right-20 opacity-15" style={{animationDelay: '2s'}}>
-          <div className="w-12 h-12 border border-slate-200 dark:border-slate-700 rounded-full bg-slate-50/50 dark:bg-slate-800/50 backdrop-blur-sm"></div>
-        </div>
-        <div className="absolute bottom-32 left-20 opacity-10" style={{animationDelay: '4s'}}>
-          <div className="w-20 h-20 border border-slate-200 dark:border-slate-700 rounded-xl bg-white/30 dark:bg-slate-800/30 backdrop-blur-sm"></div>
-        </div>
-        <div className="absolute top-60 right-10 opacity-15" style={{animationDelay: '6s'}}>
-          <div className="w-14 h-14 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50/40 dark:bg-slate-800/40 backdrop-blur-sm"></div>
-        </div>
+
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">

@@ -609,38 +609,53 @@
   animation: gentleBounce 2s ease-in-out infinite;
 }
 
-/* Clean, natural, low-opacity bubbles */
+/* Clean, natural, low-opacity bubbles optimized for both light and dark modes */
 .bubble-sm {
   width: 24px;
   height: 24px;
-  background: rgba(226, 232, 240, 0.03);
-  border: 1px solid rgba(248, 250, 252, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.03);
   border-radius: 50%;
   position: absolute;
   animation: formal-float 15s ease-in-out infinite;
   backdrop-filter: blur(1px);
 }
 
+.dark .bubble-sm {
+  background: rgba(148, 163, 184, 0.02);
+  border: 1px solid rgba(148, 163, 184, 0.03);
+}
+
 .bubble-md {
   width: 48px;
   height: 48px;
-  background: rgba(241, 245, 249, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid rgba(255, 255, 255, 0.025);
   border-radius: 50%;
   position: absolute;
   animation: formal-float 20s ease-in-out infinite reverse;
   backdrop-filter: blur(2px);
 }
 
+.dark .bubble-md {
+  background: rgba(203, 213, 225, 0.015);
+  border: 1px solid rgba(203, 213, 225, 0.025);
+}
+
 .bubble-lg {
   width: 72px;
   height: 72px;
-  background: rgba(248, 250, 252, 0.02);
+  background: rgba(255, 255, 255, 0.01);
   border: 1px solid rgba(255, 255, 255, 0.02);
   border-radius: 50%;
   position: absolute;
   animation: formal-float 25s ease-in-out infinite;
   backdrop-filter: blur(3px);
+}
+
+.dark .bubble-lg {
+  background: rgba(241, 245, 249, 0.01);
+  border: 1px solid rgba(241, 245, 249, 0.02);
 }
 
 @keyframes sophisticatedFadeIn {
