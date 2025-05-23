@@ -785,7 +785,7 @@
   }
 }
 
-/* Ultimate responsive homepage background - Full page coverage */
+/* Ultimate responsive homepage background - Performance optimized */
 .ultimate-homepage-bg {
   position: absolute;
   top: 0;
@@ -801,6 +801,8 @@
     #ffffff 100%);
   z-index: -100;
   overflow: hidden;
+  contain: layout style paint;
+  transform: translateZ(0);
 }
 
 .dark .ultimate-homepage-bg {
@@ -812,7 +814,7 @@
     #020617 100%);
 }
 
-/* Floating gradient orbs - Enhanced for full page */
+/* Floating gradient orbs - Performance optimized */
 .gradient-orb {
   position: absolute;
   border-radius: 50%;
@@ -820,6 +822,10 @@
   animation: floatGently 20s ease-in-out infinite;
   opacity: 0.15;
   z-index: -90;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
 }
 
 .gradient-orb-1 {
@@ -934,36 +940,39 @@
 
 @keyframes floatGently {
   0%, 100% {
-    transform: translateX(0) translateY(0) scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
   25% {
-    transform: translateX(30px) translateY(-20px) scale(1.1);
+    transform: translate3d(30px, -20px, 0) scale(1.1);
   }
   50% {
-    transform: translateX(-20px) translateY(-40px) scale(0.9);
+    transform: translate3d(-20px, -40px, 0) scale(0.9);
   }
   75% {
-    transform: translateX(20px) translateY(-10px) scale(1.05);
+    transform: translate3d(20px, -10px, 0) scale(1.05);
   }
 }
 
-/* Dynamic mood states */
+/* Dynamic mood states - Performance optimized */
 .mood-energetic .gradient-orb {
   animation-duration: 8s;
   opacity: 0.25;
   filter: blur(60px);
+  will-change: transform, opacity;
 }
 
 .mood-calm .gradient-orb {
   animation-duration: 30s;
   opacity: 0.08;
   filter: blur(120px);
+  will-change: transform;
 }
 
 .mood-focused .gradient-orb {
   animation-duration: 15s;
   opacity: 0.18;
   filter: blur(90px);
+  will-change: transform, opacity;
 }
 
 .mood-interactive .gradient-orb {
@@ -971,6 +980,7 @@
   opacity: 0.3;
   filter: blur(40px);
   transform-origin: center;
+  will-change: transform, opacity, filter;
 }
 
 /* Dynamic color transitions */
@@ -1013,10 +1023,10 @@
 
 @keyframes energeticPulse {
   0%, 100% {
-    transform: scale(1);
+    transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: scale(1.2);
+    transform: translate3d(0, 0, 0) scale(1.2);
   }
 }
 
@@ -1028,6 +1038,49 @@
   100% {
     transform: scale(1.5);
     opacity: 0;
+  }
+}
+
+/* Performance optimization classes */
+.performance-low .gradient-orb {
+  animation-duration: 40s;
+  filter: blur(100px);
+  opacity: 0.05;
+}
+
+.performance-medium .gradient-orb {
+  animation-duration: 25s;
+  filter: blur(90px);
+  opacity: 0.1;
+}
+
+.performance-high .gradient-orb {
+  animation-duration: 20s;
+  filter: blur(80px);
+  opacity: 0.15;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .gradient-orb {
+    animation: none;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  
+  .mood-energetic .gradient-orb-1 {
+    animation: none;
+  }
+}
+
+/* Low-end device optimizations */
+@media (max-width: 768px) {
+  .gradient-orb {
+    filter: blur(60px);
+    opacity: 0.08;
+  }
+  
+  .performance-low .gradient-orb {
+    display: none;
   }
 }
 
