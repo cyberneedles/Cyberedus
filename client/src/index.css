@@ -886,27 +886,27 @@
 
 .mood-energetic .gradient-orb {
   animation: floatGently 8s ease-in-out infinite, energeticPulse 3s ease-in-out infinite;
-  opacity: 0.4;
-  filter: blur(60px);
+  opacity: 0.12;
+  filter: blur(80px);
   transform-origin: center;
 }
 
 .mood-calm .gradient-orb {
   animation: floatGently 30s ease-in-out infinite;
-  opacity: 0.2;
-  filter: blur(100px);
+  opacity: 0.06;
+  filter: blur(120px);
 }
 
 .mood-focused .gradient-orb {
   animation: floatGently 15s ease-in-out infinite, focusedGlow 4s ease-in-out infinite;
-  opacity: 0.35;
-  filter: blur(80px);
+  opacity: 0.1;
+  filter: blur(100px);
 }
 
 .mood-interactive .gradient-orb {
   animation: floatGently 5s ease-in-out infinite, interactiveBounce 2s ease-in-out infinite;
-  opacity: 0.45;
-  filter: blur(50px);
+  opacity: 0.15;
+  filter: blur(70px);
   transform-origin: center;
 }
 
@@ -959,33 +959,41 @@
 @keyframes energeticPulse {
   0%, 100% {
     transform: scale(1);
+    opacity: 0.12;
   }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.1);
+    opacity: 0.18;
   }
 }
 
 @keyframes focusedGlow {
   0%, 100% {
-    filter: blur(90px) brightness(1);
+    filter: blur(100px) brightness(1);
+    opacity: 0.1;
   }
   50% {
-    filter: blur(80px) brightness(1.3);
+    filter: blur(90px) brightness(1.2);
+    opacity: 0.15;
   }
 }
 
 @keyframes interactiveBounce {
   0%, 100% {
     transform: scale(1);
+    opacity: 0.15;
   }
   25% {
-    transform: scale(1.1);
+    transform: scale(1.08);
+    opacity: 0.2;
   }
   50% {
-    transform: scale(0.95);
+    transform: scale(0.98);
+    opacity: 0.12;
   }
   75% {
-    transform: scale(1.05);
+    transform: scale(1.03);
+    opacity: 0.18;
   }
 }
 
