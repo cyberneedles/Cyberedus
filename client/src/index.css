@@ -793,9 +793,9 @@
   width: 100vw;
   height: 100vh;
   background: linear-gradient(135deg, 
-    #f8fafc 0%, 
-    #f1f5f9 25%, 
-    #e2e8f0 50%, 
+    #fefefe 0%, 
+    #f8fafc 25%, 
+    #f1f5f9 50%, 
     #f8fafc 75%, 
     #ffffff 100%);
   z-index: -100;
@@ -804,11 +804,11 @@
 
 .dark .ultimate-homepage-bg {
   background: linear-gradient(135deg, 
-    #0f172a 0%, 
-    #1e293b 25%, 
-    #334155 50%, 
-    #1e293b 75%, 
-    #0f172a 100%);
+    #020617 0%, 
+    #0c1220 25%, 
+    #111827 50%, 
+    #0c1220 75%, 
+    #020617 100%);
 }
 
 /* Floating gradient orbs */
@@ -823,7 +823,7 @@
 .gradient-orb-1 {
   width: 400px;
   height: 400px;
-  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  background: linear-gradient(45deg, #60a5fa, #a78bfa);
   top: 10%;
   left: 10%;
   animation-delay: 0s;
@@ -832,7 +832,7 @@
 .gradient-orb-2 {
   width: 300px;
   height: 300px;
-  background: linear-gradient(45deg, #ec4899, #f97316);
+  background: linear-gradient(45deg, #34d399, #3b82f6);
   top: 60%;
   right: 10%;
   animation-delay: 7s;
@@ -841,15 +841,27 @@
 .gradient-orb-3 {
   width: 250px;
   height: 250px;
-  background: linear-gradient(45deg, #10b981, #06b6d4);
+  background: linear-gradient(45deg, #fbbf24, #f59e0b);
   bottom: 20%;
   left: 30%;
   animation-delay: 14s;
 }
 
 .dark .gradient-orb {
-  opacity: 0.08;
-  filter: blur(100px);
+  opacity: 0.12;
+  filter: blur(120px);
+}
+
+.dark .gradient-orb-1 {
+  background: linear-gradient(45deg, #1e40af, #7c3aed);
+}
+
+.dark .gradient-orb-2 {
+  background: linear-gradient(45deg, #059669, #1d4ed8);
+}
+
+.dark .gradient-orb-3 {
+  background: linear-gradient(45deg, #d97706, #ea580c);
 }
 
 @keyframes floatGently {
@@ -883,9 +895,9 @@
 
 .dark .mesh-gradient {
   background-image: 
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.05) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.05) 0%, transparent 50%);
+    radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(34, 197, 94, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(251, 191, 36, 0.07) 0%, transparent 50%);
 }
 
 @keyframes sophisticatedFadeIn {
