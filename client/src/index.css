@@ -15,13 +15,16 @@
   --border: 0 0% 89.8%; /* Light Border */
   --input: 0 0% 89.8%; /* Input Border */
   
-  /* Monochrome Colors Only */
-  --primary: 0 0% 9%; /* Dark Gray */
+  /* Professional Colors with Strategic Accents */
+  --primary: 217 32% 17%; /* Professional Navy */
   --primary-foreground: 0 0% 98%; /* Almost White */
-  --secondary: 0 0% 96.1%; /* Light Gray */
-  --secondary-foreground: 0 0% 9%; /* Dark Gray */
-  --accent: 0 0% 96.1%; /* Light Gray */
-  --accent-foreground: 0 0% 9%; /* Dark Gray */
+  --secondary: 220 14% 96%; /* Cool Light Gray */
+  --secondary-foreground: 220 9% 46%; /* Medium Gray */
+  --accent: 142 76% 36%; /* Professional Green */
+  --accent-foreground: 0 0% 98%; /* Almost White */
+  --success: 142 76% 36%; /* Green for success */
+  --warning: 38 92% 50%; /* Orange for warnings */
+  --info: 199 89% 48%; /* Blue for info */
   --destructive: 0 84.2% 60.2%; /* Red for errors only */
   --destructive-foreground: 0 0% 98%; /* Almost White */
   --ring: 0 0% 3.9%; /* Almost Black */
@@ -41,13 +44,16 @@
   --border: 0 0% 14.9%; /* Dark Border */
   --input: 0 0% 14.9%; /* Dark Input */
   
-  /* Dark Monochrome Colors */
+  /* Dark Mode Professional Colors */
   --primary: 0 0% 98%; /* Almost White */
-  --primary-foreground: 0 0% 9%; /* Dark Gray */
-  --secondary: 0 0% 14.9%; /* Dark Gray */
+  --primary-foreground: 217 33% 8%; /* Dark Navy */
+  --secondary: 217 19% 18%; /* Dark Cool Gray */
   --secondary-foreground: 0 0% 98%; /* Almost White */
-  --accent: 0 0% 14.9%; /* Dark Gray */
+  --accent: 142 76% 36%; /* Professional Green */
   --accent-foreground: 0 0% 98%; /* Almost White */
+  --success: 142 76% 36%; /* Green for success */
+  --warning: 38 92% 50%; /* Orange for warnings */
+  --info: 199 89% 48%; /* Blue for info */
   --destructive: 0 62.8% 30.6%; /* Dark Red */
   --destructive-foreground: 0 0% 98%; /* Almost White */
   --ring: 0 0% 83.1%; /* Light Gray */
