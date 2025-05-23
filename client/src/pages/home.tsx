@@ -235,12 +235,7 @@ export default function Home() {
           </div>
         </div>
         
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-primary rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-primary rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
+
       </section>
 
       {/* Enhanced Course Carousel with Fade Effects */}
@@ -481,31 +476,12 @@ export default function Home() {
 
       {/* Why Choose Master in InfoSec - Professional Version */}
       <section className="py-24 bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
-        {/* Animated Background Elements */}
-        <div 
-          className="absolute top-20 left-10 w-40 h-40 bg-gradient-to-r from-blue-100 to-blue-200 dark:from-blue-900/20 dark:to-blue-800/10 rounded-full opacity-30 animate-pulse"
-          style={{
-            transform: `translate3d(${parallaxLayers.background.x * 0.4}px, ${parallaxLayers.background.y * 0.4}px, 0) rotate(${parallaxLayers.background.x * 0.1}deg)`,
-            animationDelay: '0s',
-            animationDuration: '4s'
-          }}
-        ></div>
-        <div 
-          className="absolute top-40 right-32 w-24 h-24 bg-gradient-to-r from-purple-100 to-purple-200 dark:from-purple-900/20 dark:to-purple-800/10 rounded-full opacity-25 animate-pulse"
-          style={{
-            transform: `translate3d(${parallaxLayers.midground.x * -0.3}px, ${parallaxLayers.midground.y * 0.3}px, 0) rotate(${parallaxLayers.midground.x * -0.05}deg)`,
-            animationDelay: '1s',
-            animationDuration: '3s'
-          }}
-        ></div>
-        <div 
-          className="absolute bottom-32 left-32 w-32 h-32 bg-gradient-to-r from-green-100 to-green-200 dark:from-green-900/20 dark:to-green-800/10 rounded-full opacity-20 animate-pulse"
-          style={{
-            transform: `translate3d(${parallaxLayers.floating.x * 0.2}px, ${parallaxLayers.floating.y * -0.2}px, 0) rotate(${parallaxLayers.floating.x * 0.08}deg)`,
-            animationDelay: '2s',
-            animationDuration: '5s'
-          }}
-        ></div>
+        {/* Minimalist Neutral Bubbles */}
+        <div className="bubble-lg" style={{ top: '12%', left: '8%', animationDelay: '0s' }}></div>
+        <div className="bubble-md" style={{ top: '30%', right: '20%', animationDelay: '3s' }}></div>
+        <div className="bubble-sm" style={{ bottom: '25%', left: '25%', animationDelay: '6s' }}></div>
+        <div className="bubble-md" style={{ bottom: '40%', right: '10%', animationDelay: '2s' }}></div>
+        <div className="bubble-sm" style={{ top: '50%', left: '15%', animationDelay: '4s' }}></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           {/* Enhanced Header */}
