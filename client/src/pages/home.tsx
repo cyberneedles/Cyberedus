@@ -79,6 +79,19 @@ export default function Home() {
   // Get scroll position
   const scrollY = parallaxData.offset;
   
+  // Clean icon mapping function
+  const getCleanIcon = (course: any) => {
+    if (course.title.includes('Ethical Hacker') || course.title.includes('Cybersecurity')) return '🔒';
+    if (course.title.includes('Bug Bounty')) return '🔍';
+    if (course.title.includes('Java')) return '☕';
+    if (course.title.includes('Python')) return '🐍';
+    if (course.title.includes('Interview') || course.title.includes('Career')) return '🎯';
+    if (course.category === 'cybersecurity') return '🛡️';
+    if (course.category === 'development') return '💻';
+    if (course.category === 'career') return '📈';
+    return '📚';
+  };
+  
   const featuredCourses = courses.slice(0, 3);
   const featuredTestimonials = testimonials.slice(0, 3);
 
@@ -217,7 +230,7 @@ export default function Home() {
               >
                 <CardContent className="p-6 text-center">
                   <div className="text-2xl mb-4 text-slate-600 dark:text-slate-300">
-                    {course.icon}
+                    {getCleanIcon(course)}
                   </div>
                   
                   <h3 className="font-semibold text-lg mb-2 text-slate-900 dark:text-slate-100">
@@ -270,7 +283,7 @@ export default function Home() {
               >
                 <CardContent className="p-6 text-center">
                   <div className="text-2xl mb-4 text-slate-600 dark:text-slate-300">
-                    {course.icon}
+                    {getCleanIcon(course)}
                   </div>
                   
                   <h3 className="font-semibold text-lg mb-2 text-slate-900 dark:text-slate-100">
