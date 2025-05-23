@@ -198,14 +198,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Auto-Scrolling Course Carousel */}
+      {/* Clean Professional Course Carousel */}
       <section className="py-20 relative overflow-hidden">
         <div className="relative">
-          {/* Continuous Auto-Scroll Container */}
+          {/* Continuous Scroll Container */}
           <div 
-            className="flex gap-6 animate-scroll-left"
+            className="flex gap-6"
             style={{ 
-              width: 'calc(200% + 48px)', // Double width for seamless loop
+              width: 'calc(200% + 48px)',
               animation: 'scroll-left 45s linear infinite'
             }}
           >
@@ -213,73 +213,51 @@ export default function Home() {
             {courses.map((course, index) => (
               <Card 
                 key={`first-${course.id}`}
-                className="group cursor-pointer border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:shadow-lg transition-all duration-300 min-w-[320px] max-w-[320px] relative overflow-hidden flex-shrink-0"
+                className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 min-w-[320px] max-w-[320px] flex-shrink-0"
               >
-                {/* Clean Professional Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-50/30 to-white/30 dark:from-slate-700/30 dark:to-slate-600/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                <CardContent className="p-6 text-center relative z-10">
-                  <div className="text-4xl mb-4 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                <CardContent className="p-6 text-center">
+                  <div className="text-2xl mb-4 text-slate-600 dark:text-slate-300">
                     {course.icon}
                   </div>
                   
-                  <h3 className="font-bold text-lg mb-2 text-foreground group-hover:text-primary transition-colors duration-300">
+                  <h3 className="font-semibold text-lg mb-2 text-slate-900 dark:text-slate-100">
                     {course.title}
                   </h3>
                   
-                  <div className={`text-sm font-medium mb-4 px-3 py-1 rounded-full inline-block transition-all duration-300 ${
-                    course.level === 'beginner' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                    course.level === 'intermediate' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                    'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                  }`}>
+                  <div className="text-xs font-medium mb-4 px-3 py-1 rounded-md inline-block bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
                     {course.level}
                   </div>
                   
-                  {/* Animated Progress Bar */}
-                  <div className="relative h-3 bg-secondary rounded-full overflow-hidden mb-4">
+                  {/* Clean Progress Bar */}
+                  <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-md overflow-hidden mb-4">
                     <div 
-                      className={`absolute left-0 top-0 h-full rounded-full transition-all duration-1000 ease-out ${
-                        index % 4 === 0 ? 'bg-gradient-to-r from-blue-500 to-purple-500' :
-                        index % 4 === 1 ? 'bg-gradient-to-r from-green-500 to-teal-500' :
-                        index % 4 === 2 ? 'bg-gradient-to-r from-orange-500 to-red-500' :
-                        'bg-gradient-to-r from-violet-500 to-indigo-500'
-                      }`}
+                      className="absolute left-0 top-0 h-full bg-slate-600 dark:bg-slate-400 rounded-md"
                       style={{ width: `${75 + (index * 3)}%` }}
-                    >
-                      <div className="absolute inset-0 bg-white/30 rounded-full animate-pulse group-hover:animate-none group-hover:bg-white/50"></div>
-                    </div>
+                    ></div>
                   </div>
                   
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
                     {course.description}
                   </p>
                   
-                  {/* Course Features */}
+                  {/* Clean Course Features */}
                   {course.features && course.features.length > 0 && (
                     <div className="space-y-2 mb-4">
                       {course.features.slice(0, 2).map((feature, idx) => (
                         <div 
                           key={idx}
-                          className="text-xs bg-primary/10 text-primary px-3 py-2 rounded-full inline-block mx-1 transition-all duration-300 hover:bg-primary/20 hover:scale-105"
+                          className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-md inline-block mx-1"
                         >
-                          ⚡ {feature}
+                          {feature}
                         </div>
                       ))}
                     </div>
                   )}
                   
                   {/* Duration */}
-                  <div className="mt-4 pt-4 border-t border-border text-center">
-                    <span className="text-sm text-muted-foreground">{course.duration}</span>
+                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-center">
+                    <span className="text-sm text-slate-600 dark:text-slate-400">{course.duration}</span>
                   </div>
-                  
-                  {/* Hover Glow Effect */}
-                  <div className={`absolute -inset-1 rounded-lg blur opacity-0 group-hover:opacity-20 transition-opacity duration-500 -z-10 ${
-                    index % 4 === 0 ? 'bg-gradient-to-r from-blue-500 to-purple-500' :
-                    index % 4 === 1 ? 'bg-gradient-to-r from-green-500 to-teal-500' :
-                    index % 4 === 2 ? 'bg-gradient-to-r from-orange-500 to-red-500' :
-                    'bg-gradient-to-r from-violet-500 to-indigo-500'
-                  }`}></div>
                 </CardContent>
               </Card>
             ))}
@@ -288,85 +266,51 @@ export default function Home() {
             {courses.map((course, index) => (
               <Card 
                 key={`second-${course.id}`}
-                className="group cursor-pointer glass-morphism hover-lift border-primary/20 transition-all duration-500 min-w-[320px] max-w-[320px] relative overflow-hidden flex-shrink-0"
+                className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 min-w-[320px] max-w-[320px] flex-shrink-0"
               >
-                {/* Animated Background Pattern */}
-                <div className="absolute inset-0 opacity-5 text-4xl overflow-hidden pointer-events-none">
-                  <div className="absolute transform transition-transform duration-1000 group-hover:scale-110 group-hover:rotate-12">
-                    {course.icon}{course.icon}{course.icon}
-                  </div>
-                </div>
-
-                {/* Dynamic Gradient Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${
-                  index % 4 === 0 ? 'from-blue-500/10 to-purple-500/10' :
-                  index % 4 === 1 ? 'from-green-500/10 to-teal-500/10' :
-                  index % 4 === 2 ? 'from-orange-500/10 to-red-500/10' :
-                  'from-violet-500/10 to-indigo-500/10'
-                } opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
-                
-                <CardContent className="p-6 text-center relative z-10">
-                  <div className="text-4xl mb-4 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                <CardContent className="p-6 text-center">
+                  <div className="text-2xl mb-4 text-slate-600 dark:text-slate-300">
                     {course.icon}
                   </div>
                   
-                  <h3 className="font-bold text-lg mb-2 text-foreground group-hover:text-primary transition-colors duration-300">
+                  <h3 className="font-semibold text-lg mb-2 text-slate-900 dark:text-slate-100">
                     {course.title}
                   </h3>
                   
-                  <div className={`text-sm font-medium mb-4 px-3 py-1 rounded-full inline-block transition-all duration-300 ${
-                    course.level === 'beginner' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
-                    course.level === 'intermediate' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                    'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                  }`}>
+                  <div className="text-xs font-medium mb-4 px-3 py-1 rounded-md inline-block bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
                     {course.level}
                   </div>
                   
-                  {/* Animated Progress Bar */}
-                  <div className="relative h-3 bg-secondary rounded-full overflow-hidden mb-4">
+                  {/* Clean Progress Bar */}
+                  <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-md overflow-hidden mb-4">
                     <div 
-                      className={`absolute left-0 top-0 h-full rounded-full transition-all duration-1000 ease-out ${
-                        index % 4 === 0 ? 'bg-gradient-to-r from-blue-500 to-purple-500' :
-                        index % 4 === 1 ? 'bg-gradient-to-r from-green-500 to-teal-500' :
-                        index % 4 === 2 ? 'bg-gradient-to-r from-orange-500 to-red-500' :
-                        'bg-gradient-to-r from-violet-500 to-indigo-500'
-                      }`}
+                      className="absolute left-0 top-0 h-full bg-slate-600 dark:bg-slate-400 rounded-md"
                       style={{ width: `${75 + (index * 3)}%` }}
-                    >
-                      <div className="absolute inset-0 bg-white/30 rounded-full animate-pulse group-hover:animate-none group-hover:bg-white/50"></div>
-                    </div>
+                    ></div>
                   </div>
                   
-                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
                     {course.description}
                   </p>
                   
-                  {/* Course Features */}
+                  {/* Clean Course Features */}
                   {course.features && course.features.length > 0 && (
                     <div className="space-y-2 mb-4">
                       {course.features.slice(0, 2).map((feature, idx) => (
                         <div 
                           key={idx}
-                          className="text-xs bg-primary/10 text-primary px-3 py-2 rounded-full inline-block mx-1 transition-all duration-300 hover:bg-primary/20 hover:scale-105"
+                          className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-md inline-block mx-1"
                         >
-                          ⚡ {feature}
+                          {feature}
                         </div>
                       ))}
                     </div>
                   )}
                   
                   {/* Duration */}
-                  <div className="mt-4 pt-4 border-t border-border text-center">
-                    <span className="text-sm text-muted-foreground">{course.duration}</span>
+                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-center">
+                    <span className="text-sm text-slate-600 dark:text-slate-400">{course.duration}</span>
                   </div>
-                  
-                  {/* Hover Glow Effect */}
-                  <div className={`absolute -inset-1 rounded-lg blur opacity-0 group-hover:opacity-20 transition-opacity duration-500 -z-10 ${
-                    index % 4 === 0 ? 'bg-gradient-to-r from-blue-500 to-purple-500' :
-                    index % 4 === 1 ? 'bg-gradient-to-r from-green-500 to-teal-500' :
-                    index % 4 === 2 ? 'bg-gradient-to-r from-orange-500 to-red-500' :
-                    'bg-gradient-to-r from-violet-500 to-indigo-500'
-                  }`}></div>
                 </CardContent>
               </Card>
             ))}
