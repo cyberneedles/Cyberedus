@@ -207,14 +207,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Clean Professional Course Carousel */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="relative">
+      {/* Enhanced Course Carousel with Fade Effects */}
+      <section className="py-20 relative">
+        <div className="max-w-7xl mx-auto relative overflow-hidden">
+          {/* Fade overlays for sides */}
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white dark:from-slate-900 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white dark:from-slate-900 to-transparent z-10 pointer-events-none"></div>
+          
           {/* Continuous Scroll Container */}
           <div 
-            className="flex gap-6"
+            className="flex gap-8"
             style={{ 
-              width: 'calc(200% + 48px)',
+              width: 'calc(200% + 64px)',
               animation: 'scroll-left 45s linear infinite'
             }}
           >
@@ -222,50 +226,69 @@ export default function Home() {
             {courses.map((course, index) => (
               <Card 
                 key={`first-${course.id}`}
-                className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 min-w-[320px] max-w-[320px] flex-shrink-0"
+                className="border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 min-w-[350px] max-w-[350px] flex-shrink-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] rounded-xl overflow-hidden"
               >
-                <CardContent className="p-6 text-center">
-                  <div className="text-2xl mb-4 text-slate-600 dark:text-slate-300">
-                    {getCleanIcon(course)}
-                  </div>
-                  
-                  <h3 className="font-semibold text-lg mb-2 text-slate-900 dark:text-slate-100">
-                    {course.title}
-                  </h3>
-                  
-                  <div className="text-xs font-medium mb-4 px-3 py-1 rounded-md inline-block bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
-                    {course.level}
-                  </div>
-                  
-                  {/* Clean Progress Bar */}
-                  <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-md overflow-hidden mb-4">
-                    <div 
-                      className="absolute left-0 top-0 h-full bg-slate-600 dark:bg-slate-400 rounded-md"
-                      style={{ width: `${75 + (index * 3)}%` }}
-                    ></div>
-                  </div>
-                  
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
-                    {course.description}
-                  </p>
-                  
-                  {/* Clean Course Features */}
-                  {course.features && course.features.length > 0 && (
-                    <div className="space-y-2 mb-4">
-                      {course.features.slice(0, 2).map((feature, idx) => (
-                        <div 
-                          key={idx}
-                          className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-md inline-block mx-1"
-                        >
-                          {feature}
-                        </div>
-                      ))}
+                <CardContent className="p-0">
+                  {/* Header with Icon and Level */}
+                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 p-6 text-center">
+                    <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                      <span className="text-3xl">{getCleanIcon(course)}</span>
                     </div>
-                  )}
+                    
+                    <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-slate-100">
+                      {course.title}
+                    </h3>
+                    
+                    <div className={`text-xs font-semibold mb-3 px-4 py-2 rounded-full inline-block shadow-sm ${
+                      course.level === 'beginner' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                      course.level === 'intermediate' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
+                      'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                    }`}>
+                      {course.level.charAt(0).toUpperCase() + course.level.slice(1)}
+                    </div>
+                  </div>
                   
-                  {/* Duration */}
-                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-center">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">{course.duration}</span>
+                  {/* Content */}
+                  <div className="p-6">
+                    {/* Enhanced Progress Bar */}
+                    <div className="relative h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mb-4 shadow-inner">
+                      <div 
+                        className={`absolute left-0 top-0 h-full rounded-full transition-all duration-1000 ${
+                          course.level === 'beginner' ? 'bg-gradient-to-r from-green-400 to-green-600' :
+                          course.level === 'intermediate' ? 'bg-gradient-to-r from-blue-400 to-blue-600' :
+                          'bg-gradient-to-r from-purple-400 to-purple-600'
+                        }`}
+                        style={{ width: `${75 + (index * 3)}%` }}
+                      >
+                        <div className="absolute inset-0 bg-white/20 rounded-full"></div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed line-clamp-3">
+                      {course.description}
+                    </p>
+                    
+                    {/* Enhanced Course Features */}
+                    {course.features && course.features.length > 0 && (
+                      <div className="space-y-2 mb-4">
+                        {course.features.slice(0, 2).map((feature, idx) => (
+                          <div 
+                            key={idx}
+                            className="text-xs bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-700 dark:to-slate-600 text-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg inline-block mx-1 shadow-sm border border-slate-200/50 dark:border-slate-600/50"
+                          >
+                            ✓ {feature}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Duration with Icon */}
+                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="text-slate-500 dark:text-slate-400">🕐</span>
+                        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{course.duration}</span>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -275,50 +298,69 @@ export default function Home() {
             {courses.map((course, index) => (
               <Card 
                 key={`second-${course.id}`}
-                className="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 min-w-[320px] max-w-[320px] flex-shrink-0"
+                className="border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-800 min-w-[350px] max-w-[350px] flex-shrink-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] rounded-xl overflow-hidden"
               >
-                <CardContent className="p-6 text-center">
-                  <div className="text-2xl mb-4 text-slate-600 dark:text-slate-300">
-                    {getCleanIcon(course)}
-                  </div>
-                  
-                  <h3 className="font-semibold text-lg mb-2 text-slate-900 dark:text-slate-100">
-                    {course.title}
-                  </h3>
-                  
-                  <div className="text-xs font-medium mb-4 px-3 py-1 rounded-md inline-block bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300">
-                    {course.level}
-                  </div>
-                  
-                  {/* Clean Progress Bar */}
-                  <div className="relative h-2 bg-slate-200 dark:bg-slate-700 rounded-md overflow-hidden mb-4">
-                    <div 
-                      className="absolute left-0 top-0 h-full bg-slate-600 dark:bg-slate-400 rounded-md"
-                      style={{ width: `${75 + (index * 3)}%` }}
-                    ></div>
-                  </div>
-                  
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
-                    {course.description}
-                  </p>
-                  
-                  {/* Clean Course Features */}
-                  {course.features && course.features.length > 0 && (
-                    <div className="space-y-2 mb-4">
-                      {course.features.slice(0, 2).map((feature, idx) => (
-                        <div 
-                          key={idx}
-                          className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-3 py-1 rounded-md inline-block mx-1"
-                        >
-                          {feature}
-                        </div>
-                      ))}
+                <CardContent className="p-0">
+                  {/* Header with Icon and Level */}
+                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 p-6 text-center">
+                    <div className="w-16 h-16 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-md">
+                      <span className="text-3xl">{getCleanIcon(course)}</span>
                     </div>
-                  )}
+                    
+                    <h3 className="font-bold text-xl mb-3 text-slate-900 dark:text-slate-100">
+                      {course.title}
+                    </h3>
+                    
+                    <div className={`text-xs font-semibold mb-3 px-4 py-2 rounded-full inline-block shadow-sm ${
+                      course.level === 'beginner' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                      course.level === 'intermediate' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' :
+                      'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400'
+                    }`}>
+                      {course.level.charAt(0).toUpperCase() + course.level.slice(1)}
+                    </div>
+                  </div>
                   
-                  {/* Duration */}
-                  <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-center">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">{course.duration}</span>
+                  {/* Content */}
+                  <div className="p-6">
+                    {/* Enhanced Progress Bar */}
+                    <div className="relative h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mb-4 shadow-inner">
+                      <div 
+                        className={`absolute left-0 top-0 h-full rounded-full transition-all duration-1000 ${
+                          course.level === 'beginner' ? 'bg-gradient-to-r from-green-400 to-green-600' :
+                          course.level === 'intermediate' ? 'bg-gradient-to-r from-blue-400 to-blue-600' :
+                          'bg-gradient-to-r from-purple-400 to-purple-600'
+                        }`}
+                        style={{ width: `${75 + (index * 3)}%` }}
+                      >
+                        <div className="absolute inset-0 bg-white/20 rounded-full"></div>
+                      </div>
+                    </div>
+                    
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed line-clamp-3">
+                      {course.description}
+                    </p>
+                    
+                    {/* Enhanced Course Features */}
+                    {course.features && course.features.length > 0 && (
+                      <div className="space-y-2 mb-4">
+                        {course.features.slice(0, 2).map((feature, idx) => (
+                          <div 
+                            key={idx}
+                            className="text-xs bg-gradient-to-r from-slate-100 to-slate-50 dark:from-slate-700 dark:to-slate-600 text-slate-700 dark:text-slate-300 px-3 py-2 rounded-lg inline-block mx-1 shadow-sm border border-slate-200/50 dark:border-slate-600/50"
+                          >
+                            ✓ {feature}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Duration with Icon */}
+                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        <span className="text-slate-500 dark:text-slate-400">🕐</span>
+                        <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{course.duration}</span>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
