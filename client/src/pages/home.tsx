@@ -167,65 +167,164 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mouse-Controlled Scrolling Course Cards */}
+      {/* Mouse-Controlled Scrolling Specialization Cards */}
       <section className="py-20 relative overflow-hidden">
         <div className="max-w-full">
           <div 
-            className="flex gap-8 transition-transform duration-300 ease-out px-8"
+            className="flex gap-6 transition-transform duration-500 ease-out px-8"
             style={{ 
-              transform: `translateX(${mousePosition.x * -0.5}px)`,
+              transform: `translateX(${mousePosition.x * -0.8}px)`,
               width: 'fit-content'
             }}
           >
-            {featuredCourses.map((course, index) => (
+            {[
+              {
+                icon: "🛡️",
+                specialty: "Certified Ethical Hacker (CEH)",
+                level: "beginner",
+                importance: "EC Council certified program covering cyber threats, penetration testing, and security tools. Perfect for beginners.",
+                highlights: ["EC Council Certification", "Hands-on Labs"],
+                gradient: "from-blue-500 via-purple-500 to-indigo-600",
+                bgPattern: "🔒🔍🛡️"
+              },
+              {
+                icon: "🧠",
+                specialty: "Advanced Cybersecurity Mastery",
+                level: "intermediate", 
+                importance: "Deep dive into SIEM, threat hunting, cloud security, and red teaming for cybersecurity professionals.",
+                highlights: ["SIEM Training", "Threat Hunting"],
+                gradient: "from-emerald-500 via-teal-500 to-cyan-600",
+                bgPattern: "⚡🎯🔥"
+              },
+              {
+                icon: "🐛",
+                specialty: "Bug Bounty Program",
+                level: "intermediate",
+                importance: "Learn ethical bug hunting with real-world vulnerability simulation on HackerOne & Bugcrowd platforms.",
+                highlights: ["HackerOne Platform", "Bugcrowd Training"],
+                gradient: "from-orange-500 via-red-500 to-pink-600",
+                bgPattern: "🎯💰🏆"
+              },
+              {
+                icon: "☁️",
+                specialty: "Cloud Security Architect",
+                level: "advanced",
+                importance: "Master AWS, Azure, and GCP security. Design secure cloud infrastructures and implement zero-trust architecture.",
+                highlights: ["Multi-Cloud Expertise", "Zero-Trust Design"],
+                gradient: "from-violet-500 via-purple-500 to-indigo-600",
+                bgPattern: "☁️🔐🏗️"
+              },
+              {
+                icon: "🔴",
+                specialty: "Red Team Operations",
+                level: "advanced",
+                importance: "Elite penetration testing, social engineering, and advanced persistent threat simulation for enterprise security.",
+                highlights: ["APT Simulation", "Social Engineering"],
+                gradient: "from-red-500 via-rose-500 to-pink-600",
+                bgPattern: "⚔️🎭🔥"
+              },
+              {
+                icon: "🔍",
+                specialty: "Digital Forensics Expert",
+                level: "intermediate",
+                importance: "Investigate cyber crimes, recover digital evidence, and master forensic tools for incident response teams.",
+                highlights: ["Evidence Recovery", "Incident Response"],
+                gradient: "from-slate-500 via-gray-600 to-zinc-700",
+                bgPattern: "🔬📱💾"
+              }
+            ].map((specialty, index) => (
               <Card 
-                key={course.id} 
-                className="group cursor-pointer glass-morphism hover-lift border-primary/20 transition-all duration-500 min-w-[320px] max-w-[320px]"
+                key={index} 
+                className="group cursor-pointer glass-morphism hover-lift border-primary/20 transition-all duration-700 min-w-[350px] max-w-[350px] relative overflow-hidden"
                 style={{ 
-                  transform: `translateY(${mousePosition.y * 0.1}px) scale(${1 + mousePosition.x * 0.0001})`
+                  transform: `translateY(${Math.sin((mousePosition.x + index * 100) * 0.01) * 20}px) 
+                              rotateY(${mousePosition.x * 0.02}deg) 
+                              scale(${1 + Math.sin((mousePosition.x + index * 50) * 0.005) * 0.05})`,
+                  transformStyle: 'preserve-3d'
                 }}
               >
-                <CardContent className="p-6 text-center">
-                  <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                    {course.icon}
+                {/* Animated Background Pattern */}
+                <div className="absolute inset-0 opacity-5 text-6xl overflow-hidden pointer-events-none">
+                  <div 
+                    className="absolute transform transition-transform duration-1000 group-hover:scale-110"
+                    style={{ 
+                      transform: `translate(${mousePosition.x * 0.02}px, ${mousePosition.y * 0.02}px) rotate(${mousePosition.x * 0.1}deg)`
+                    }}
+                  >
+                    {specialty.bgPattern}
                   </div>
-                  <h3 className="font-bold text-lg mb-2 text-foreground">{course.title}</h3>
-                  <div className="text-sm text-muted-foreground mb-4">{course.level}</div>
+                </div>
+
+                {/* Gradient Overlay */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${specialty.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
+                
+                <CardContent className="p-6 text-center relative z-10">
+                  <div 
+                    className="text-5xl mb-4 transition-all duration-500 group-hover:scale-125 group-hover:rotate-12"
+                    style={{ 
+                      filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))',
+                      transform: `rotateX(${mousePosition.y * 0.02}deg)`
+                    }}
+                  >
+                    {specialty.icon}
+                  </div>
                   
-                  {/* Interactive Progress Bar */}
-                  <div className="relative h-2 bg-secondary rounded-full overflow-hidden mb-3">
+                  <h3 className="font-bold text-lg mb-2 text-foreground group-hover:text-primary transition-colors duration-300">
+                    {specialty.specialty}
+                  </h3>
+                  
+                  <div className={`text-sm font-medium mb-4 px-3 py-1 rounded-full inline-block transition-all duration-300 ${
+                    specialty.level === 'beginner' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' :
+                    specialty.level === 'intermediate' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                    'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                  }`}>
+                    {specialty.level}
+                  </div>
+                  
+                  {/* Animated Progress Bars */}
+                  <div className="relative h-3 bg-secondary rounded-full overflow-hidden mb-4 group">
                     <div 
-                      className="absolute left-0 top-0 h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-1000 ease-out group-hover:from-green-500 group-hover:to-blue-500"
-                      style={{ width: `${85 + (index * 5)}%` }}
-                    ></div>
-                  </div>
-                  
-                  <p className="text-xs text-muted-foreground mb-4">{course.description}</p>
-                  
-                  {/* Course Features */}
-                  {course.features && course.features.length > 0 && (
-                    <div className="text-xs text-primary">
-                      ⚡ {course.features.slice(0, 2).join(' • ')}
+                      className={`absolute left-0 top-0 h-full bg-gradient-to-r ${specialty.gradient} rounded-full transition-all duration-1000 ease-out`}
+                      style={{ 
+                        width: `${75 + (index * 4)}%`,
+                        transform: `translateX(${mousePosition.x * 0.01}px)`
+                      }}
+                    >
+                      <div className="absolute inset-0 bg-white/30 rounded-full animate-pulse group-hover:animate-none group-hover:bg-white/50"></div>
                     </div>
-                  )}
-                  
-                  {/* Duration & Price */}
-                  <div className="mt-4 pt-4 border-t border-border flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">{course.duration}</span>
-                    {course.price && (
-                      <span className="text-lg font-bold text-primary">₹{course.price}</span>
-                    )}
                   </div>
+                  
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                    {specialty.importance}
+                  </p>
+                  
+                  {/* Key Highlights */}
+                  <div className="space-y-2 mb-4">
+                    {specialty.highlights.map((highlight, idx) => (
+                      <div 
+                        key={idx} 
+                        className="text-xs bg-primary/10 text-primary px-3 py-2 rounded-full inline-block mx-1 transition-all duration-300 hover:bg-primary/20 hover:scale-105"
+                        style={{ animationDelay: `${idx * 100}ms` }}
+                      >
+                        ⚡ {highlight}
+                      </div>
+                    ))}
+                  </div>
+                  
+                  {/* Interactive Glow Effect */}
+                  <div 
+                    className={`absolute -inset-1 bg-gradient-to-r ${specialty.gradient} rounded-lg blur opacity-0 group-hover:opacity-20 transition-opacity duration-500 -z-10`}
+                  ></div>
                 </CardContent>
               </Card>
             ))}
           </div>
         </div>
         
-        {/* Mouse Movement Indicator */}
+        {/* Enhanced Mouse Movement Indicator */}
         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center">
-          <p className="text-sm text-muted-foreground">Move your mouse to explore courses</p>
-          <div className="w-8 h-8 mx-auto mt-2 opacity-50">
+          <p className="text-sm text-muted-foreground animate-pulse">Move your mouse to explore specializations</p>
+          <div className="w-8 h-8 mx-auto mt-2 opacity-50 animate-bounce">
             <svg viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C8.69 2 6 4.69 6 8v8c0 3.31 2.69 6 6 6s6-2.69 6-6V8c0-3.31-2.69-6-6-6zm0 2c2.21 0 4 1.79 4 4v8c0 2.21-1.79 4-4 4s-4-1.79-4-4V8c0-2.21 1.79-4 4-4zm0 3v3l-1.5-1.5L12 6z"/>
             </svg>
