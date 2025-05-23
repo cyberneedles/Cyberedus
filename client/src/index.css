@@ -508,6 +508,29 @@
   }
 }
 
+@keyframes balloonFloat {
+  from {
+    opacity: 0;
+    transform: translateY(80px) scale(0.8);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.05);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes gentleBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
 /* Scroll reveal classes */
 .scroll-hidden {
   opacity: 0;
@@ -538,6 +561,14 @@
 
 .animate-slide-up {
   animation: slideInUp 1s ease-out forwards;
+}
+
+.animate-balloon-float {
+  animation: balloonFloat 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.animate-gentle-bounce {
+  animation: gentleBounce 2s ease-in-out infinite;
 }
 
 @keyframes sophisticatedFadeIn {

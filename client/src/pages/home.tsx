@@ -182,21 +182,21 @@ export default function Home() {
                 </Button>
               </div>
               
-              {/* Compact Rectangle Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8 scroll-animate" data-animation="scale-in" data-delay="600">
-                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm scroll-animate" data-animation="fade-up" data-delay="700">
+              {/* Compact Rectangle Stats with Balloon Animation */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 scroll-animate animate-gentle-bounce" data-animation="balloon-float" data-delay="700" style={{animationDelay: '0.2s'}}>
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     1200+
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Students<br/>Trained</div>
                 </div>
-                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm scroll-animate" data-animation="fade-up" data-delay="800">
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 scroll-animate animate-gentle-bounce" data-animation="balloon-float" data-delay="850" style={{animationDelay: '0.4s'}}>
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     95%
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Placement Rate</div>
                 </div>
-                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm scroll-animate" data-animation="fade-up" data-delay="900">
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 scroll-animate animate-gentle-bounce" data-animation="balloon-float" data-delay="1000" style={{animationDelay: '0.6s'}}>
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     40+
                   </div>
