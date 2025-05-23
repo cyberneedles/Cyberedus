@@ -53,12 +53,25 @@ export default function Home() {
       
       {/* Revolutionary Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Clean Minimal Elements */}
-        <div className="absolute inset-0 gradient-subtle opacity-30"></div>
-        <div className="absolute top-20 left-10 w-16 h-16 bg-muted rounded-full opacity-40"></div>
-        <div className="absolute top-40 right-20 w-12 h-12 bg-border rounded-full opacity-60"></div>
-        <div className="absolute bottom-32 left-20 w-8 h-8 bg-muted rounded-full opacity-50"></div>
-        <div className="absolute bottom-20 right-10 w-20 h-20 bg-accent rounded-full opacity-30"></div>
+        {/* Subtle Background Grid */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
+        
+        {/* Animated Code Lines */}
+        <div className="absolute top-20 left-10 code-line opacity-20">
+          <div className="text-xs font-mono text-muted-foreground">
+            $ sudo nmap -sS target.com
+          </div>
+        </div>
+        <div className="absolute top-40 right-20 code-line opacity-20" style={{animationDelay: '2s'}}>
+          <div className="text-xs font-mono text-muted-foreground">
+            [+] Vulnerability detected
+          </div>
+        </div>
+        <div className="absolute bottom-32 left-20 code-line opacity-20" style={{animationDelay: '4s'}}>
+          <div className="text-xs font-mono text-muted-foreground">
+            Firewall: ACTIVE
+          </div>
+        </div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
@@ -89,33 +102,38 @@ export default function Home() {
                 </Button>
               </div>
               
-              {/* Clean Stats */}
+              {/* Professional Stats */}
               <div className="grid grid-cols-3 gap-8 pt-8">
-                <div className="text-center p-6 border border-border rounded-lg hover-lift">
-                  <div className="text-4xl font-bold text-foreground mb-2">1200+</div>
+                <div className="text-center p-6 border border-border rounded-lg card-professional">
+                  <div className="text-4xl font-bold text-foreground mb-2 counter-animation">1200+</div>
                   <div className="text-sm text-muted-foreground font-medium">Students Trained</div>
-                  <div className="w-full h-px bg-border mt-3"></div>
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mt-3"></div>
                 </div>
-                <div className="text-center p-6 border border-border rounded-lg hover-lift">
-                  <div className="text-4xl font-bold text-foreground mb-2">95%</div>
+                <div className="text-center p-6 border border-border rounded-lg card-professional">
+                  <div className="text-4xl font-bold text-foreground mb-2 counter-animation">95%</div>
                   <div className="text-sm text-muted-foreground font-medium">Placement Rate</div>
-                  <div className="w-full h-px bg-border mt-3"></div>
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mt-3"></div>
                 </div>
-                <div className="text-center p-6 border border-border rounded-lg hover-lift">
-                  <div className="text-4xl font-bold text-foreground mb-2">40+</div>
+                <div className="text-center p-6 border border-border rounded-lg card-professional">
+                  <div className="text-4xl font-bold text-foreground mb-2 counter-animation">40+</div>
                   <div className="text-sm text-muted-foreground font-medium">Industry Partners</div>
-                  <div className="w-full h-px bg-border mt-3"></div>
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mt-3"></div>
                 </div>
               </div>
             </div>
             
             <div className="mt-16 lg:mt-0 relative">
-              <div className="relative border border-border rounded-lg p-8">
+              <div className="relative border border-border rounded-lg p-8 card-professional">
                 <img 
                   src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600" 
                   alt="Professional cybersecurity training environment" 
-                  className="rounded-lg w-full h-auto"
+                  className="rounded-lg w-full h-auto transition-transform duration-500"
                 />
+                {/* Subtle Terminal Overlay */}
+                <div className="absolute top-12 left-12 bg-black/80 rounded p-2 text-green-400 font-mono text-xs opacity-80">
+                  <div>root@security:~$ whoami</div>
+                  <div className="text-white">ethical_hacker</div>
+                </div>
               </div>
             </div>
           </div>
