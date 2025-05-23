@@ -209,20 +209,32 @@ export default function Home() {
 
       {/* Enhanced Course Carousel with Fade Effects */}
       <section className="py-20 relative">
-        <div className="max-w-7xl mx-auto relative overflow-hidden">
-          {/* Fade overlays for sides */}
-          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white dark:from-slate-900 to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white dark:from-slate-900 to-transparent z-10 pointer-events-none"></div>
-          
-          {/* Continuous Scroll Container */}
-          <div 
-            className="flex gap-8"
-            style={{ 
-              width: 'calc(200% + 64px)',
-              animation: 'scroll-left 45s linear infinite'
-            }}
-          >
-            {/* First set of courses */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
+              Our Popular Courses
+            </h2>
+            <p className="text-xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto">
+              Discover industry-leading courses designed to accelerate your career
+            </p>
+          </div>
+
+          {/* Carousel Container */}
+          <div className="relative overflow-hidden rounded-xl">
+            {/* Fade overlays for sides */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white dark:from-slate-900 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white dark:from-slate-900 to-transparent z-10 pointer-events-none"></div>
+            
+            {/* Continuous Scroll Container */}
+            <div 
+              className="flex gap-6 py-8"
+              style={{ 
+                width: 'calc(200% + 48px)',
+                animation: 'scroll-left 45s linear infinite'
+              }}
+            >
+              {/* First set of courses */}
             {courses.map((course, index) => (
               <Card 
                 key={`first-${course.id}`}
@@ -365,6 +377,18 @@ export default function Home() {
                 </CardContent>
               </Card>
             ))}
+            </div>
+          </div>
+
+          {/* Explore Courses Button */}
+          <div className="text-center mt-12">
+            <Button 
+              size="lg"
+              className="bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              onClick={() => handleCTAClick('explore_courses')}
+            >
+              Explore All Courses
+            </Button>
           </div>
         </div>
       </section>
