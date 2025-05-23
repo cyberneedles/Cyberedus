@@ -53,24 +53,24 @@ export default function Home() {
       
       {/* Revolutionary Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 gradient-cyber opacity-5"></div>
-        <div className="absolute top-20 left-10 w-20 h-20 gradient-cyber rounded-full opacity-30 floating"></div>
-        <div className="absolute top-40 right-20 w-16 h-16 bg-secondary/30 rounded-full floating-delay"></div>
-        <div className="absolute bottom-32 left-20 w-12 h-12 bg-accent/30 rounded-full floating"></div>
-        <div className="absolute bottom-20 right-10 w-24 h-24 gradient-cyber rounded-full opacity-20 floating-delay"></div>
+        {/* Clean Minimal Elements */}
+        <div className="absolute inset-0 gradient-subtle opacity-30"></div>
+        <div className="absolute top-20 left-10 w-16 h-16 bg-muted rounded-full opacity-40"></div>
+        <div className="absolute top-40 right-20 w-12 h-12 bg-border rounded-full opacity-60"></div>
+        <div className="absolute bottom-32 left-20 w-8 h-8 bg-muted rounded-full opacity-50"></div>
+        <div className="absolute bottom-20 right-10 w-20 h-20 bg-accent rounded-full opacity-30"></div>
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div className="animate-fade-in">
-              <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight">
-                <span className="text-shimmer block mb-4">Become A</span>
-                <span className="gradient-cyber-text">Cyber Warrior</span>
+              <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight text-foreground">
+                <span className="block mb-4">Master</span>
+                <span className="text-primary">Cybersecurity</span>
               </h1>
               <p className="text-2xl text-muted-foreground mb-10 leading-relaxed">
-                Master the art of <span className="text-glow text-primary font-semibold">digital defense</span> with 
-                India's most advanced cybersecurity & development bootcamp. 
-                <span className="text-accent font-semibold"> 95% placement guarantee</span>
+                Professional cybersecurity and development training with 
+                <span className="text-foreground font-medium">hands-on experience</span> and 
+                <span className="text-foreground font-medium">industry certification</span>
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6 mb-12">
@@ -78,45 +78,44 @@ export default function Home() {
                   className="btn-primary text-lg px-10 py-4"
                   onClick={() => handleCTAClick("get_demo")}
                 >
-                  🚀 Launch Your Journey
+                  Start Learning
                 </Button>
                 <Button 
                   variant="outline" 
                   className="btn-secondary text-lg px-10 py-4"
                   onClick={() => handleCTAClick("connect_counsellor")}
                 >
-                  💬 Talk to Expert
+                  Schedule Consultation
                 </Button>
               </div>
               
-              {/* Revolutionary Stats */}
+              {/* Clean Stats */}
               <div className="grid grid-cols-3 gap-8 pt-8">
-                <div className="glass-morphism p-6 text-center hover-lift">
-                  <div className="text-4xl font-bold gradient-cyber-text mb-2">1200+</div>
-                  <div className="text-sm text-muted-foreground font-medium">Cyber Experts</div>
-                  <div className="w-full h-1 gradient-cyber rounded-full mt-3"></div>
+                <div className="text-center p-6 border border-border rounded-lg hover-lift">
+                  <div className="text-4xl font-bold text-foreground mb-2">1200+</div>
+                  <div className="text-sm text-muted-foreground font-medium">Students Trained</div>
+                  <div className="w-full h-px bg-border mt-3"></div>
                 </div>
-                <div className="glass-morphism p-6 text-center hover-lift pulse-glow">
-                  <div className="text-4xl font-bold gradient-cyber-text mb-2">95%</div>
+                <div className="text-center p-6 border border-border rounded-lg hover-lift">
+                  <div className="text-4xl font-bold text-foreground mb-2">95%</div>
                   <div className="text-sm text-muted-foreground font-medium">Placement Rate</div>
-                  <div className="w-full h-1 gradient-cyber rounded-full mt-3"></div>
+                  <div className="w-full h-px bg-border mt-3"></div>
                 </div>
-                <div className="glass-morphism p-6 text-center hover-lift">
-                  <div className="text-4xl font-bold gradient-cyber-text mb-2">40+</div>
-                  <div className="text-sm text-muted-foreground font-medium">Tech Giants</div>
-                  <div className="w-full h-1 gradient-cyber rounded-full mt-3"></div>
+                <div className="text-center p-6 border border-border rounded-lg hover-lift">
+                  <div className="text-4xl font-bold text-foreground mb-2">40+</div>
+                  <div className="text-sm text-muted-foreground font-medium">Industry Partners</div>
+                  <div className="w-full h-px bg-border mt-3"></div>
                 </div>
               </div>
             </div>
             
             <div className="mt-16 lg:mt-0 relative">
-              <div className="relative glass-morphism p-8 hover-glow">
+              <div className="relative border border-border rounded-lg p-8">
                 <img 
                   src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600" 
-                  alt="Elite cybersecurity training environment" 
-                  className="rounded-2xl w-full h-auto floating"
+                  alt="Professional cybersecurity training environment" 
+                  className="rounded-lg w-full h-auto"
                 />
-                <div className="absolute inset-0 gradient-cyber opacity-20 rounded-2xl"></div>
               </div>
             </div>
           </div>
