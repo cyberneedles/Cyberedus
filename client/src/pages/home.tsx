@@ -11,11 +11,47 @@ import { useQuery } from "@tanstack/react-query";
 import { Course, Testimonial } from "@shared/schema";
 import { useEffect, useRef, useState } from "react";
 import { useMouseParallax, useParallax } from "@/hooks/use-parallax";
+import { ScrollReveal, StaggerReveal } from "@/hooks/use-scroll-reveal";
 
 export default function Home() {
   const observerRef = useRef<IntersectionObserver>();
   const { mousePosition } = useMouseParallax();
   const parallaxData = useParallax();
+  
+  // Scroll reveal animation system
+  useEffect(() => {
+    const elements = document.querySelectorAll('.scroll-animate');
+    
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const element = entry.target as HTMLElement;
+            const delay = parseInt(element.dataset.delay || '0');
+            const animation = element.dataset.animation || 'fade-up';
+            
+            setTimeout(() => {
+              element.classList.remove('scroll-hidden');
+              element.classList.add('scroll-visible', `animate-${animation}`);
+            }, delay);
+            
+            observer.unobserve(element);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      }
+    );
+
+    elements.forEach((element) => {
+      element.classList.add('scroll-hidden');
+      observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, []);
   
   // Enhanced parallax tracking for different layers
   const [parallaxLayers, setParallaxLayers] = useState({
