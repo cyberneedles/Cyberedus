@@ -57,18 +57,18 @@ export default function Home() {
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
         
         {/* Animated Code Lines */}
-        <div className="absolute top-20 left-10 code-line opacity-20">
-          <div className="text-xs font-mono text-muted-foreground">
+        <div className="absolute top-20 left-10 code-line opacity-30">
+          <div className="text-xs font-mono text-info/70">
             $ sudo nmap -sS target.com
           </div>
         </div>
-        <div className="absolute top-40 right-20 code-line opacity-20" style={{animationDelay: '2s'}}>
-          <div className="text-xs font-mono text-muted-foreground">
+        <div className="absolute top-40 right-20 code-line opacity-30" style={{animationDelay: '2s'}}>
+          <div className="text-xs font-mono text-warning/70">
             [+] Vulnerability detected
           </div>
         </div>
-        <div className="absolute bottom-32 left-20 code-line opacity-20" style={{animationDelay: '4s'}}>
-          <div className="text-xs font-mono text-muted-foreground">
+        <div className="absolute bottom-32 left-20 code-line opacity-30" style={{animationDelay: '4s'}}>
+          <div className="text-xs font-mono text-success/70">
             Firewall: ACTIVE
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function Home() {
                   className="rounded-lg w-full h-auto transition-transform duration-500"
                 />
                 {/* Subtle Terminal Overlay */}
-                <div className="absolute top-12 left-12 bg-black/80 rounded p-2 text-green-400 font-mono text-xs opacity-80">
+                <div className="absolute top-12 left-12 bg-black/80 rounded p-2 text-success font-mono text-xs opacity-80">
                   <div>root@security:~$ whoami</div>
                   <div className="text-white">ethical_hacker</div>
                 </div>
