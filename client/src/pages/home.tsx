@@ -145,14 +145,14 @@ export default function Home() {
             <div className="mt-16 lg:mt-0 relative">
               <div className="relative border border-border rounded-lg p-8 card-professional">
                 <img 
-                  src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600" 
-                  alt="Professional cybersecurity training environment" 
+                  src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600" 
+                  alt="Cybersecurity expert working with advanced security systems" 
                   className="rounded-lg w-full h-auto transition-transform duration-500"
                 />
-                {/* Subtle Terminal Overlay */}
+                {/* InfoSec Terminal Overlay */}
                 <div className="absolute top-12 left-12 bg-black/80 rounded p-2 text-success font-mono text-xs opacity-80">
-                  <div>root@security:~$ whoami</div>
-                  <div className="text-white">ethical_hacker</div>
+                  <div>root@infosec:~$ nmap -sS target</div>
+                  <div className="text-red-400">[!] Vulnerabilities found</div>
                 </div>
               </div>
             </div>
@@ -167,99 +167,70 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Interactive Cybersecurity Skills Hub */}
-      <section className="py-32 relative theme-transition section-cyber overflow-hidden">
+      {/* Auto-Scrolling Interactive Cards */}
+      <section className="py-20 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20 animate-on-scroll">
-            <h2 className="text-5xl lg:text-6xl font-bold mb-8">
-              <span className="gradient-cyber-text text-reveal">Interactive</span> Skills Lab
-            </h2>
-            <p className="text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed slide-in-left">
-              Experience hands-on cybersecurity training with our <span className="text-primary font-semibold">live simulation environment</span>
-            </p>
-          </div>
-          
-          {/* Interactive Terminal Simulator */}
-          <div className="relative max-w-4xl mx-auto mb-20">
-            <div className="bg-black/90 rounded-xl border border-primary/20 overflow-hidden backdrop-blur-sm">
-              {/* Terminal Header */}
-              <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/10 to-transparent border-b border-primary/20">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
-                </div>
-                <div className="text-sm text-primary font-mono">CyberEdus Terminal v2.0</div>
-              </div>
-              
-              {/* Terminal Content */}
-              <div className="p-6 font-mono text-sm space-y-2 min-h-[300px]">
-                <div className="text-primary">root@cyberedus:~$ whoami</div>
-                <div className="text-white">ethical_hacker</div>
-                <div className="text-primary">root@cyberedus:~$ nmap -sS 192.168.1.0/24</div>
-                <div className="text-green-400">Starting Nmap scan...</div>
-                <div className="text-green-400">Host is up (0.001s latency).</div>
-                <div className="text-yellow-400">PORT     STATE SERVICE</div>
-                <div className="text-yellow-400">22/tcp   open  ssh</div>
-                <div className="text-yellow-400">80/tcp   open  http</div>
-                <div className="text-yellow-400">443/tcp  open  https</div>
-                <div className="text-red-400">[!] Vulnerability detected on port 80</div>
-                <div className="text-primary">root@cyberedus:~$ <span className="animate-pulse">_</span></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Skill Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[
-              { icon: "🔐", title: "Penetration Testing", progress: 85, color: "from-red-500 to-pink-500" },
-              { icon: "🛡️", title: "Network Security", progress: 92, color: "from-blue-500 to-cyan-500" },
-              { icon: "🔍", title: "Digital Forensics", progress: 78, color: "from-green-500 to-emerald-500" },
-              { icon: "⚡", title: "Incident Response", progress: 88, color: "from-purple-500 to-violet-500" }
-            ].map((skill, index) => (
-              <div key={index} className="group cursor-pointer">
-                <Card className="glass-morphism hover-lift border-primary/20 transition-all duration-300 group-hover:border-primary/40">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                      {skill.icon}
-                    </div>
-                    <h3 className="font-bold text-lg mb-4 text-foreground">{skill.title}</h3>
-                    
-                    {/* Interactive Progress Bar */}
-                    <div className="relative h-2 bg-secondary rounded-full overflow-hidden mb-3">
-                      <div 
-                        className={`absolute left-0 top-0 h-full bg-gradient-to-r ${skill.color} rounded-full transition-all duration-1000 ease-out`}
-                        style={{ width: `${skill.progress}%` }}
-                      ></div>
-                    </div>
-                    <div className="text-sm text-muted-foreground">{skill.progress}% Mastery</div>
-                    
-                    <Button className="mt-4 btn-premium text-xs px-4 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      Start Training
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
+              { 
+                icon: "📱", 
+                title: "iOS Security", 
+                theme: "iOS",
+                color: "from-blue-500 to-indigo-600",
+                feature: "Advanced Mobile Penetration"
+              },
+              { 
+                icon: "🐧", 
+                title: "Linux Mastery", 
+                theme: "Terminal",
+                color: "from-green-500 to-emerald-600",
+                feature: "Command Line Expertise"
+              },
+              { 
+                icon: "🔥", 
+                title: "Ethical Hacking", 
+                theme: "Penetration",
+                color: "from-red-500 to-rose-600",
+                feature: "Real-world Attack Simulation"
+              },
+              { 
+                icon: "🛡️", 
+                title: "Cloud Security", 
+                theme: "AWS/Azure",
+                color: "from-purple-500 to-violet-600",
+                feature: "Infrastructure Protection"
+              }
+            ].map((item, index) => (
+              <Card 
+                key={index} 
+                className="group cursor-pointer glass-morphism hover-lift border-primary/20 transition-all duration-500 animate-on-scroll"
+                style={{ animationDelay: `${index * 0.2}s` }}
+              >
+                <CardContent className="p-6 text-center">
+                  <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                    {item.icon}
+                  </div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">{item.title}</h3>
+                  <div className="text-sm text-muted-foreground mb-4">{item.theme}</div>
+                  
+                  {/* Interactive Element */}
+                  <div className={`h-2 bg-gradient-to-r ${item.color} rounded-full mb-3 opacity-70 group-hover:opacity-100 transition-opacity`}></div>
+                  
+                  <p className="text-xs text-muted-foreground">{item.feature}</p>
+                </CardContent>
+              </Card>
             ))}
-          </div>
-
-          {/* Live Simulation CTA */}
-          <div className="text-center animate-on-scroll">
-            <div className="relative inline-block">
-              <Button className="btn-primary text-lg px-12 py-4 relative overflow-hidden group">
-                <span className="relative z-10">Launch Live Lab Environment</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-              </Button>
-              <div className="absolute -top-2 -right-2 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
-            </div>
-            <p className="text-sm text-muted-foreground mt-4">🎯 Real-time simulations • No setup required • Instant access</p>
           </div>
         </div>
       </section>
 
-      {/* Quiz Section */}
+      {/* Test Your Knowledge */}
       <section className="py-20 bg-muted/50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold text-foreground mb-4">Test Your Knowledge</h2>
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Take our quick assessment to see which course is perfect for you
+          </p>
           <QuizComponent />
         </div>
       </section>
