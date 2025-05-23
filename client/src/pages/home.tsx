@@ -183,20 +183,20 @@ export default function Home() {
               </div>
               
               {/* Compact Rectangle Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
-                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8 scroll-animate" data-animation="scale-in" data-delay="600">
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm scroll-animate" data-animation="fade-up" data-delay="700">
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     1200+
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Students<br/>Trained</div>
                 </div>
-                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm scroll-animate" data-animation="fade-up" data-delay="800">
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     95%
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Placement Rate</div>
                 </div>
-                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm">
+                <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm scroll-animate" data-animation="fade-up" data-delay="900">
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
                     40+
                   </div>
@@ -247,7 +247,7 @@ export default function Home() {
       <section className="py-20 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 scroll-animate" data-animation="fade-up" data-delay="200">
             <h2 className="text-4xl font-bold text-slate-900 dark:text-slate-100 mb-4">
               Our Popular Courses
             </h2>
@@ -417,7 +417,7 @@ export default function Home() {
           </div>
 
           {/* Explore Courses Button */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-12 scroll-animate" data-animation="scale-in" data-delay="400">
             <Button 
               size="lg"
               className="bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
