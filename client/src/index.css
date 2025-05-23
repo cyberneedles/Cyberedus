@@ -3,48 +3,64 @@
 @tailwind utilities;
 
 :root {
-  --background: 210 11% 98%; /* #F5F7FA */
-  --foreground: 220 13% 18%; /* #1E293B */
-  --muted: 210 11% 96%; /* #F1F5F9 */
-  --muted-foreground: 215 16% 47%; /* #64748B */
-  --popover: 210 11% 98%; /* #F5F7FA */
-  --popover-foreground: 220 13% 18%; /* #1E293B */
-  --card: 0 0% 100%; /* #FFFFFF */
-  --card-foreground: 220 13% 18%; /* #1E293B */
-  --border: 214 13% 90%; /* #E2E8F0 */
-  --input: 214 13% 90%; /* #E2E8F0 */
-  --primary: 207 90% 54%; /* #3B82F6 */
-  --primary-foreground: 210 40% 98%; /* #DBEAFE */
-  --secondary: 211 83% 53%; /* #1E40AF */
-  --secondary-foreground: 210 40% 98%; /* #DBEAFE */
-  --accent: 142 76% 36%; /* #10B981 */
-  --accent-foreground: 138 76% 97%; /* #ECFDF5 */
-  --destructive: 0 84% 60%; /* #EF4444 */
-  --destructive-foreground: 0 0% 98%; /* #FEFEFE */
-  --ring: 207 90% 54%; /* #3B82F6 */
-  --radius: 0.75rem;
+  /* Revolutionary Cyber Theme - Light Mode */
+  --background: 220 26% 98%; /* Ultra Clean White */
+  --foreground: 220 39% 8%; /* Deep Cyber Black */
+  --muted: 220 14% 96%; /* Soft Muted */
+  --muted-foreground: 220 9% 46%; /* Elegant Gray */
+  --popover: 0 0% 100%; /* Pure White */
+  --popover-foreground: 220 39% 8%; /* Deep Black */
+  --card: 0 0% 100%; /* Pure White */
+  --card-foreground: 220 39% 8%; /* Deep Black */
+  --border: 220 13% 91%; /* Subtle Border */
+  --input: 220 13% 91%; /* Input Border */
+  
+  /* Cybersecurity Inspired Gradient Colors */
+  --primary: 271 81% 56%; /* Cyber Purple */
+  --primary-foreground: 0 0% 100%; /* White Text */
+  --secondary: 198 93% 60%; /* Electric Cyan */
+  --secondary-foreground: 220 39% 8%; /* Dark Text */
+  --accent: 142 86% 50%; /* Matrix Green */
+  --accent-foreground: 220 39% 8%; /* Dark Text */
+  --destructive: 0 84% 60%; /* Alert Red */
+  --destructive-foreground: 0 0% 98%; /* White Text */
+  --ring: 271 81% 56%; /* Purple Ring */
+  --radius: 12px; /* Modern Rounded */
+  
+  /* Advanced Gradients */
+  --gradient-cyber: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 50%, #10B981 100%);
+  --gradient-dark: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+  --gradient-glow: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
 }
 
 .dark {
-  --background: 222 84% 5%; /* #0F172A */
-  --foreground: 210 40% 98%; /* #F8FAFC */
-  --muted: 217 33% 17%; /* #1E293B */
-  --muted-foreground: 215 20% 65%; /* #94A3B8 */
-  --popover: 222 84% 5%; /* #0F172A */
-  --popover-foreground: 210 40% 98%; /* #F8FAFC */
-  --card: 222 84% 5%; /* #0F172A */
-  --card-foreground: 210 40% 98%; /* #F8FAFC */
-  --border: 217 33% 17%; /* #1E293B */
-  --input: 217 33% 17%; /* #1E293B */
-  --primary: 207 90% 54%; /* #3B82F6 */
-  --primary-foreground: 210 40% 98%; /* #DBEAFE */
-  --secondary: 217 33% 17%; /* #1E293B */
-  --secondary-foreground: 210 40% 98%; /* #F8FAFC */
-  --accent: 142 76% 36%; /* #10B981 */
-  --accent-foreground: 138 76% 97%; /* #ECFDF5 */
-  --destructive: 0 63% 31%; /* #7F1D1D */
-  --destructive-foreground: 210 40% 98%; /* #F8FAFC */
-  --ring: 207 90% 54%; /* #3B82F6 */
+  /* Revolutionary Cyber Theme - Dark Mode */
+  --background: 220 71% 3%; /* Deep Cyber Space */
+  --foreground: 220 9% 98%; /* Pure Light */
+  --muted: 220 39% 8%; /* Dark Muted */
+  --muted-foreground: 220 9% 65%; /* Light Gray */
+  --popover: 220 71% 4%; /* Dark Popup */
+  --popover-foreground: 220 9% 98%; /* Light Text */
+  --card: 220 63% 6%; /* Dark Card */
+  --card-foreground: 220 9% 98%; /* Light Text */
+  --border: 220 39% 11%; /* Dark Border */
+  --input: 220 39% 11%; /* Dark Input */
+  
+  /* Dark Mode Cyber Colors */
+  --primary: 271 91% 65%; /* Bright Cyber Purple */
+  --primary-foreground: 220 71% 3%; /* Dark Text */
+  --secondary: 198 100% 70%; /* Bright Electric Cyan */
+  --secondary-foreground: 220 71% 3%; /* Dark Text */
+  --accent: 142 86% 55%; /* Bright Matrix Green */
+  --accent-foreground: 220 71% 3%; /* Dark Text */
+  --destructive: 0 84% 60%; /* Alert Red */
+  --destructive-foreground: 220 9% 98%; /* Light Text */
+  --ring: 271 91% 65%; /* Bright Purple Ring */
+  
+  /* Dark Mode Gradients */
+  --gradient-cyber: linear-gradient(135deg, #A855F7 0%, #06B6D4 50%, #10B981 100%);
+  --gradient-dark: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  --gradient-glow: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
 }
 
 @layer base {
@@ -63,64 +79,220 @@
 }
 
 @layer components {
+  /* Revolutionary Animations */
   .animate-fade-in {
-    @apply opacity-0 translate-y-4;
-    animation: fadeIn 0.6s ease-out forwards;
+    @apply opacity-0 translate-y-6;
+    animation: fadeInAdvanced 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   .animate-slide-up {
-    @apply opacity-0 translate-y-8;
-    animation: slideUp 0.8s ease-out forwards;
+    @apply opacity-0 translate-y-12;
+    animation: slideUpAdvanced 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 
   .animate-on-scroll {
-    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+    @apply opacity-0 translate-y-12 transition-all duration-1000;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .animate-on-scroll.visible {
     @apply opacity-100 translate-y-0;
   }
 
-  .gradient-bg {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  /* Cyber Gradients */
+  .gradient-cyber {
+    background: var(--gradient-cyber);
   }
 
+  .gradient-cyber-text {
+    background: var(--gradient-cyber);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-glow {
+    background: var(--gradient-glow);
+  }
+
+  /* Glass Morphism 2.0 */
   .glass-morphism {
-    @apply backdrop-blur-sm bg-white/10 border border-white/20;
+    backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   }
 
+  .dark .glass-morphism {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Advanced Hover Effects */
   .hover-lift {
-    @apply transition-transform duration-300 hover:-translate-y-2;
+    @apply transition-all duration-500 ease-out;
+    transform: translateY(0) scale(1);
   }
 
+  .hover-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300;
+    box-shadow: 0 0 0 rgba(139, 92, 246, 0);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+  }
+
+  /* Revolutionary Buttons */
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-all duration-200 transform hover:scale-105 font-semibold px-6 py-3 rounded-lg;
+    @apply relative overflow-hidden font-semibold px-8 py-4 rounded-xl;
+    background: var(--gradient-cyber);
+    color: white;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-primary:hover::before {
+    left: 100%;
   }
 
   .btn-secondary {
-    @apply border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-200 font-semibold px-6 py-3 rounded-lg;
+    @apply relative font-semibold px-8 py-4 rounded-xl border-2 transition-all duration-300;
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+    background: transparent;
+    overflow: hidden;
+  }
+
+  .btn-secondary:hover {
+    background: var(--gradient-cyber);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+  }
+
+  /* Floating Elements */
+  .floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+
+  .floating-delay {
+    animation: floating 3s ease-in-out infinite;
+    animation-delay: 1s;
+  }
+
+  /* Pulse Effects */
+  .pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
+
+  /* Text Effects */
+  .text-glow {
+    text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+  }
+
+  .text-shimmer {
+    background: linear-gradient(90deg, #8B5CF6, #06B6D4, #10B981, #8B5CF6);
+    background-size: 400% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s ease-in-out infinite;
   }
 }
 
-@keyframes fadeIn {
-  from {
+/* Revolutionary Keyframes */
+@keyframes fadeInAdvanced {
+  0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px) scale(0.95);
   }
-  to {
+  100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-@keyframes slideUp {
-  from {
+@keyframes slideUpAdvanced {
+  0% {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(50px) scale(0.9);
   }
-  to {
+  100% {
     opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes floating {
+  0%, 100% {
     transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes backgroundShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes rotateGlow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 

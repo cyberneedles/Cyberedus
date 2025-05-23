@@ -48,114 +48,169 @@ export default function Home() {
   const featuredTestimonials = testimonials.slice(0, 3);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative overflow-hidden">
       <Header />
       
-      {/* Hero Section */}
-      <section className="pt-20 pb-16 hero-gradient">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
+      {/* Revolutionary Hero Section */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 gradient-cyber opacity-5"></div>
+        <div className="absolute top-20 left-10 w-20 h-20 gradient-cyber rounded-full opacity-30 floating"></div>
+        <div className="absolute top-40 right-20 w-16 h-16 bg-secondary/30 rounded-full floating-delay"></div>
+        <div className="absolute bottom-32 left-20 w-12 h-12 bg-accent/30 rounded-full floating"></div>
+        <div className="absolute bottom-20 right-10 w-24 h-24 gradient-cyber rounded-full opacity-20 floating-delay"></div>
+        
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+          <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div className="animate-fade-in">
-              <h1 className="text-4xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
-                Master <span className="text-primary">Cybersecurity</span> & 
-                <span className="text-secondary"> Full Stack Development</span>
+              <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight">
+                <span className="text-shimmer block mb-4">Become A</span>
+                <span className="gradient-cyber-text">Cyber Warrior</span>
               </h1>
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Transform your career with our 80% hands-on approach. Real projects, industry mentorship, and guaranteed placement support in Pune's premier IT education institute.
+              <p className="text-2xl text-muted-foreground mb-10 leading-relaxed">
+                Master the art of <span className="text-glow text-primary font-semibold">digital defense</span> with 
+                India's most advanced cybersecurity & development bootcamp. 
+                <span className="text-accent font-semibold"> 95% placement guarantee</span>
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+              <div className="flex flex-col sm:flex-row gap-6 mb-12">
                 <Button 
-                  className="btn-primary"
+                  className="btn-primary text-lg px-10 py-4"
                   onClick={() => handleCTAClick("get_demo")}
                 >
-                  <i className="fas fa-play mr-2"></i>Get Free Demo
+                  🚀 Launch Your Journey
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="btn-secondary"
+                  className="btn-secondary text-lg px-10 py-4"
                   onClick={() => handleCTAClick("connect_counsellor")}
                 >
-                  <i className="fas fa-phone mr-2"></i>Connect with Counsellor
+                  💬 Talk to Expert
                 </Button>
               </div>
               
-              {/* Quick Stats */}
-              <div className="grid grid-cols-3 gap-6 pt-8 border-t border-border">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">1200+</div>
-                  <div className="text-sm text-muted-foreground">Students Trained</div>
+              {/* Revolutionary Stats */}
+              <div className="grid grid-cols-3 gap-8 pt-8">
+                <div className="glass-morphism p-6 text-center hover-lift">
+                  <div className="text-4xl font-bold gradient-cyber-text mb-2">1200+</div>
+                  <div className="text-sm text-muted-foreground font-medium">Cyber Experts</div>
+                  <div className="w-full h-1 gradient-cyber rounded-full mt-3"></div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">300+</div>
-                  <div className="text-sm text-muted-foreground">Job Offers</div>
+                <div className="glass-morphism p-6 text-center hover-lift pulse-glow">
+                  <div className="text-4xl font-bold gradient-cyber-text mb-2">95%</div>
+                  <div className="text-sm text-muted-foreground font-medium">Placement Rate</div>
+                  <div className="w-full h-1 gradient-cyber rounded-full mt-3"></div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">40+</div>
-                  <div className="text-sm text-muted-foreground">Industry Partners</div>
+                <div className="glass-morphism p-6 text-center hover-lift">
+                  <div className="text-4xl font-bold gradient-cyber-text mb-2">40+</div>
+                  <div className="text-sm text-muted-foreground font-medium">Tech Giants</div>
+                  <div className="w-full h-1 gradient-cyber rounded-full mt-3"></div>
                 </div>
               </div>
             </div>
             
-            <div className="mt-12 lg:mt-0">
-              <img 
-                src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600" 
-                alt="Students learning cybersecurity in modern classroom" 
-                className="rounded-2xl shadow-2xl w-full h-auto"
-              />
+            <div className="mt-16 lg:mt-0 relative">
+              <div className="relative glass-morphism p-8 hover-glow">
+                <img 
+                  src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&h=600" 
+                  alt="Elite cybersecurity training environment" 
+                  className="rounded-2xl w-full h-auto floating"
+                />
+                <div className="absolute inset-0 gradient-cyber opacity-20 rounded-2xl"></div>
+              </div>
             </div>
+          </div>
+        </div>
+        
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-primary rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-primary rounded-full mt-2 animate-pulse"></div>
           </div>
         </div>
       </section>
 
-      {/* Featured Courses */}
-      <section className="py-20 bg-card">
+      {/* Revolutionary Featured Courses */}
+      <section className="py-32 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 animate-on-scroll">
-            <h2 className="text-4xl font-bold text-foreground mb-4">Our Premium Courses</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Industry-designed curriculum with 80% hands-on training, real projects, and direct placement support
+          <div className="text-center mb-20 animate-on-scroll">
+            <h2 className="text-5xl lg:text-6xl font-bold mb-8">
+              <span className="gradient-cyber-text">Elite Training</span> Arsenal
+            </h2>
+            <p className="text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+              Master cutting-edge skills with our <span className="text-primary font-semibold">industry-leading</span> curriculum 
+              designed by cybersecurity legends and tech innovators
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
-            {featuredCourses.map((course) => (
-              <Card key={course.id} className="course-card animate-on-scroll">
-                <CardContent className="p-8">
-                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-6">
-                    <i className={`${course.icon} text-2xl text-primary`}></i>
-                  </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-4">{course.title}</h3>
-                  <p className="text-muted-foreground mb-6">{course.description}</p>
+          <div className="grid lg:grid-cols-3 gap-12">
+            {featuredCourses.map((course, index) => (
+              <Card key={course.id} className={`glass-morphism hover-lift hover-glow group cursor-pointer relative overflow-hidden ${index === 1 ? 'lg:scale-110 z-10' : ''}`}>
+                <div className="absolute inset-0 gradient-cyber opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
+                <CardContent className="p-10 relative z-10">
                   
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <i className="fas fa-clock mr-2 text-primary"></i>
-                      Duration: {course.duration}
+                  {/* Course Icon & Badge */}
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="w-16 h-16 gradient-cyber rounded-2xl flex items-center justify-center floating">
+                      <span className="text-3xl text-white">{course.icon}</span>
                     </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <i className="fas fa-user mr-2 text-primary"></i>
-                      {course.level === "beginner" ? "Beginner Friendly" : 
-                       course.level === "intermediate" ? "Intermediate Level" : "Advanced Level"}
-                    </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
-                      <i className="fas fa-laptop mr-2 text-primary"></i>
-                      {course.mode === "both" ? "Online & Offline" : 
-                       course.mode === "online" ? "Online" : "Offline"}
-                    </div>
+                    <Badge className="gradient-cyber text-white border-none px-4 py-2 text-sm font-medium">
+                      {course.level.toUpperCase()}
+                    </Badge>
                   </div>
                   
-                  <div className="flex justify-between items-center pt-6 border-t border-border">
-                    <Link href={`/courses/${course.slug}`}>
-                      <Button className="btn-primary">View Details</Button>
-                    </Link>
-                    <Button 
-                      variant="ghost" 
-                      className="text-primary hover:text-secondary"
-                      onClick={() => handleCTAClick("syllabus_download")}
-                    >
-                      <i className="fas fa-download mr-1"></i>Syllabus
+                  {/* Course Title */}
+                  <h3 className="text-2xl font-bold text-foreground mb-6 group-hover:text-primary transition-colors leading-tight">
+                    {course.title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p className="text-muted-foreground mb-8 leading-relaxed text-lg">
+                    {course.description}
+                  </p>
+                  
+                  {/* Course Meta */}
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-center text-muted-foreground">
+                      <div className="w-8 h-8 gradient-cyber rounded-lg flex items-center justify-center mr-3">
+                        <span className="text-white text-sm">⚡</span>
+                      </div>
+                      <span className="font-medium">{course.duration}</span>
+                    </div>
+                    <div className="flex items-center text-muted-foreground">
+                      <div className="w-8 h-8 gradient-cyber rounded-lg flex items-center justify-center mr-3">
+                        <span className="text-white text-sm">🎯</span>
+                      </div>
+                      <span className="font-medium">{course.mode === "both" ? "Hybrid Learning" : course.mode}</span>
+                    </div>
+                    {course.price && (
+                      <div className="flex items-center justify-between pt-4">
+                        <span className="text-2xl font-bold gradient-cyber-text">₹{course.price}</span>
+                        <span className="text-sm text-muted-foreground line-through">₹{Math.round(course.price * 1.5)}</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Features Preview */}
+                  {course.features && course.features.length > 0 && (
+                    <div className="mb-8">
+                      <div className="text-sm font-medium text-muted-foreground mb-3">🔥 You'll Master:</div>
+                      <div className="flex flex-wrap gap-2">
+                        {course.features.slice(0, 3).map((feature, idx) => (
+                          <span key={idx} className="text-xs bg-primary/10 text-primary px-3 py-2 rounded-full font-medium">
+                            {feature}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* CTA Button */}
+                  <Link href={`/courses/${course.slug}`} className="block">
+                    <Button className="w-full btn-primary group-hover:scale-105 transition-transform text-lg py-4">
+                      💫 Begin Mastery
                     </Button>
+                  </Link>
                   </div>
                 </CardContent>
               </Card>
