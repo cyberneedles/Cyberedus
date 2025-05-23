@@ -57,24 +57,29 @@ export default function Home() {
         <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
         
         {/* Sophisticated Floating Code Elements */}
-        <div className="absolute top-20 left-10 code-line opacity-40">
-          <div className="text-xs font-mono text-info font-medium px-3 py-1 bg-info/10 rounded-lg border border-info/20 backdrop-blur-sm">
+        <div className="absolute top-20 left-10 code-line opacity-40 float-sophisticated">
+          <div className="text-xs font-mono text-info font-medium px-3 py-1 bg-info/10 rounded-lg border border-info/20 backdrop-blur-sm dopamine-hover">
             $ sudo nmap -sS target.com
           </div>
         </div>
-        <div className="absolute top-40 right-20 code-line opacity-40" style={{animationDelay: '2s'}}>
-          <div className="text-xs font-mono text-warning font-medium px-3 py-1 bg-warning/10 rounded-lg border border-warning/20 backdrop-blur-sm">
+        <div className="absolute top-40 right-20 code-line opacity-40 float-sophisticated" style={{animationDelay: '2s'}}>
+          <div className="text-xs font-mono text-warning font-medium px-3 py-1 bg-warning/10 rounded-lg border border-warning/20 backdrop-blur-sm dopamine-hover">
             [+] Vulnerability detected
           </div>
         </div>
-        <div className="absolute bottom-32 left-20 code-line opacity-40" style={{animationDelay: '4s'}}>
-          <div className="text-xs font-mono text-success font-medium px-3 py-1 bg-success/10 rounded-lg border border-success/20 backdrop-blur-sm">
+        <div className="absolute bottom-32 left-20 code-line opacity-40 float-sophisticated" style={{animationDelay: '4s'}}>
+          <div className="text-xs font-mono text-success font-medium px-3 py-1 bg-success/10 rounded-lg border border-success/20 backdrop-blur-sm pulse-glow">
             Firewall: ACTIVE
           </div>
         </div>
-        <div className="absolute top-60 right-10 code-line opacity-35" style={{animationDelay: '6s'}}>
-          <div className="text-xs font-mono text-electric font-medium px-3 py-1 bg-electric/10 rounded-lg border border-electric/20 backdrop-blur-sm">
+        <div className="absolute top-60 right-10 code-line opacity-35 float-sophisticated" style={{animationDelay: '6s'}}>
+          <div className="text-xs font-mono text-electric font-medium px-3 py-1 bg-electric/10 rounded-lg border border-electric/20 backdrop-blur-sm dopamine-hover">
             SSH tunnel established
+          </div>
+        </div>
+        <div className="absolute bottom-60 right-32 code-line opacity-30 float-sophisticated" style={{animationDelay: '8s'}}>
+          <div className="text-xs font-mono text-neon font-medium px-3 py-1 bg-neon/10 rounded-lg border border-neon/20 backdrop-blur-sm pulse-glow">
+            🔐 Encrypted connection
           </div>
         </div>
         
