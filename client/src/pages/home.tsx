@@ -260,7 +260,7 @@ export default function Home() {
             <div className="animate-fade-in">
               <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight text-foreground">
                 <span className="block mb-4">Master</span>
-                <span className="text-primary">Cybersecurity</span>
+                <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 dark:from-blue-400 dark:via-blue-300 dark:to-cyan-300 bg-clip-text text-transparent font-extrabold">Cybersecurity</span>
               </h1>
               <p className="text-2xl text-muted-foreground mb-10 leading-relaxed">
                 Professional cybersecurity and development training with 
