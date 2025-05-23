@@ -16,11 +16,11 @@
   --input: 0 0% 89.8%; /* Input Border */
   
   /* Ultra-Premium Light Theme */
-  --primary: 214 100% 50%; /* Premium Blue #0066ff */
+  --primary: 0 0% 10%; /* Premium Black #1a1a1a */
   --primary-foreground: 0 0% 100%; /* Pure White */
   --secondary: 210 40% 98%; /* Ultra Light Blue #f8fafc */
-  --secondary-foreground: 215 25% 27%; /* Professional Dark Blue */
-  --accent: 214 95% 55%; /* Light Blue Accent #1a73e8 */
+  --secondary-foreground: 214 100% 70%; /* Light Blue Text #4da6ff */
+  --accent: 214 100% 65%; /* Light Blue Accent #3399ff */
   --accent-foreground: 0 0% 100%; /* Pure White */
   --success: 142 71% 45%; /* Clean Green */
   --warning: 38 92% 50%; /* Professional Orange */
@@ -48,11 +48,11 @@
   --input: 0 0% 14.9%; /* Dark Input */
   
   /* Elegant Dark Mode */
-  --primary: 214 100% 55%; /* Bright Blue for Dark */
+  --primary: 0 0% 15%; /* Black for Dark Mode */
   --primary-foreground: 0 0% 100%; /* Pure White */
   --secondary: 217 32% 17%; /* Dark Navy */
-  --secondary-foreground: 210 40% 98%; /* Light Text */
-  --accent: 214 95% 60%; /* Bright Accent */
+  --secondary-foreground: 214 100% 75%; /* Light Blue Text */
+  --accent: 214 100% 70%; /* Light Blue Accent */
   --accent-foreground: 0 0% 100%; /* Pure White */
   --success: 142 71% 45%; /* Clean Green */
   --warning: 38 92% 50%; /* Professional Orange */
@@ -275,21 +275,44 @@
   }
 
   .btn-secondary {
-    background: hsl(var(--secondary));
-    color: hsl(var(--secondary-foreground));
-    border: 1px solid hsl(var(--border));
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-weight: 500;
-    font-size: 14px;
-    transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+    color: #ffffff;
+    border: 1px solid #333333;
+    border-radius: 16px;
+    padding: 16px 32px;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: -0.01em;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 
+      0 4px 20px rgba(0, 0, 0, 0.15),
+      0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-secondary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+    transition: left 0.6s;
   }
 
   .btn-secondary:hover {
-    background: hsl(var(--accent) / 0.05);
-    border-color: hsl(var(--accent) / 0.3);
-    color: hsl(var(--accent));
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 100%);
+    border-color: #444444;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.25),
+      0 4px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-secondary:hover::before {
+    left: 100%;
   }
 
   /* Sophisticated Scroll Animations */
