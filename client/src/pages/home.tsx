@@ -167,106 +167,92 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Revolutionary Featured Courses with Theme Transition */}
-      <section className="py-32 relative theme-transition section-cyber">
+      {/* Interactive Cybersecurity Skills Hub */}
+      <section className="py-32 relative theme-transition section-cyber overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20 animate-on-scroll sticky-transform">
+          <div className="text-center mb-20 animate-on-scroll">
             <h2 className="text-5xl lg:text-6xl font-bold mb-8">
-              <span className="gradient-cyber-text text-reveal">Elite Training</span> Arsenal
+              <span className="gradient-cyber-text text-reveal">Interactive</span> Skills Lab
             </h2>
             <p className="text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed slide-in-left">
-              Master cutting-edge skills with our <span className="text-primary font-semibold">industry-leading</span> curriculum 
-              designed by cybersecurity legends and tech innovators
+              Experience hands-on cybersecurity training with our <span className="text-primary font-semibold">live simulation environment</span>
             </p>
           </div>
           
-          <div className="grid lg:grid-cols-3 gap-12">
-            {featuredCourses.map((course, index) => (
-              <Card 
-                key={course.id} 
-                className={`glass-morphism hover-lift hover-glow group cursor-pointer relative overflow-hidden tilt-card mouse-trail ${index === 1 ? 'lg:scale-110 z-10' : ''}`}
-                style={{
-                  transform: `translate3d(${mousePosition.x * (index + 1) * 0.02}px, ${mousePosition.y * (index + 1) * 0.02}px, 0) translateY(${scrollY * (index + 1) * -0.1}px)`
-                }}
-              >
-                <div className="absolute inset-0 gradient-cyber opacity-0 group-hover:opacity-10 transition-opacity duration-500"></div>
-                <CardContent className="p-10 relative z-10">
-                  
-                  {/* Course Icon & Badge */}
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="w-16 h-16 gradient-cyber rounded-2xl flex items-center justify-center floating">
-                      <span className="text-3xl text-white">{course.icon}</span>
+          {/* Interactive Terminal Simulator */}
+          <div className="relative max-w-4xl mx-auto mb-20">
+            <div className="bg-black/90 rounded-xl border border-primary/20 overflow-hidden backdrop-blur-sm">
+              {/* Terminal Header */}
+              <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/10 to-transparent border-b border-primary/20">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                  <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+                <div className="text-sm text-primary font-mono">CyberEdus Terminal v2.0</div>
+              </div>
+              
+              {/* Terminal Content */}
+              <div className="p-6 font-mono text-sm space-y-2 min-h-[300px]">
+                <div className="text-primary">root@cyberedus:~$ whoami</div>
+                <div className="text-white">ethical_hacker</div>
+                <div className="text-primary">root@cyberedus:~$ nmap -sS 192.168.1.0/24</div>
+                <div className="text-green-400">Starting Nmap scan...</div>
+                <div className="text-green-400">Host is up (0.001s latency).</div>
+                <div className="text-yellow-400">PORT     STATE SERVICE</div>
+                <div className="text-yellow-400">22/tcp   open  ssh</div>
+                <div className="text-yellow-400">80/tcp   open  http</div>
+                <div className="text-yellow-400">443/tcp  open  https</div>
+                <div className="text-red-400">[!] Vulnerability detected on port 80</div>
+                <div className="text-primary">root@cyberedus:~$ <span className="animate-pulse">_</span></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Skill Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+            {[
+              { icon: "🔐", title: "Penetration Testing", progress: 85, color: "from-red-500 to-pink-500" },
+              { icon: "🛡️", title: "Network Security", progress: 92, color: "from-blue-500 to-cyan-500" },
+              { icon: "🔍", title: "Digital Forensics", progress: 78, color: "from-green-500 to-emerald-500" },
+              { icon: "⚡", title: "Incident Response", progress: 88, color: "from-purple-500 to-violet-500" }
+            ].map((skill, index) => (
+              <div key={index} className="group cursor-pointer">
+                <Card className="glass-morphism hover-lift border-primary/20 transition-all duration-300 group-hover:border-primary/40">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                      {skill.icon}
                     </div>
-                    <Badge className="gradient-cyber text-white border-none px-4 py-2 text-sm font-medium">
-                      {course.level.toUpperCase()}
-                    </Badge>
-                  </div>
-                  
-                  {/* Course Title */}
-                  <h3 className="text-2xl font-bold text-foreground mb-6 group-hover:text-primary transition-colors leading-tight">
-                    {course.title}
-                  </h3>
-                  
-                  {/* Description */}
-                  <p className="text-muted-foreground mb-8 leading-relaxed text-lg">
-                    {course.description}
-                  </p>
-                  
-                  {/* Course Meta */}
-                  <div className="space-y-4 mb-8">
-                    <div className="flex items-center text-muted-foreground">
-                      <div className="w-8 h-8 gradient-cyber rounded-lg flex items-center justify-center mr-3">
-                        <span className="text-white text-sm">⚡</span>
-                      </div>
-                      <span className="font-medium">{course.duration}</span>
+                    <h3 className="font-bold text-lg mb-4 text-foreground">{skill.title}</h3>
+                    
+                    {/* Interactive Progress Bar */}
+                    <div className="relative h-2 bg-secondary rounded-full overflow-hidden mb-3">
+                      <div 
+                        className={`absolute left-0 top-0 h-full bg-gradient-to-r ${skill.color} rounded-full transition-all duration-1000 ease-out`}
+                        style={{ width: `${skill.progress}%` }}
+                      ></div>
                     </div>
-                    <div className="flex items-center text-muted-foreground">
-                      <div className="w-8 h-8 gradient-cyber rounded-lg flex items-center justify-center mr-3">
-                        <span className="text-white text-sm">🎯</span>
-                      </div>
-                      <span className="font-medium">{course.mode === "both" ? "Hybrid Learning" : course.mode}</span>
-                    </div>
-                    {course.price && (
-                      <div className="flex items-center justify-between pt-4">
-                        <span className="text-2xl font-bold gradient-cyber-text">₹{course.price}</span>
-                        <span className="text-sm text-muted-foreground line-through">₹{Math.round(course.price * 1.5)}</span>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Features Preview */}
-                  {course.features && course.features.length > 0 && (
-                    <div className="mb-8">
-                      <div className="text-sm font-medium text-muted-foreground mb-3">🔥 You'll Master:</div>
-                      <div className="flex flex-wrap gap-2">
-                        {course.features.slice(0, 3).map((feature, idx) => (
-                          <span key={idx} className="text-xs bg-primary/10 text-primary px-3 py-2 rounded-full font-medium">
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* CTA Button */}
-                  <Link href={`/courses/${course.slug}`} className="block">
-                    <Button className="w-full btn-primary group-hover:scale-105 transition-transform text-lg py-4">
-                      💫 Begin Mastery
+                    <div className="text-sm text-muted-foreground">{skill.progress}% Mastery</div>
+                    
+                    <Button className="mt-4 btn-premium text-xs px-4 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                      Start Training
                     </Button>
-                  </Link>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             ))}
           </div>
-          
-          <div className="text-center mt-16 animate-on-scroll">
-            <h3 className="text-2xl font-bold text-foreground mb-4">Ready to Transform Your Career?</h3>
-            <p className="text-muted-foreground mb-8">Join thousands of successful graduates who landed their dream jobs</p>
-            <Link href="/courses">
-              <Button className="btn-primary text-lg">
-                <i className="fas fa-rocket mr-2"></i>View All Courses
+
+          {/* Live Simulation CTA */}
+          <div className="text-center animate-on-scroll">
+            <div className="relative inline-block">
+              <Button className="btn-primary text-lg px-12 py-4 relative overflow-hidden group">
+                <span className="relative z-10">Launch Live Lab Environment</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
               </Button>
-            </Link>
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
+            </div>
+            <p className="text-sm text-muted-foreground mt-4">🎯 Real-time simulations • No setup required • Instant access</p>
           </div>
         </div>
       </section>
