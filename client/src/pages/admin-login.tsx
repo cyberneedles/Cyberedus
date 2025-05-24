@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Eye, EyeOff, Loader2 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { CyberMascot, CyberLoading } from "@/components/ui/cyber-mascot";
 
 export default function AdminLogin() {
   const [, setLocation] = useLocation();
