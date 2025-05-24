@@ -13,6 +13,74 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Admin authentication routes
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      if (!email || !password) {
+        return res.status(400).json({ error: "Email and password are required" });
+      }
+
+      // Check admin credentials against database
+      const adminUser = await storage.getUserByEmail(email);
+      
+      if (!adminUser || !adminUser.is_admin) {
+        return res.status(401).json({ error: "Invalid admin credentials" });
+      }
+
+      // For demo - in production use bcrypt.compare(password, adminUser.password)
+      if (password === "admin123") {
+        req.session = req.session || {};
+        req.session.user = {
+          id: adminUser.id,
+          email: adminUser.email,
+          name: adminUser.name,
+          isAdmin: true
+        };
+        
+        res.json({ 
+          success: true, 
+          user: {
+            id: adminUser.id,
+            email: adminUser.email,
+            name: adminUser.name,
+            isAdmin: true
+          }
+        });
+      } else {
+        res.status(401).json({ error: "Invalid credentials" });
+      }
+    } catch (error) {
+      console.error('Admin login error:', error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/admin/logout", (req, res) => {
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          return res.status(500).json({ error: "Could not log out" });
+        }
+        res.json({ success: true });
+      });
+    } else {
+      res.json({ success: true });
+    }
+  });
+
+  app.get("/api/admin/session", (req, res) => {
+    if (req.session?.user?.isAdmin) {
+      res.json({ 
+        authenticated: true, 
+        user: req.session.user 
+      });
+    } else {
+      res.json({ authenticated: false });
+    }
+  });
+
   // Courses API
   app.get("/api/courses", async (req, res) => {
     try {
