@@ -47,9 +47,10 @@ export default function AdminLogin() {
     onSuccess: (data) => {
       toast({
         title: "Login Successful",
-        description: `Welcome back, ${data.user.name}!`,
+        description: "Welcome back!",
       });
-      setLocation('/admin/dashboard');
+      // Redirect to dashboard
+      window.location.href = '/admin/dashboard';
     },
     onError: (error: Error) => {
       setError(error.message);
@@ -89,7 +90,7 @@ export default function AdminLogin() {
 
   // Redirect if already authenticated
   if (session?.authenticated) {
-    setLocation('/admin/dashboard');
+    window.location.href = '/admin/dashboard';
     return null;
   }
 
