@@ -25,13 +25,18 @@ async function setupSupabaseAdmin() {
     console.log('✅ Users table ready');
     
     // Check if admin user exists
-    const existingAdmin = await pool.query(
-      'SELECT id FROM users WHERE email = $1 AND role = $2',
-      ['admin@cyberedus.com', 'admin']
+    const existingUser = await pool.query(
+      'SELECT id, role FROM users WHERE email = $1',
+      ['admin@cyberedus.com']
     );
     
-    if (existingAdmin.rows.length > 0) {
-      console.log('👤 Admin user already exists');
+    if (existingUser.rows.length > 0) {
+      // Update existing user to admin role
+      await pool.query(
+        'UPDATE users SET role = $1, password = $2 WHERE email = $3',
+        ['admin', 'secure_admin_2024', 'admin@cyberedus.com']
+      );
+      console.log('👤 Admin user role updated to admin');
     } else {
       // Create admin user
       await pool.query(
