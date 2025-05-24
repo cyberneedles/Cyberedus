@@ -25,7 +25,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check admin credentials against database
       const adminUser = await storage.getUserByEmail(email);
       
-      if (!adminUser || !adminUser.is_admin) {
+      if (!adminUser || adminUser.role !== 'admin') {
         return res.status(401).json({ error: "Access denied" });
       }
 
@@ -35,7 +35,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         req.session.user = {
           id: adminUser.id,
           email: adminUser.email,
-          name: adminUser.name,
+          name: adminUser.email.split('@')[0], // Use email prefix as name
           isAdmin: true
         };
         

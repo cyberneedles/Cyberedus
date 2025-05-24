@@ -1,5 +1,5 @@
-const { Pool, neonConfig } = require('@neondatabase/serverless');
-const ws = require('ws');
+import { Pool, neonConfig } from '@neondatabase/serverless';
+import ws from 'ws';
 
 neonConfig.webSocketConstructor = ws;
 
@@ -44,8 +44,4 @@ async function setupAdminUser() {
   }
 }
 
-if (require.main === module) {
-  setupAdminUser().catch(console.error);
-}
-
-module.exports = { setupAdminUser };
+setupAdminUser().catch(console.error);
