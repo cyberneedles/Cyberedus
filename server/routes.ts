@@ -36,9 +36,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Check admin credentials against database
+      console.log('Login attempt for email:', email);
       const adminUser = await storage.getUserByEmail(email);
+      console.log('Found user:', adminUser ? `ID: ${adminUser.id}, Role: ${adminUser.role}` : 'null');
       
       if (!adminUser || adminUser.role !== 'admin') {
+        console.log('Access denied - User not found or not admin');
         return res.status(401).json({ error: "Access denied" });
       }
 
