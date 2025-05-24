@@ -1,7 +1,4 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import ws from 'ws';
-
-neonConfig.webSocketConstructor = ws;
+import { Pool } from 'pg';
 
 async function setupAdminUser() {
   if (!process.env.DATABASE_URL) {
@@ -9,7 +6,10 @@ async function setupAdminUser() {
     process.exit(1);
   }
 
-  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const pool = new Pool({ 
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
   const client = await pool.connect();
 
   try {
