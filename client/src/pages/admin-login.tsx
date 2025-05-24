@@ -49,8 +49,10 @@ export default function AdminLogin() {
         title: "Login Successful",
         description: "Welcome back!",
       });
-      // Redirect to dashboard
-      window.location.href = '/admin/dashboard';
+      // Wait a moment for session to be established, then redirect
+      setTimeout(() => {
+        window.location.href = '/admin/dashboard';
+      }, 500);
     },
     onError: (error: Error) => {
       setError(error.message);

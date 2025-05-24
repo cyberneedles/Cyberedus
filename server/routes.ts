@@ -31,7 +31,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Secure password verification
       if (adminUser.password === password) {
-        req.session = req.session || {};
         req.session.user = {
           id: adminUser.id,
           email: adminUser.email,
@@ -39,14 +38,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           isAdmin: true
         };
         
-        res.json({ 
-          success: true, 
-          user: {
-            id: adminUser.id,
-            email: adminUser.email,
-            name: adminUser.name,
-            isAdmin: true
+        // Save session and send response
+        req.session.save((err) => {
+          if (err) {
+            console.error('Session save error:', err);
+            return res.status(500).json({ error: "Session error" });
           }
+          
+          res.json({ 
+            success: true, 
+            user: {
+              id: adminUser.id,
+              email: adminUser.email,
+              name: adminUser.email.split('@')[0],
+              isAdmin: true
+            }
+          });
         });
       } else {
         res.status(401).json({ error: "Invalid credentials" });
