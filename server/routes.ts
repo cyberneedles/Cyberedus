@@ -26,11 +26,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const adminUser = await storage.getUserByEmail(email);
       
       if (!adminUser || !adminUser.is_admin) {
-        return res.status(401).json({ error: "Invalid admin credentials" });
+        return res.status(401).json({ error: "Access denied" });
       }
 
-      // For demo - in production use bcrypt.compare(password, adminUser.password)
-      if (password === "admin123") {
+      // Secure password verification
+      if (adminUser.password === password) {
         req.session = req.session || {};
         req.session.user = {
           id: adminUser.id,
