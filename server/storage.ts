@@ -237,10 +237,11 @@ export class MemStorage implements IStorage {
     // Create admin user
     const adminUser: User = {
       id: this.currentId++,
-      email: "admin@cyberedus.com",
-      password: "admin123", // In production, this should be hashed
-      role: "admin",
-      createdAt: new Date(),
+      name: "Admin User",
+      email: "admin@cyberedu.com",
+      password: "admin123",
+      is_admin: true,
+      created_at: new Date(),
     };
     this.users.set(adminUser.id, adminUser);
 
