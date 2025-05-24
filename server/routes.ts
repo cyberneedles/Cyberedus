@@ -2,6 +2,7 @@ import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import session from "express-session";
 import { storage } from "./storage";
+import { pool } from "./db";
 import { insertLeadSchema, insertBlogPostSchema, insertTestimonialSchema } from "@shared/schema";
 import { z } from "zod";
 
@@ -35,45 +36,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Email and password are required" });
       }
 
-      // Check admin credentials against database
+      // Direct database authentication (bypassing Drizzle for now)
       console.log('Login attempt for email:', email);
-      const adminUser = await storage.getUserByEmail(email);
-      console.log('Found user:', adminUser ? `ID: ${adminUser.id}, Role: ${adminUser.role}` : 'null');
       
-      if (!adminUser || adminUser.role !== 'admin') {
-        console.log('Access denied - User not found or not admin');
+      // Direct query to database
+      const directResult = await pool.query(
+        'SELECT id, email, role FROM users WHERE email = $1 AND password = $2',
+        [email, password]
+      );
+      
+      console.log('Direct query result:', directResult.rows);
+      
+      if (directResult.rows.length === 0 || directResult.rows[0].role !== 'admin') {
+        console.log('Access denied - Invalid credentials or not admin');
         return res.status(401).json({ error: "Access denied" });
       }
+      
+      const adminUser = directResult.rows[0];
 
-      // Secure password verification
-      if (adminUser.password === password) {
-        req.session.user = {
-          id: adminUser.id,
-          email: adminUser.email,
-          name: adminUser.email.split('@')[0], // Use email prefix as name
-          isAdmin: true
-        };
+      // Set session
+      req.session.user = {
+        id: adminUser.id,
+        email: adminUser.email,
+        name: adminUser.email.split('@')[0], // Use email prefix as name
+        isAdmin: true
+      };
+      
+      // Save session and send response
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.status(500).json({ error: "Session error" });
+        }
         
-        // Save session and send response
-        req.session.save((err) => {
-          if (err) {
-            console.error('Session save error:', err);
-            return res.status(500).json({ error: "Session error" });
+        res.json({ 
+          success: true, 
+          user: {
+            id: adminUser.id,
+            email: adminUser.email,
+            name: adminUser.email.split('@')[0],
+            isAdmin: true
           }
-          
-          res.json({ 
-            success: true, 
-            user: {
-              id: adminUser.id,
-              email: adminUser.email,
-              name: adminUser.email.split('@')[0],
-              isAdmin: true
-            }
-          });
         });
-      } else {
-        res.status(401).json({ error: "Invalid credentials" });
-      }
+      });
     } catch (error) {
       console.error('Admin login error:', error);
       res.status(500).json({ error: "Internal server error" });
