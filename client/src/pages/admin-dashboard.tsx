@@ -1,304 +1,439 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import BlogEditor from "@/components/blog/blog-editor";
-import { Lead, BlogPost, Testimonial } from "@shared/schema";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Users, 
+  BookOpen, 
+  TrendingUp, 
+  MessageSquare, 
+  Plus,
+  Eye,
+  Edit,
+  Trash2,
+  BarChart3,
+  DollarSign,
+  Target,
+  Award
+} from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
+import type { Course, Lead, Testimonial, BlogPost, FAQ } from "@shared/schema";
 
 export default function AdminDashboard() {
-  const [, setLocation] = useLocation();
-  const [user, setUser] = useState<any>(null);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const adminUser = localStorage.getItem("admin_user");
-    if (!adminUser) {
-      setLocation("/cyberedus-agent");
-      return;
-    }
-    setUser(JSON.parse(adminUser));
-  }, [setLocation]);
-
-  const { data: leads = [] } = useQuery<Lead[]>({
-    queryKey: ["/api/leads"],
+  // Fetch all data
+  const { data: courses = [], isLoading: coursesLoading } = useQuery({
+    queryKey: ['/api/courses'],
   });
 
-  const { data: blogPosts = [] } = useQuery<BlogPost[]>({
-    queryKey: ["/api/blog"],
+  const { data: leads = [], isLoading: leadsLoading } = useQuery({
+    queryKey: ['/api/leads'],
   });
 
-  const { data: testimonials = [] } = useQuery<Testimonial[]>({
-    queryKey: ["/api/testimonials"],
+  const { data: testimonials = [], isLoading: testimonialsLoading } = useQuery({
+    queryKey: ['/api/testimonials'],
   });
 
-  const handleLogout = () => {
-    localStorage.removeItem("admin_user");
-    setLocation("/cyberedus-agent");
+  const { data: blogPosts = [], isLoading: blogLoading } = useQuery({
+    queryKey: ['/api/blog'],
+  });
+
+  const { data: faqs = [], isLoading: faqsLoading } = useQuery({
+    queryKey: ['/api/faqs'],
+  });
+
+  // Calculate stats
+  const stats = {
+    totalCourses: courses.length,
+    totalLeads: leads.length,
+    approvedTestimonials: testimonials.filter((t: Testimonial) => t.approved).length,
+    publishedBlogs: blogPosts.filter((b: BlogPost) => b.published).length,
+    conversionRate: leads.length > 0 ? Math.round((testimonials.length / leads.length) * 100) : 0,
   };
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="spinner w-8 h-8"></div>
-      </div>
-    );
-  }
-
-  const recentLeads = leads.slice(0, 10);
-  const publishedPosts = blogPosts.filter(post => post.isPublished);
-  const draftPosts = blogPosts.filter(post => !post.isPublished);
-  const pendingTestimonials = testimonials.filter(t => !t.isApproved);
+  const recentLeads = leads.slice(-5).reverse();
+  const recentTestimonials = testimonials.slice(-3).reverse();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="bg-card border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                <i className="fas fa-shield-alt text-primary"></i>
-              </div>
-              <h1 className="text-xl font-bold text-foreground">CyberEdu Admin</h1>
+      <div className="bg-white dark:bg-gray-800 shadow-sm border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Admin Dashboard
+              </h1>
+              <p className="text-gray-600 dark:text-gray-300 mt-1">
+                Manage your CyberEdu platform
+              </p>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <div className="text-sm text-muted-foreground">
-                Welcome, {user.email}
-              </div>
-              <Button variant="outline" onClick={handleLogout}>
-                <i className="fas fa-sign-out-alt mr-2"></i>
-                Logout
-              </Button>
-            </div>
+            <Button className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="w-4 h-4 mr-2" />
+              Quick Actions
+            </Button>
           </div>
         </div>
-      </header>
+      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Dashboard Overview */}
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 mb-8">
-          <Card>
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Leads</p>
-                  <p className="text-2xl font-bold text-foreground">{leads.length}</p>
+                  <p className="text-blue-100 text-sm font-medium">Total Courses</p>
+                  <p className="text-3xl font-bold">{stats.totalCourses}</p>
                 </div>
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-users text-primary"></i>
-                </div>
+                <BookOpen className="w-8 h-8 text-blue-200" />
               </div>
             </CardContent>
           </Card>
-          
-          <Card>
+
+          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Published Posts</p>
-                  <p className="text-2xl font-bold text-foreground">{publishedPosts.length}</p>
+                  <p className="text-green-100 text-sm font-medium">Total Leads</p>
+                  <p className="text-3xl font-bold">{stats.totalLeads}</p>
                 </div>
-                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-blog text-accent"></i>
-                </div>
+                <Target className="w-8 h-8 text-green-200" />
               </div>
             </CardContent>
           </Card>
-          
-          <Card>
+
+          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Draft Posts</p>
-                  <p className="text-2xl font-bold text-foreground">{draftPosts.length}</p>
+                  <p className="text-purple-100 text-sm font-medium">Testimonials</p>
+                  <p className="text-3xl font-bold">{stats.approvedTestimonials}</p>
                 </div>
-                <div className="w-12 h-12 bg-secondary/10 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-edit text-secondary"></i>
-                </div>
+                <Award className="w-8 h-8 text-purple-200" />
               </div>
             </CardContent>
           </Card>
-          
-          <Card>
+
+          <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Pending Reviews</p>
-                  <p className="text-2xl font-bold text-foreground">{pendingTestimonials.length}</p>
+                  <p className="text-orange-100 text-sm font-medium">Blog Posts</p>
+                  <p className="text-3xl font-bold">{stats.publishedBlogs}</p>
                 </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-clock text-orange-600"></i>
+                <MessageSquare className="w-8 h-8 text-orange-200" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-red-100 text-sm font-medium">Conversion</p>
+                  <p className="text-3xl font-bold">{stats.conversionRate}%</p>
                 </div>
+                <TrendingUp className="w-8 h-8 text-red-200" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="leads" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="courses">Courses</TabsTrigger>
             <TabsTrigger value="leads">Leads</TabsTrigger>
-            <TabsTrigger value="blog">Blog Management</TabsTrigger>
             <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="blog">Blog</TabsTrigger>
+            <TabsTrigger value="faqs">FAQs</TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="leads" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <i className="fas fa-users mr-2"></i>
-                  Recent Leads
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentLeads.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      No leads found
-                    </div>
-                  ) : (
-                    recentLeads.map((lead) => (
-                      <div key={lead.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-4">
-                            <div>
-                              <h4 className="font-medium text-foreground">{lead.name}</h4>
-                              <p className="text-sm text-muted-foreground">{lead.email}</p>
-                            </div>
-                            <div>
-                              <Badge variant="outline">{lead.source}</Badge>
-                            </div>
-                            {lead.courseInterest && (
-                              <div>
-                                <Badge variant="secondary">{lead.courseInterest}</Badge>
-                              </div>
-                            )}
-                          </div>
-                          {lead.message && (
-                            <p className="text-sm text-muted-foreground mt-2">{lead.message}</p>
-                          )}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {new Date(lead.createdAt).toLocaleDateString()}
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="blog" className="mt-6">
-            <BlogEditor />
-          </TabsContent>
-          
-          <TabsContent value="testimonials" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <i className="fas fa-star mr-2"></i>
-                  Testimonials Management
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {testimonials.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      No testimonials found
-                    </div>
-                  ) : (
-                    testimonials.map((testimonial) => (
-                      <div key={testimonial.id} className="p-4 border border-border rounded-lg">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className="flex items-center space-x-4">
-                            <div>
-                              <h4 className="font-medium text-foreground">{testimonial.name}</h4>
-                              <p className="text-sm text-muted-foreground">{testimonial.courseName}</p>
-                            </div>
-                            <div className="flex">
-                              {[...Array(testimonial.rating)].map((_, i) => (
-                                <i key={i} className="fas fa-star text-yellow-400 text-sm"></i>
-                              ))}
-                            </div>
-                          </div>
-                          <Badge variant={testimonial.isApproved ? "default" : "destructive"}>
-                            {testimonial.isApproved ? "Approved" : "Pending"}
-                          </Badge>
-                        </div>
-                        <p className="text-muted-foreground">{testimonial.review}</p>
-                        {testimonial.company && (
-                          <p className="text-sm text-muted-foreground mt-2">
-                            {testimonial.jobTitle} at {testimonial.company}
-                          </p>
-                        )}
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="analytics" className="mt-6">
-            <div className="grid lg:grid-cols-2 gap-6">
+
+          {/* Overview Tab */}
+          <TabsContent value="overview" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Recent Leads */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Lead Sources</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <Target className="w-5 h-5" />
+                    Recent Leads
+                  </CardTitle>
+                  <CardDescription>Latest customer inquiries</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {["contact_form", "quiz", "syllabus_download", "homepage_cta"].map((source) => {
-                      const sourceLeads = leads.filter(lead => lead.source === source);
-                      const percentage = leads.length > 0 ? (sourceLeads.length / leads.length) * 100 : 0;
-                      
-                      return (
-                        <div key={source} className="flex items-center justify-between">
-                          <span className="capitalize text-foreground">{source.replace('_', ' ')}</span>
-                          <div className="flex items-center space-x-2">
-                            <div className="w-24 bg-muted rounded-full h-2">
-                              <div 
-                                className="bg-primary h-2 rounded-full" 
-                                style={{ width: `${percentage}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-sm text-muted-foreground">
-                              {sourceLeads.length} ({percentage.toFixed(1)}%)
-                            </span>
-                          </div>
+                    {recentLeads.map((lead: Lead) => (
+                      <div key={lead.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <div>
+                          <p className="font-medium text-gray-900 dark:text-white">{lead.name}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">{lead.email}</p>
+                          <p className="text-xs text-gray-500">{lead.course_interest || 'General inquiry'}</p>
                         </div>
-                      );
-                    })}
+                        <Badge variant="outline">{lead.source}</Badge>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
-              
+
+              {/* Recent Testimonials */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Recent Activity</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <Award className="w-5 h-5" />
+                    Recent Testimonials
+                  </CardTitle>
+                  <CardDescription>Latest student feedback</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex items-center text-sm">
-                      <i className="fas fa-user text-primary mr-3"></i>
-                      <span>{leads.length} total leads generated</span>
-                    </div>
-                    <div className="flex items-center text-sm">
-                      <i className="fas fa-blog text-accent mr-3"></i>
-                      <span>{publishedPosts.length} blog posts published</span>
-                    </div>
-                    <div className="flex items-center text-sm">
-                      <i className="fas fa-star text-yellow-500 mr-3"></i>
-                      <span>{testimonials.filter(t => t.isApproved).length} testimonials approved</span>
-                    </div>
+                    {recentTestimonials.map((testimonial: Testimonial) => (
+                      <div key={testimonial.id} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="font-medium text-gray-900 dark:text-white">{testimonial.name}</p>
+                          <Badge variant={testimonial.approved ? "default" : "secondary"}>
+                            {testimonial.approved ? "Approved" : "Pending"}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
+                          {testimonial.message}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">{testimonial.company}</p>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Courses Tab */}
+          <TabsContent value="courses">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Course Management</CardTitle>
+                    <CardDescription>Manage your educational content</CardDescription>
+                  </div>
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Course
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {courses.map((course: Course) => (
+                    <div key={course.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">{course.title}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{course.description}</p>
+                        <div className="flex items-center gap-4 mt-2">
+                          <Badge>{course.level}</Badge>
+                          <span className="text-sm text-gray-500">{course.duration}</span>
+                          <span className="text-sm font-medium text-green-600">${course.price}</span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Leads Tab */}
+          <TabsContent value="leads">
+            <Card>
+              <CardHeader>
+                <CardTitle>Lead Management</CardTitle>
+                <CardDescription>Track and manage customer inquiries</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {leads.map((lead: Lead) => (
+                    <div key={lead.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">{lead.name}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">{lead.email}</p>
+                        <p className="text-sm text-gray-500 mt-1">{lead.phone}</p>
+                        <div className="flex items-center gap-4 mt-2">
+                          <Badge>{lead.source}</Badge>
+                          <span className="text-sm text-gray-500">{lead.course_interest}</span>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-500">
+                          {new Date(lead.created_at || '').toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Testimonials Tab */}
+          <TabsContent value="testimonials">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Testimonial Management</CardTitle>
+                    <CardDescription>Review and approve student testimonials</CardDescription>
+                  </div>
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Testimonial
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {testimonials.map((testimonial: Testimonial) => (
+                    <div key={testimonial.id} className="p-4 border rounded-lg">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">{testimonial.role} at {testimonial.company}</p>
+                        </div>
+                        <Badge variant={testimonial.approved ? "default" : "secondary"}>
+                          {testimonial.approved ? "Approved" : "Pending"}
+                        </Badge>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300 mb-3">{testimonial.message}</p>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1">
+                          {[...Array(testimonial.rating)].map((_, i) => (
+                            <span key={i} className="text-yellow-400">⭐</span>
+                          ))}
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Blog Tab */}
+          <TabsContent value="blog">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Blog Management</CardTitle>
+                    <CardDescription>Manage your blog content</CardDescription>
+                  </div>
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    New Post
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {blogPosts.map((post: BlogPost) => (
+                    <div key={post.id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">{post.title}</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{post.excerpt}</p>
+                        <div className="flex items-center gap-4 mt-2">
+                          <Badge variant={post.published ? "default" : "secondary"}>
+                            {post.published ? "Published" : "Draft"}
+                          </Badge>
+                          <span className="text-sm text-gray-500">{post.category}</span>
+                          <span className="text-sm text-gray-500">
+                            {new Date(post.created_at || '').toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button variant="outline" size="sm">
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* FAQs Tab */}
+          <TabsContent value="faqs">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>FAQ Management</CardTitle>
+                    <CardDescription>Manage frequently asked questions</CardDescription>
+                  </div>
+                  <Button>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add FAQ
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {faqs.map((faq: FAQ) => (
+                    <div key={faq.id} className="p-4 border rounded-lg">
+                      <div className="flex items-start justify-between mb-2">
+                        <h3 className="font-semibold text-gray-900 dark:text-white">{faq.question}</h3>
+                        <Badge variant={faq.active ? "default" : "secondary"}>
+                          {faq.active ? "Active" : "Inactive"}
+                        </Badge>
+                      </div>
+                      <p className="text-gray-700 dark:text-gray-300 mb-3">{faq.answer}</p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">Category: {faq.category}</span>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>
