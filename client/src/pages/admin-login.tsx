@@ -21,14 +21,24 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
 
   // Check if already authenticated
-  const { data: session } = useQuery({
+  const { data: session, isLoading: sessionLoading } = useQuery({
     queryKey: ['/api/admin/session'],
     retry: false
   });
 
+  // Show loading while checking session
+  if (sessionLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
+      </div>
+    );
+  }
+
   // Redirect if already authenticated
   if (session?.authenticated) {
     setLocation('/admin/dashboard');
+    return null;
   }
 
   const loginMutation = useMutation({
@@ -160,11 +170,7 @@ export default function AdminLogin() {
             </Button>
           </form>
           
-          <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-            <p>Demo Admin Credentials:</p>
-            <p className="font-mono">admin@cyberedu.com</p>
-            <p className="font-mono">admin123</p>
-          </div>
+
         </CardContent>
       </Card>
     </div>
