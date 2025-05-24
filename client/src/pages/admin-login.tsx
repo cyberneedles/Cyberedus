@@ -82,7 +82,7 @@ export default function AdminLogin() {
   if (sessionLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
+        <CyberLoading message="Initializing secure connection..." />
       </div>
     );
   }
@@ -107,9 +107,15 @@ export default function AdminLogin() {
         </CardHeader>
         <CardContent>
           {error && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
+            <div className="flex flex-col items-center space-y-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg mb-4">
+              <CyberMascot 
+                state="error" 
+                message="Authentication failed!" 
+              />
+              <p className="text-sm text-red-600 dark:text-red-400 text-center">
+                {error}
+              </p>
+            </div>
           )}
           
           <form onSubmit={handleLogin} className="space-y-4">

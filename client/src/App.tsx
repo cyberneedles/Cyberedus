@@ -18,6 +18,7 @@ import Blog from "@/pages/blog";
 import Contact from "@/pages/contact";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
+import MascotDemo from "@/pages/mascot-demo";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/contact" component={Contact} />
       <Route path="/cyberedus-agent" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
+      <Route path="/mascot-demo" component={MascotDemo} />
       <Route component={NotFound} />
     </Switch>
   );
