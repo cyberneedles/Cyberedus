@@ -26,21 +26,6 @@ export default function AdminLogin() {
     retry: false
   });
 
-  // Show loading while checking session
-  if (sessionLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
-      </div>
-    );
-  }
-
-  // Redirect if already authenticated
-  if (session?.authenticated) {
-    setLocation('/admin/dashboard');
-    return null;
-  }
-
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
       const response = await fetch('/api/admin/login', {
@@ -92,7 +77,20 @@ export default function AdminLogin() {
     loginMutation.mutate(credentials);
   };
 
+  // Show loading while checking session
+  if (sessionLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
+      </div>
+    );
+  }
 
+  // Redirect if already authenticated
+  if (session?.authenticated) {
+    setLocation('/admin/dashboard');
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-blue-900 dark:to-indigo-900">
