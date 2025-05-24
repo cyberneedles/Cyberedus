@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,7 +23,38 @@ import { apiRequest } from "@/lib/queryClient";
 import type { Course, Lead, Testimonial, BlogPost, FAQ } from "@shared/schema";
 
 export default function AdminDashboard() {
+  const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+
+  // Check authentication
+  const { data: session, isLoading: sessionLoading } = useQuery({
+    queryKey: ['/api/admin/session'],
+    retry: false
+  });
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!sessionLoading && !session?.authenticated) {
+      setLocation('/cyberedus-agent');
+    }
+  }, [session, sessionLoading, setLocation]);
+
+  // Show loading while checking authentication
+  if (sessionLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render dashboard if not authenticated
+  if (!session?.authenticated) {
+    return null;
+  }
 
   // Fetch all data
   const { data: courses = [], isLoading: coursesLoading } = useQuery({

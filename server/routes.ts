@@ -1,8 +1,16 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertLeadSchema, insertBlogPostSchema, insertTestimonialSchema } from "@shared/schema";
 import { z } from "zod";
+
+// Admin authentication middleware
+const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session?.user?.isAdmin) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+  next();
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Courses API
