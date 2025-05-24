@@ -49,10 +49,11 @@ export default function AdminLogin() {
         title: "Login Successful",
         description: "Welcome back!",
       });
-      // Wait a moment for session to be established, then redirect
+      // Invalidate session cache and redirect
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/session'] });
       setTimeout(() => {
         window.location.href = '/admin/dashboard';
-      }, 500);
+      }, 1000);
     },
     onError: (error: Error) => {
       setError(error.message);
