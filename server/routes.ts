@@ -118,12 +118,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/admin/session", (req, res) => {
-    if (req.session?.user?.isAdmin) {
+    console.log('Session check - sessionID:', req.sessionID);
+    console.log('Session data:', req.session);
+    
+    if (req.session && req.session.user && req.session.user.isAdmin) {
+      console.log('User is authenticated as admin');
       res.json({ 
         authenticated: true, 
         user: req.session.user 
       });
     } else {
+      console.log('User not authenticated or not admin');
       res.json({ authenticated: false });
     }
   });

@@ -233,18 +233,25 @@ export default function AdminDashboard() {
     }
   };
 
-  // Check authentication
-  const { data: session, isLoading: sessionLoading } = useQuery({
-    queryKey: ['/api/admin/session'],
-    retry: false
-  });
+  // Check authentication from localStorage (immediate, no API calls needed)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
 
-  // Redirect if not authenticated
   useEffect(() => {
-    if (!sessionLoading && !session?.authenticated) {
+    const authenticated = localStorage.getItem('admin_authenticated') === 'true';
+    
+    if (authenticated) {
+      setIsAuthenticated(true);
+    } else {
       setLocation('/cyberedus-agent');
     }
-  }, [session, sessionLoading, setLocation]);
+    setAuthChecked(true);
+  }, [setLocation]);
+
+  // Show loading while checking auth
+  if (!authChecked) {
+    return <AnimatedLoading />;
+  }
 
   // Fetch all data (hooks must be called before any conditional returns)
   const { data: courses = [], isLoading: coursesLoading } = useQuery({

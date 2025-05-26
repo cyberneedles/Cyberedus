@@ -46,16 +46,17 @@ export default function AdminLogin() {
       return response.json();
     },
     onSuccess: (data) => {
+      // Store authentication in localStorage for immediate access
+      localStorage.setItem('admin_authenticated', 'true');
+      localStorage.setItem('admin_user', JSON.stringify(data.user));
+      
       toast({
-        title: "Login Successful",
-        description: "Welcome back!",
+        title: "Login Successful", 
+        description: "Redirecting to dashboard...",
       });
-      // Clear all queries and force page refresh to ensure session is recognized
-      queryClient.clear();
-      // Force a complete page reload to ensure session cookies are properly set
-      setTimeout(() => {
-        window.location.href = '/admin';
-      }, 500);
+      
+      // Immediate redirect without delay
+      window.location.replace('/admin');
     },
     onError: (error: Error) => {
       setError(error.message);
