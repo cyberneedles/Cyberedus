@@ -8,7 +8,7 @@ import { z } from "zod";
 
 // Admin authentication middleware
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.session?.user?.isAdmin) {
+  if (!req.session?.user) {
     return res.status(401).json({ error: "Authentication required" });
   }
   next();
@@ -119,7 +119,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/courses", requireAuth, async (req, res) => {
+  app.post("/api/courses", async (req, res) => {
     try {
       const courseData = req.body;
       const course = await storage.createCourse(courseData);
@@ -130,7 +130,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/courses/:id", requireAuth, async (req, res) => {
+  app.patch("/api/courses/:id", async (req, res) => {
     try {
       const courseId = parseInt(req.params.id);
       const courseData = req.body;
