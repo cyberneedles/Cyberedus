@@ -97,12 +97,23 @@ export default function AdminDashboard() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest"
         },
         body: JSON.stringify(data),
       });
       
+      // Check if response is JSON
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await response.text();
+        console.error("Non-JSON response:", text);
+        throw new Error("Server returned invalid response format");
+      }
+      
       if (!response.ok) {
-        throw new Error("Failed to create course");
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to create course");
       }
       
       return response.json();

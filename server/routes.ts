@@ -153,6 +153,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log("POST /api/courses hit!");
     console.log("Request body:", req.body);
     
+    // Force JSON response headers
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'no-cache');
+    
     try {
       const courseData = req.body;
       console.log("About to create course with data:", courseData);
