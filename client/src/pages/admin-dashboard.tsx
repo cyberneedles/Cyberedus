@@ -53,6 +53,34 @@ const courseFormSchema = z.object({
 
 type CourseFormData = z.infer<typeof courseFormSchema>;
 
+// Testimonial form schema
+const testimonialFormSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  courseName: z.string().min(1, "Course name is required"),
+  review: z.string().min(1, "Review is required"),
+  rating: z.number().min(1).max(5),
+  jobTitle: z.string().optional(),
+  company: z.string().optional(),
+  image: z.string().optional(),
+  isApproved: z.boolean().default(false),
+});
+
+type TestimonialFormData = z.infer<typeof testimonialFormSchema>;
+
+// Blog post form schema
+const blogFormSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  slug: z.string().min(1, "Slug is required"),
+  content: z.string().min(1, "Content is required"),
+  excerpt: z.string().min(1, "Excerpt is required"),
+  category: z.string().min(1, "Category is required"),
+  featuredImage: z.string().optional(),
+  isPublished: z.boolean().default(false),
+  readingTime: z.number().default(5),
+});
+
+type BlogFormData = z.infer<typeof blogFormSchema>;
+
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
@@ -64,6 +92,12 @@ export default function AdminDashboard() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
+
+  // Testimonial management state
+  const [isCreateTestimonialOpen, setIsCreateTestimonialOpen] = useState(false);
+  
+  // Blog management state
+  const [isCreateBlogOpen, setIsCreateBlogOpen] = useState(false);
 
   // Course forms
   const createForm = useForm<CourseFormData>({
@@ -88,6 +122,36 @@ export default function AdminDashboard() {
 
   const editForm = useForm<CourseFormData>({
     resolver: zodResolver(courseFormSchema),
+  });
+
+  // Testimonial form
+  const testimonialForm = useForm<TestimonialFormData>({
+    resolver: zodResolver(testimonialFormSchema),
+    defaultValues: {
+      name: "",
+      courseName: "",
+      review: "",
+      rating: 5,
+      jobTitle: "",
+      company: "",
+      image: "",
+      isApproved: false,
+    },
+  });
+
+  // Blog form
+  const blogForm = useForm<BlogFormData>({
+    resolver: zodResolver(blogFormSchema),
+    defaultValues: {
+      title: "",
+      slug: "",
+      content: "",
+      excerpt: "",
+      category: "",
+      featuredImage: "",
+      isPublished: false,
+      readingTime: 5,
+    },
   });
 
   // Course mutations
@@ -196,6 +260,72 @@ export default function AdminDashboard() {
     },
   });
 
+  // Testimonial mutations
+  const createTestimonialMutation = useMutation({
+    mutationFn: async (data: TestimonialFormData) => {
+      const response = await fetch("/api/testimonials", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create testimonial");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/testimonials"] });
+      setIsCreateTestimonialOpen(false);
+      testimonialForm.reset();
+      toast({
+        title: "Success",
+        description: "Testimonial created successfully!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create testimonial",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Blog post mutations
+  const createBlogMutation = useMutation({
+    mutationFn: async (data: BlogFormData) => {
+      const response = await fetch("/api/blog", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create blog post");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
+      setIsCreateBlogOpen(false);
+      blogForm.reset();
+      toast({
+        title: "Success",
+        description: "Blog post created successfully!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create blog post",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Course management functions
   const handleEditCourse = (course: Course) => {
     setSelectedCourse(course);
@@ -231,6 +361,16 @@ export default function AdminDashboard() {
     if (selectedCourse) {
       updateCourseMutation.mutate({ id: selectedCourse.id, data });
     }
+  };
+
+  // Testimonial submit handler
+  const onTestimonialSubmit = (data: TestimonialFormData) => {
+    createTestimonialMutation.mutate(data);
+  };
+
+  // Blog submit handler
+  const onBlogSubmit = (data: BlogFormData) => {
+    createBlogMutation.mutate(data);
   };
 
   // Check authentication from localStorage (immediate, no API calls needed)
@@ -702,7 +842,7 @@ export default function AdminDashboard() {
                     <CardTitle>Testimonial Management</CardTitle>
                     <CardDescription>Review and approve student testimonials</CardDescription>
                   </div>
-                  <Button>
+                  <Button onClick={() => setIsCreateTestimonialOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Add Testimonial
                   </Button>
@@ -753,7 +893,7 @@ export default function AdminDashboard() {
                     <CardTitle>Blog Management</CardTitle>
                     <CardDescription>Manage your blog content</CardDescription>
                   </div>
-                  <Button>
+                  <Button onClick={() => setIsCreateBlogOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     New Post
                   </Button>
@@ -839,6 +979,257 @@ export default function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Create Testimonial Dialog */}
+      <Dialog open={isCreateTestimonialOpen} onOpenChange={setIsCreateTestimonialOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add New Testimonial</DialogTitle>
+            <DialogDescription>
+              Create a new testimonial for your courses.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...testimonialForm}>
+            <form onSubmit={testimonialForm.handleSubmit(onTestimonialSubmit)} className="space-y-4">
+              <FormField
+                control={testimonialForm.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Student name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={testimonialForm.control}
+                name="courseName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Course Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Course they took" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={testimonialForm.control}
+                name="review"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Review</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Their testimonial..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={testimonialForm.control}
+                  name="rating"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rating</FormLabel>
+                      <FormControl>
+                        <Input type="number" min="1" max="5" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={testimonialForm.control}
+                  name="isApproved"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>Approved</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={testimonialForm.control}
+                name="jobTitle"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Job Title (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Software Engineer" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={testimonialForm.control}
+                name="company"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Company (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Tech Corp" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end gap-3">
+                <Button type="button" variant="outline" onClick={() => setIsCreateTestimonialOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={createTestimonialMutation.isPending}>
+                  {createTestimonialMutation.isPending ? "Creating..." : "Create Testimonial"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Create Blog Post Dialog */}
+      <Dialog open={isCreateBlogOpen} onOpenChange={setIsCreateBlogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create New Blog Post</DialogTitle>
+            <DialogDescription>
+              Write and publish a new blog post.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...blogForm}>
+            <form onSubmit={blogForm.handleSubmit(onBlogSubmit)} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={blogForm.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Blog post title" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={blogForm.control}
+                  name="slug"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Slug</FormLabel>
+                      <FormControl>
+                        <Input placeholder="blog-post-url" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={blogForm.control}
+                name="excerpt"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Excerpt</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Brief description..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={blogForm.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Content</FormLabel>
+                    <FormControl>
+                      <Textarea placeholder="Write your blog post content here..." rows={6} {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={blogForm.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Category</FormLabel>
+                      <FormControl>
+                        <Input placeholder="cybersecurity" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={blogForm.control}
+                  name="readingTime"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Reading Time (min)</FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={blogForm.control}
+                  name="isPublished"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                      <div className="space-y-0.5">
+                        <FormLabel>Published</FormLabel>
+                      </div>
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={blogForm.control}
+                name="featuredImage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Featured Image URL (Optional)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://..." {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end gap-3">
+                <Button type="button" variant="outline" onClick={() => setIsCreateBlogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={createBlogMutation.isPending}>
+                  {createBlogMutation.isPending ? "Creating..." : "Create Post"}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
