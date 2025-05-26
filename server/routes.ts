@@ -119,18 +119,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/courses", async (req, res) => {
+  app.post("/api/courses", requireAuth, async (req, res) => {
     console.log("POST /api/courses hit!");
     console.log("Request body:", req.body);
     
     try {
       const courseData = req.body;
+      console.log("About to create course with data:", courseData);
+      
       const course = await storage.createCourse(courseData);
       console.log("Course created successfully:", course);
+      
       res.json(course);
     } catch (error) {
       console.error('Create course error:', error);
-      res.status(500).json({ message: "Failed to create course" });
+      console.error('Error stack:', error.stack);
+      res.status(500).json({ message: "Failed to create course", error: error.message });
     }
   });
 
