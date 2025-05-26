@@ -119,6 +119,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/courses", requireAuth, async (req, res) => {
+    try {
+      const courseData = req.body;
+      const course = await storage.createCourse(courseData);
+      res.status(201).json(course);
+    } catch (error) {
+      console.error('Create course error:', error);
+      res.status(500).json({ message: "Failed to create course" });
+    }
+  });
+
+  app.patch("/api/courses/:id", requireAuth, async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.id);
+      const courseData = req.body;
+      const course = await storage.updateCourse(courseId, courseData);
+      
+      if (!course) {
+        return res.status(404).json({ message: "Course not found" });
+      }
+      
+      res.json(course);
+    } catch (error) {
+      console.error('Update course error:', error);
+      res.status(500).json({ message: "Failed to update course" });
+    }
+  });
+
+  app.delete("/api/courses/:id", requireAuth, async (req, res) => {
+    try {
+      const courseId = parseInt(req.params.id);
+      const success = await storage.deleteCourse(courseId);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Course not found" });
+      }
+      
+      res.json({ success: true, message: "Course deleted successfully" });
+    } catch (error) {
+      console.error('Delete course error:', error);
+      res.status(500).json({ message: "Failed to delete course" });
+    }
+  });
+
   app.get("/api/courses/:slug", async (req, res) => {
     try {
       const course = await storage.getCourseBySlug(req.params.slug);
