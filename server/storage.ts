@@ -57,6 +57,8 @@ export interface IStorage {
   getAllTestimonials(approved?: boolean): Promise<Testimonial[]>;
   getTestimonialsByCourse(courseId: number): Promise<Testimonial[]>;
   createTestimonial(testimonial: InsertTestimonial): Promise<Testimonial>;
+  updateTestimonial(id: number, testimonial: Partial<InsertTestimonial>): Promise<Testimonial | undefined>;
+  deleteTestimonial(id: number): Promise<boolean>;
   
   // FAQ operations
   getAllFAQs(active?: boolean): Promise<FAQ[]>;
@@ -224,6 +226,22 @@ export class DatabaseStorage implements IStorage {
       .values(insertTestimonial)
       .returning();
     return testimonial;
+  }
+
+  async updateTestimonial(id: number, testimonialUpdate: Partial<InsertTestimonial>): Promise<Testimonial | undefined> {
+    const [testimonial] = await db
+      .update(testimonials)
+      .set(testimonialUpdate)
+      .where(eq(testimonials.id, id))
+      .returning();
+    return testimonial || undefined;
+  }
+
+  async deleteTestimonial(id: number): Promise<boolean> {
+    const result = await db
+      .delete(testimonials)
+      .where(eq(testimonials.id, id));
+    return result.rowCount > 0;
   }
 
   async getAllFAQs(active?: boolean): Promise<FAQ[]> {

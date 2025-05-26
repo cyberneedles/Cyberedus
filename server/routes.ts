@@ -302,6 +302,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/blog/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      const validatedData = insertBlogPostSchema.parse(req.body);
+      const post = await storage.updateBlogPost(id, validatedData);
+      if (!post) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json(post);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid blog post data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update blog post" });
+    }
+  });
+
+  app.delete("/api/blog/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteBlogPost(id);
+      if (!success) {
+        return res.status(404).json({ message: "Blog post not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete blog post" });
+    }
+  });
+
+  app.put("/api/blog/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
       const validatedData = insertBlogPostSchema.partial().parse(req.body);
       const post = await storage.updateBlogPost(id, validatedData);
       if (!post) {
@@ -358,6 +388,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid testimonial data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to create testimonial" });
+    }
+  });
+
+  app.put("/api/testimonials/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const validatedData = insertTestimonialSchema.parse(req.body);
+      const testimonial = await storage.updateTestimonial(id, validatedData);
+      if (!testimonial) {
+        return res.status(404).json({ message: "Testimonial not found" });
+      }
+      res.json(testimonial);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid testimonial data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update testimonial" });
+    }
+  });
+
+  app.delete("/api/testimonials/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteTestimonial(id);
+      if (!success) {
+        return res.status(404).json({ message: "Testimonial not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete testimonial" });
     }
   });
 

@@ -1102,10 +1102,10 @@ export default function AdminDashboard() {
                         <Button variant="outline" size="sm">
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleEditBlog(post)}>
                           <Edit className="w-4 h-4" />
                         </Button>
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleDeleteBlog(post)}>
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
