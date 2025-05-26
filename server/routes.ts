@@ -15,9 +15,10 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Force JSON responses for all API routes
+  // Force JSON responses for all API routes and skip Vite middleware
   app.use('/api', (req, res, next) => {
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader('X-Powered-By', 'Express-API');
     next();
   });
 

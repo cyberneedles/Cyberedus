@@ -14,10 +14,21 @@ export async function apiRequest(
 ): Promise<Response> {
   const res = await fetch(url, {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+    },
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
+
+  // Check if we got HTML instead of JSON (Vite middleware issue)
+  const contentType = res.headers.get("content-type");
+  if (contentType && contentType.includes("text/html")) {
+    console.error("API Error: Received HTML instead of JSON for:", url);
+    throw new Error("Invalid JSON response from server");
+  }
 
   await throwIfResNotOk(res);
   return res;
