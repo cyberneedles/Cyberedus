@@ -96,9 +96,17 @@ export default function AdminDashboard() {
 
   // Testimonial management state
   const [isCreateTestimonialOpen, setIsCreateTestimonialOpen] = useState(false);
+  const [isEditTestimonialOpen, setIsEditTestimonialOpen] = useState(false);
+  const [isDeleteTestimonialOpen, setIsDeleteTestimonialOpen] = useState(false);
+  const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null);
+  const [testimonialToDelete, setTestimonialToDelete] = useState<Testimonial | null>(null);
   
   // Blog management state
   const [isCreateBlogOpen, setIsCreateBlogOpen] = useState(false);
+  const [isEditBlogOpen, setIsEditBlogOpen] = useState(false);
+  const [isDeleteBlogOpen, setIsDeleteBlogOpen] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
+  const [blogToDelete, setBlogToDelete] = useState<BlogPost | null>(null);
 
   // Course forms
   const createForm = useForm<CourseFormData>({
@@ -138,6 +146,11 @@ export default function AdminDashboard() {
       image: "",
       isApproved: false,
     },
+  });
+
+  // Edit testimonial form
+  const editTestimonialForm = useForm<TestimonialFormData>({
+    resolver: zodResolver(testimonialFormSchema),
   });
 
   // Blog form
@@ -327,6 +340,130 @@ export default function AdminDashboard() {
     },
   });
 
+  // Update testimonial mutation
+  const updateTestimonialMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: TestimonialFormData }) => {
+      const response = await fetch(`/api/testimonials/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update testimonial");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/testimonials"] });
+      setIsEditTestimonialOpen(false);
+      setSelectedTestimonial(null);
+      toast({
+        title: "Success",
+        description: "Testimonial updated successfully!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update testimonial",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete testimonial mutation
+  const deleteTestimonialMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/testimonials/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete testimonial");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/testimonials"] });
+      setIsDeleteTestimonialOpen(false);
+      setTestimonialToDelete(null);
+      toast({
+        title: "Success",
+        description: "Testimonial deleted successfully!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete testimonial",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Update blog mutation
+  const updateBlogMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: BlogFormData }) => {
+      const response = await fetch(`/api/blog/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update blog post");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
+      setIsEditBlogOpen(false);
+      setSelectedBlog(null);
+      toast({
+        title: "Success",
+        description: "Blog post updated successfully!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update blog post",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete blog mutation
+  const deleteBlogMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await fetch(`/api/blog/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete blog post");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/blog"] });
+      setIsDeleteBlogOpen(false);
+      setBlogToDelete(null);
+      toast({
+        title: "Success",
+        description: "Blog post deleted successfully!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete blog post",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Course management functions
   const handleEditCourse = (course: Course) => {
     setSelectedCourse(course);
@@ -372,6 +509,50 @@ export default function AdminDashboard() {
   // Blog submit handler
   const onBlogSubmit = (data: BlogFormData) => {
     createBlogMutation.mutate(data);
+  };
+
+  // Testimonial management handlers
+  const handleEditTestimonial = (testimonial: Testimonial) => {
+    setSelectedTestimonial(testimonial);
+    editTestimonialForm.reset({
+      name: testimonial.name,
+      courseName: testimonial.courseName,
+      review: testimonial.review,
+      rating: testimonial.rating,
+      jobTitle: testimonial.jobTitle || "",
+      company: testimonial.company || "",
+      image: testimonial.image || "",
+      isApproved: testimonial.isApproved,
+    });
+    setIsEditTestimonialOpen(true);
+  };
+
+  const handleDeleteTestimonial = (testimonial: Testimonial) => {
+    setTestimonialToDelete(testimonial);
+    setIsDeleteTestimonialOpen(true);
+  };
+
+  const onEditTestimonialSubmit = (data: TestimonialFormData) => {
+    if (selectedTestimonial) {
+      updateTestimonialMutation.mutate({ id: selectedTestimonial.id, data });
+    }
+  };
+
+  // Blog management handlers
+  const handleEditBlog = (blog: BlogPost) => {
+    setSelectedBlog(blog);
+    setIsEditBlogOpen(true);
+  };
+
+  const handleDeleteBlog = (blog: BlogPost) => {
+    setBlogToDelete(blog);
+    setIsDeleteBlogOpen(true);
+  };
+
+  const onEditBlogSubmit = (data: BlogFormData) => {
+    if (selectedBlog) {
+      updateBlogMutation.mutate({ id: selectedBlog.id, data });
+    }
   };
 
   // Check authentication from localStorage (immediate, no API calls needed)
@@ -870,10 +1051,10 @@ export default function AdminDashboard() {
                           ))}
                         </div>
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" onClick={() => handleEditTestimonial(testimonial)}>
                             <Edit className="w-4 h-4" />
                           </Button>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" onClick={() => handleDeleteTestimonial(testimonial)}>
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
