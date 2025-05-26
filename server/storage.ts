@@ -99,16 +99,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCourse(insertCourse: InsertCourse): Promise<Course> {
-    // Convert empty arrays to null to avoid PostgreSQL array literal issues
-    const courseData = {
-      ...insertCourse,
-      features: insertCourse.features && insertCourse.features.length > 0 ? insertCourse.features : null,
-      batchDates: insertCourse.batchDates && insertCourse.batchDates.length > 0 ? insertCourse.batchDates : null,
-    };
-    
     const [course] = await db
       .insert(courses)
-      .values(courseData)
+      .values({
+        title: insertCourse.title,
+        slug: insertCourse.slug,
+        description: insertCourse.description,
+        duration: insertCourse.duration,
+        prerequisites: insertCourse.prerequisites,
+        mode: insertCourse.mode,
+        level: insertCourse.level,
+        price: insertCourse.price,
+        syllabusUrl: insertCourse.syllabusUrl,
+        icon: insertCourse.icon,
+        category: insertCourse.category,
+        isActive: insertCourse.isActive,
+        // Let database defaults handle jsonb arrays
+      })
       .returning();
     return course;
   }
