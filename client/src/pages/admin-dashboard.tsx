@@ -92,10 +92,17 @@ export default function AdminDashboard() {
   // Course mutations
   const createCourseMutation = useMutation({
     mutationFn: async (data: CourseFormData) => {
-      return apiRequest("/api/courses", {
+      const response = await fetch("/api/courses", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
+      if (!response.ok) {
+        throw new Error("Failed to create course");
+      }
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
@@ -117,10 +124,17 @@ export default function AdminDashboard() {
 
   const updateCourseMutation = useMutation({
     mutationFn: async ({ id, data }: { id: number; data: CourseFormData }) => {
-      return apiRequest(`/api/courses/${id}`, {
+      const response = await fetch(`/api/courses/${id}`, {
         method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
+      if (!response.ok) {
+        throw new Error("Failed to update course");
+      }
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
@@ -142,9 +156,13 @@ export default function AdminDashboard() {
 
   const deleteCourseMutation = useMutation({
     mutationFn: async (id: number) => {
-      return apiRequest(`/api/courses/${id}`, {
+      const response = await fetch(`/api/courses/${id}`, {
         method: "DELETE",
       });
+      if (!response.ok) {
+        throw new Error("Failed to delete course");
+      }
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
