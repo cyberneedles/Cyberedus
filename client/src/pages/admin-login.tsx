@@ -53,7 +53,7 @@ export default function AdminLogin() {
       // Invalidate session cache and redirect
       queryClient.invalidateQueries({ queryKey: ['/api/admin/session'] });
       setTimeout(() => {
-        window.location.href = '/admin/dashboard';
+        window.location.href = '/admin';
       }, 1000);
     },
     onError: (error: Error) => {
