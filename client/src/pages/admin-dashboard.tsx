@@ -39,6 +39,22 @@ export default function AdminDashboard() {
     }
   }, [session, sessionLoading, setLocation]);
 
+  // Fetch all data (hooks must be called before any conditional returns)
+  const { data: courses = [], isLoading: coursesLoading } = useQuery({
+    queryKey: ['/api/courses'],
+    enabled: !!session?.authenticated,
+  });
+
+  const { data: leads = [], isLoading: leadsLoading } = useQuery({
+    queryKey: ['/api/leads'],
+    enabled: !!session?.authenticated,
+  });
+
+  const { data: testimonials = [], isLoading: testimonialsLoading } = useQuery({
+    queryKey: ['/api/testimonials'],
+    enabled: !!session?.authenticated,
+  });
+
   // Show loading while checking authentication
   if (sessionLoading) {
     return (
@@ -55,19 +71,6 @@ export default function AdminDashboard() {
   if (!session?.authenticated) {
     return null;
   }
-
-  // Fetch all data
-  const { data: courses = [], isLoading: coursesLoading } = useQuery({
-    queryKey: ['/api/courses'],
-  });
-
-  const { data: leads = [], isLoading: leadsLoading } = useQuery({
-    queryKey: ['/api/leads'],
-  });
-
-  const { data: testimonials = [], isLoading: testimonialsLoading } = useQuery({
-    queryKey: ['/api/testimonials'],
-  });
 
   const { data: blogPosts = [], isLoading: blogLoading } = useQuery({
     queryKey: ['/api/blog'],
