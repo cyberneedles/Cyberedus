@@ -250,50 +250,38 @@ export default function AdminDashboard() {
 
   // Show loading while checking auth
   if (!authChecked) {
-    return <AnimatedLoading />;
+    return <AnimatedLoading isLoading={true} />;
   }
 
   // Fetch all data (hooks must be called before any conditional returns)
   const { data: courses = [], isLoading: coursesLoading } = useQuery({
     queryKey: ['/api/courses'],
-    enabled: !!session?.authenticated,
+    enabled: isAuthenticated,
   });
 
   const { data: leads = [], isLoading: leadsLoading } = useQuery({
     queryKey: ['/api/leads'],
-    enabled: !!session?.authenticated,
+    enabled: isAuthenticated,
   });
 
   const { data: testimonials = [], isLoading: testimonialsLoading } = useQuery({
     queryKey: ['/api/testimonials'],
-    enabled: !!session?.authenticated,
+    enabled: isAuthenticated,
   });
 
-  const { data: blogPosts = [], isLoading: blogLoading } = useQuery({
+  const { data: blogPosts = [], isLoading: blogPostsLoading } = useQuery({
     queryKey: ['/api/blog'],
-    enabled: !!session?.authenticated,
+    enabled: isAuthenticated,
   });
 
   const { data: faqs = [], isLoading: faqsLoading } = useQuery({
     queryKey: ['/api/faqs'],
-    enabled: !!session?.authenticated,
+    enabled: isAuthenticated,
   });
 
-  // Show loading while checking authentication
-  if (sessionLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p>Checking authentication...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Don't render dashboard if not authenticated
-  if (!session?.authenticated) {
-    return null;
+  // Loading states
+  if (coursesLoading || leadsLoading || testimonialsLoading || blogPostsLoading || faqsLoading) {
+    return <AnimatedLoading isLoading={true} />;
   }
 
   // Calculate stats
