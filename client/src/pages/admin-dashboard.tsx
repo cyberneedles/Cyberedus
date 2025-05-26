@@ -535,7 +535,11 @@ export default function AdminDashboard() {
   };
 
   const handleViewBlog = (post: BlogPost) => {
-    window.open(`/blog/${post.slug}`, '_blank');
+    // Toggle content visibility instead of redirecting
+    const element = document.getElementById(`blog-content-${post.id}`);
+    if (element) {
+      element.style.display = element.style.display === 'none' ? 'block' : 'none';
+    }
   };
 
   // Testimonial management handlers
@@ -1102,30 +1106,38 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {blogPosts.map((post: BlogPost) => (
-                    <div key={post.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">{post.title}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{post.excerpt}</p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <Badge variant={post.isPublished ? "default" : "secondary"}>
-                            {post.isPublished ? "Published" : "Draft"}
-                          </Badge>
-                          <span className="text-sm text-gray-500">{post.category}</span>
-                          <span className="text-sm text-gray-500">
-                            {new Date(post.createdAt).toLocaleDateString()}
-                          </span>
+                    <div key={post.id} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-900 dark:text-white">{post.title}</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{post.excerpt}</p>
+                          <div className="flex items-center gap-4 mt-2">
+                            <Badge variant={post.isPublished ? "default" : "secondary"}>
+                              {post.isPublished ? "Published" : "Draft"}
+                            </Badge>
+                            <span className="text-sm text-gray-500">{post.category}</span>
+                            <span className="text-sm text-gray-500">
+                              {new Date(post.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleViewBlog(post)}>
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => handleEditBlog(post)}>
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => handleDeleteBlog(post)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" onClick={() => handleViewBlog(post)}>
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleEditBlog(post)}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => handleDeleteBlog(post)}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                      <div id={`blog-content-${post.id}`} style={{ display: 'none' }} className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                        <h4 className="font-medium text-gray-900 dark:text-white mb-2">Full Content:</h4>
+                        <div className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                          {post.content}
+                        </div>
                       </div>
                     </div>
                   ))}
