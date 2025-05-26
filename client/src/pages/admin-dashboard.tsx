@@ -20,11 +20,186 @@ import {
   Award
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
-import type { Course, Lead, Testimonial, BlogPost, FAQ } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import type { Course, Lead, Testimonial, BlogPost, FAQ, InsertCourse } from "@shared/schema";
+
+// Course form schema
+const courseFormSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  slug: z.string().min(1, "Slug is required"),
+  description: z.string().min(1, "Description is required"),
+  duration: z.string().min(1, "Duration is required"),
+  prerequisites: z.string().optional(),
+  mode: z.enum(["online", "offline", "hybrid"]),
+  level: z.enum(["beginner", "intermediate", "advanced"]),
+  price: z.number().min(0, "Price must be positive").optional(),
+  category: z.string().min(1, "Category is required"),
+  icon: z.string().min(1, "Icon is required"),
+  features: z.array(z.string()).default([]),
+  syllabusUrl: z.string().url().optional().or(z.literal("")),
+  batchDates: z.array(z.string()).default([]),
+  isActive: z.boolean().default(true),
+});
+
+type CourseFormData = z.infer<typeof courseFormSchema>;
 
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
+  
+  // Course management state
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState<Course | null>(null);
+
+  // Course forms
+  const createForm = useForm<CourseFormData>({
+    resolver: zodResolver(courseFormSchema),
+    defaultValues: {
+      title: "",
+      slug: "",
+      description: "",
+      duration: "",
+      prerequisites: "",
+      mode: "online",
+      level: "beginner",
+      price: 0,
+      category: "",
+      icon: "",
+      features: [],
+      syllabusUrl: "",
+      batchDates: [],
+      isActive: true,
+    },
+  });
+
+  const editForm = useForm<CourseFormData>({
+    resolver: zodResolver(courseFormSchema),
+  });
+
+  // Course mutations
+  const createCourseMutation = useMutation({
+    mutationFn: async (data: CourseFormData) => {
+      return apiRequest("/api/courses", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
+      setIsCreateDialogOpen(false);
+      createForm.reset();
+      toast({
+        title: "Success",
+        description: "Course created successfully!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create course",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateCourseMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: CourseFormData }) => {
+      return apiRequest(`/api/courses/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify(data),
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
+      setIsEditDialogOpen(false);
+      setSelectedCourse(null);
+      toast({
+        title: "Success",
+        description: "Course updated successfully!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update course",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteCourseMutation = useMutation({
+    mutationFn: async (id: number) => {
+      return apiRequest(`/api/courses/${id}`, {
+        method: "DELETE",
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
+      setIsDeleteDialogOpen(false);
+      setCourseToDelete(null);
+      toast({
+        title: "Success",
+        description: "Course deleted successfully!",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete course",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Course management functions
+  const handleEditCourse = (course: Course) => {
+    setSelectedCourse(course);
+    editForm.reset({
+      title: course.title,
+      slug: course.slug,
+      description: course.description,
+      duration: course.duration,
+      prerequisites: course.prerequisites || "",
+      mode: course.mode as "online" | "offline" | "hybrid",
+      level: course.level as "beginner" | "intermediate" | "advanced",
+      price: course.price || 0,
+      category: course.category,
+      icon: course.icon,
+      features: Array.isArray(course.features) ? course.features : [],
+      syllabusUrl: course.syllabusUrl || "",
+      batchDates: Array.isArray(course.batchDates) ? course.batchDates : [],
+      isActive: course.isActive,
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDeleteCourse = (course: Course) => {
+    setCourseToDelete(course);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const onCreateSubmit = (data: CourseFormData) => {
+    createCourseMutation.mutate(data);
+  };
+
+  const onEditSubmit = (data: CourseFormData) => {
+    if (selectedCourse) {
+      updateCourseMutation.mutate({ id: selectedCourse.id, data });
+    }
+  };
 
   // Check authentication
   const { data: session, isLoading: sessionLoading } = useQuery({
@@ -259,10 +434,173 @@ export default function AdminDashboard() {
                     <CardTitle>Course Management</CardTitle>
                     <CardDescription>Manage your educational content</CardDescription>
                   </div>
-                  <Button>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Course
-                  </Button>
+                  <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Course
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl">
+                      <DialogHeader>
+                        <DialogTitle>Create New Course</DialogTitle>
+                      </DialogHeader>
+                      <Form {...createForm}>
+                        <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                              control={createForm.control}
+                              name="title"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Course Title</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Enter course title" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={createForm.control}
+                              name="slug"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Slug</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="course-slug" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          
+                          <FormField
+                            control={createForm.control}
+                            name="description"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Description</FormLabel>
+                                <FormControl>
+                                  <Textarea placeholder="Course description" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          
+                          <div className="grid grid-cols-3 gap-4">
+                            <FormField
+                              control={createForm.control}
+                              name="level"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Level</FormLabel>
+                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Select level" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      <SelectItem value="beginner">Beginner</SelectItem>
+                                      <SelectItem value="intermediate">Intermediate</SelectItem>
+                                      <SelectItem value="advanced">Advanced</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={createForm.control}
+                              name="duration"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Duration</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="e.g., 8 weeks" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={createForm.control}
+                              name="price"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Price</FormLabel>
+                                  <FormControl>
+                                    <Input 
+                                      type="number" 
+                                      placeholder="0" 
+                                      {...field}
+                                      onChange={(e) => field.onChange(Number(e.target.value))}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          
+                          <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                              control={createForm.control}
+                              name="category"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Category</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="e.g., Cybersecurity" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={createForm.control}
+                              name="icon"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Icon</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="e.g., shield" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          
+                          <div className="flex justify-end gap-3 pt-4">
+                            <Button 
+                              type="button" 
+                              variant="outline" 
+                              onClick={() => setIsCreateDialogOpen(false)}
+                            >
+                              Cancel
+                            </Button>
+                            <Button 
+                              type="submit" 
+                              disabled={createCourseMutation.isPending}
+                            >
+                              {createCourseMutation.isPending ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                  Creating...
+                                </>
+                              ) : (
+                                "Create Course"
+                              )}
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </CardHeader>
               <CardContent>
