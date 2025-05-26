@@ -237,23 +237,7 @@ export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
 
-  useEffect(() => {
-    const authenticated = localStorage.getItem('admin_authenticated') === 'true';
-    
-    if (authenticated) {
-      setIsAuthenticated(true);
-    } else {
-      setLocation('/cyberedus-agent');
-    }
-    setAuthChecked(true);
-  }, [setLocation]);
-
-  // Show loading while checking auth
-  if (!authChecked) {
-    return <AnimatedLoading isLoading={true} />;
-  }
-
-  // Fetch all data (hooks must be called before any conditional returns)
+  // Fetch all data (hooks must be called FIRST before any conditional logic)
   const { data: courses = [], isLoading: coursesLoading } = useQuery({
     queryKey: ['/api/courses'],
     enabled: isAuthenticated,
@@ -278,6 +262,22 @@ export default function AdminDashboard() {
     queryKey: ['/api/faqs'],
     enabled: isAuthenticated,
   });
+
+  useEffect(() => {
+    const authenticated = localStorage.getItem('admin_authenticated') === 'true';
+    
+    if (authenticated) {
+      setIsAuthenticated(true);
+    } else {
+      setLocation('/cyberedus-agent');
+    }
+    setAuthChecked(true);
+  }, [setLocation]);
+
+  // Show loading while checking auth
+  if (!authChecked) {
+    return <AnimatedLoading isLoading={true} />;
+  }
 
   // Loading states
   if (coursesLoading || leadsLoading || testimonialsLoading || blogPostsLoading || faqsLoading) {
