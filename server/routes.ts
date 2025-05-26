@@ -171,10 +171,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.setHeader('Cache-Control', 'no-cache');
     
     try {
-      const courseData = req.body;
-      console.log("About to create course with data:", courseData);
+      // Clean the data - remove problematic array fields that cause Supabase issues
+      const { features, batchDates, ...cleanData } = req.body;
+      console.log("About to create course with cleaned data:", cleanData);
       
-      const course = await storage.createCourse(courseData);
+      const course = await storage.createCourse(cleanData);
       console.log("Course created successfully:", course);
       
       res.status(201).json(course);
