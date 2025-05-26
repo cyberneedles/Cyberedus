@@ -511,6 +511,33 @@ export default function AdminDashboard() {
     createBlogMutation.mutate(data);
   };
 
+  // Blog management handlers  
+  const handleEditBlog = (post: BlogPost) => {
+    setSelectedBlog(post);
+    editForm.reset({
+      title: post.title,
+      slug: post.slug,
+      content: post.content,
+      excerpt: post.excerpt,
+      category: post.category,
+      featuredImage: post.featuredImage || "",
+      isPublished: post.isPublished,
+      readingTime: post.readingTime,
+      authorId: post.authorId || 1,
+    });
+    setIsEditBlogOpen(true);
+  };
+
+  const handleDeleteBlog = (post: BlogPost) => {
+    if (confirm(`Are you sure you want to delete "${post.title}"?`)) {
+      deleteBlogMutation.mutate(post.id);
+    }
+  };
+
+  const handleViewBlog = (post: BlogPost) => {
+    window.open(`/blog/${post.slug}`, '_blank');
+  };
+
   // Testimonial management handlers
   const handleEditTestimonial = (testimonial: Testimonial) => {
     setSelectedTestimonial(testimonial);
@@ -538,16 +565,7 @@ export default function AdminDashboard() {
     }
   };
 
-  // Blog management handlers
-  const handleEditBlog = (blog: BlogPost) => {
-    setSelectedBlog(blog);
-    setIsEditBlogOpen(true);
-  };
 
-  const handleDeleteBlog = (blog: BlogPost) => {
-    setBlogToDelete(blog);
-    setIsDeleteBlogOpen(true);
-  };
 
   const onEditBlogSubmit = (data: BlogFormData) => {
     if (selectedBlog) {
@@ -1099,7 +1117,7 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" onClick={() => handleViewBlog(post)}>
                           <Eye className="w-4 h-4" />
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => handleEditBlog(post)}>
