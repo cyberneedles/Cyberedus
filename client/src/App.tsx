@@ -35,6 +35,7 @@ function Router() {
       <Route path="/blog" component={Blog} />
       <Route path="/contact" component={Contact} />
       <Route path="/cyberedus-agent" component={AdminLogin} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
       <Route path="/mascot-demo" component={MascotDemo} />
       <Route component={NotFound} />
