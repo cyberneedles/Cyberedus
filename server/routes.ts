@@ -80,6 +80,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.status(500).json({ error: "Session error" });
         }
         
+        // Set proper session cookie
+        res.cookie('connect.sid', req.sessionID, { 
+          httpOnly: true, 
+          secure: false, 
+          maxAge: 24 * 60 * 60 * 1000 
+        });
+        
         res.json({ 
           success: true, 
           user: {
@@ -87,7 +94,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             email: adminUser.email,
             name: adminUser.email.split('@')[0],
             isAdmin: true
-          }
+          },
+          redirect: '/admin'
         });
       });
     } catch (error) {
