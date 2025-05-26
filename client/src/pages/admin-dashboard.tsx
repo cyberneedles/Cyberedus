@@ -608,11 +608,11 @@ export default function AdminDashboard() {
 
   // Calculate stats
   const stats = {
-    totalCourses: courses.length,
-    totalLeads: leads.length,
-    approvedTestimonials: testimonials.filter((t: Testimonial) => t.approved).length,
-    publishedBlogs: blogPosts.filter((b: BlogPost) => b.published).length,
-    conversionRate: leads.length > 0 ? Math.round((testimonials.length / leads.length) * 100) : 0,
+    totalCourses: Array.isArray(courses) ? courses.length : 0,
+    totalLeads: Array.isArray(leads) ? leads.length : 0,
+    approvedTestimonials: Array.isArray(testimonials) ? testimonials.filter((t: any) => t.isApproved).length : 0,
+    publishedBlogs: Array.isArray(blogPosts) ? blogPosts.filter((b: any) => b.isPublished).length : 0,
+    conversionRate: Array.isArray(leads) && Array.isArray(testimonials) && leads.length > 0 ? Math.round((testimonials.length / leads.length) * 100) : 0,
   };
 
   const recentLeads = leads.slice(-5).reverse();
@@ -1089,12 +1089,12 @@ export default function AdminDashboard() {
                         <h3 className="font-semibold text-gray-900 dark:text-white">{post.title}</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{post.excerpt}</p>
                         <div className="flex items-center gap-4 mt-2">
-                          <Badge variant={post.published ? "default" : "secondary"}>
-                            {post.published ? "Published" : "Draft"}
+                          <Badge variant={post.isPublished ? "default" : "secondary"}>
+                            {post.isPublished ? "Published" : "Draft"}
                           </Badge>
                           <span className="text-sm text-gray-500">{post.category}</span>
                           <span className="text-sm text-gray-500">
-                            {new Date(post.created_at || '').toLocaleDateString()}
+                            {new Date(post.createdAt).toLocaleDateString()}
                           </span>
                         </div>
                       </div>
