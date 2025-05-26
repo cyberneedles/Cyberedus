@@ -7,15 +7,13 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
-const API_BASE_URL = 'http://localhost:3001';
-
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  // Convert /api/ URLs to the separate API server
-  const apiUrl = url.startsWith('/api/') ? `${API_BASE_URL}${url.replace('/api', '')}` : url;
+  // Use the same server for API calls
+  const apiUrl = url;
   
   const res = await fetch(apiUrl, {
     method,
@@ -37,9 +35,9 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    // Convert /api/ URLs to the separate API server
+    // Use the same server for API calls
     const url = queryKey[0] as string;
-    const apiUrl = url.startsWith('/api/') ? `${API_BASE_URL}${url.replace('/api', '')}` : url;
+    const apiUrl = url;
     
     const res = await fetch(apiUrl, {
       credentials: "include",
