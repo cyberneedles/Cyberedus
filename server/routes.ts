@@ -15,11 +15,14 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Bypass Vite middleware for API routes
+  // Completely bypass Vite for API routes - must be first
   app.use('/api', (req, res, next) => {
-    res.locals.skipVite = true;
+    // Prevent any caching or middleware interference
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+    res.setHeader('X-API-Route', 'true');
     next();
   });
 
@@ -131,6 +134,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log("POST /api/courses hit!");
     console.log("Request body:", req.body);
     
+    // Mark as handled to prevent Vite interference
+    res.locals.apiHandled = true;
+    
     try {
       const courseData = req.body;
       console.log("About to create course with data:", courseData);
@@ -138,11 +144,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const course = await storage.createCourse(courseData);
       console.log("Course created successfully:", course);
       
-      // Send successful response
-      res.json(course);
+      // Send response and end immediately
+      return res.status(201).json(course);
     } catch (error) {
       console.error('Create course error:', error);
-      res.status(500).json({ message: "Failed to create course", error: String(error) });
+      return res.status(500).json({ message: "Failed to create course", error: String(error) });
     }
   });
 
