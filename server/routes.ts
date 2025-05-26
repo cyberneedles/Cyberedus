@@ -130,12 +130,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/courses", async (req, res) => {
-    console.log("POST /api/courses hit!");
+  // Use different path to bypass Vite
+  app.post("/server-api/courses", async (req, res) => {
+    console.log("POST /server-api/courses hit!");
     console.log("Request body:", req.body);
-    
-    // Mark as handled to prevent Vite interference
-    res.locals.apiHandled = true;
     
     try {
       const courseData = req.body;
@@ -144,11 +142,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const course = await storage.createCourse(courseData);
       console.log("Course created successfully:", course);
       
-      // Send response and end immediately
-      return res.status(201).json(course);
+      res.status(201).json(course);
     } catch (error) {
       console.error('Create course error:', error);
-      return res.status(500).json({ message: "Failed to create course", error: String(error) });
+      res.status(500).json({ message: "Failed to create course", error: String(error) });
+    }
+  });
+
+  app.post("/api/courses", async (req, res) => {
+    console.log("POST /api/courses hit!");
+    console.log("Request body:", req.body);
+    
+    try {
+      const courseData = req.body;
+      console.log("About to create course with data:", courseData);
+      
+      const course = await storage.createCourse(courseData);
+      console.log("Course created successfully:", course);
+      
+      res.status(201).json(course);
+    } catch (error) {
+      console.error('Create course error:', error);
+      res.status(500).json({ message: "Failed to create course", error: String(error) });
     }
   });
 
