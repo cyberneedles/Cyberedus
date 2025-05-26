@@ -55,6 +55,16 @@ export default function AdminDashboard() {
     enabled: !!session?.authenticated,
   });
 
+  const { data: blogPosts = [], isLoading: blogLoading } = useQuery({
+    queryKey: ['/api/blog'],
+    enabled: !!session?.authenticated,
+  });
+
+  const { data: faqs = [], isLoading: faqsLoading } = useQuery({
+    queryKey: ['/api/faqs'],
+    enabled: !!session?.authenticated,
+  });
+
   // Show loading while checking authentication
   if (sessionLoading) {
     return (
@@ -71,14 +81,6 @@ export default function AdminDashboard() {
   if (!session?.authenticated) {
     return null;
   }
-
-  const { data: blogPosts = [], isLoading: blogLoading } = useQuery({
-    queryKey: ['/api/blog'],
-  });
-
-  const { data: faqs = [], isLoading: faqsLoading } = useQuery({
-    queryKey: ['/api/faqs'],
-  });
 
   // Calculate stats
   const stats = {
