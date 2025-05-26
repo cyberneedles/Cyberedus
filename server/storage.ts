@@ -21,7 +21,7 @@ import {
   type FAQ,
   type InsertFAQ
 } from "@shared/schema";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { eq, and } from "drizzle-orm";
 
 export interface IStorage {
@@ -99,32 +99,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCourse(insertCourse: InsertCourse): Promise<Course> {
-    // Use raw SQL to bypass Drizzle ORM issues with JSONB arrays
-    const result = await pool.query(`
-      INSERT INTO courses (
-        title, slug, description, duration, prerequisites, 
-        mode, level, price, syllabus_url, icon, category, is_active,
-        features, batch_dates, created_at
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, 
-        '[]'::jsonb, '[]'::jsonb, NOW()
-      ) RETURNING *
-    `, [
-      insertCourse.title,
-      insertCourse.slug,
-      insertCourse.description,
-      insertCourse.duration,
-      insertCourse.prerequisites || null,
-      insertCourse.mode,
-      insertCourse.level,
-      insertCourse.price || null,
-      insertCourse.syllabusUrl || null,
-      insertCourse.icon,
-      insertCourse.category,
-      insertCourse.isActive ?? true
-    ]);
-    
-    return result.rows[0];
+    // Use Drizzle with explicit null for arrays to avoid malformed array literals
+    const [course] = await db
+      .insert(courses)
+      .values({
+        title: insertCourse.title,
+        slug: insertCourse.slug,
+        description: insertCourse.description,
+        duration: insertCourse.duration,
+        prerequisites: insertCourse.prerequisites || null,
+        mode: insertCourse.mode,
+        level: insertCourse.level,
+        price: insertCourse.price || null,
+        syllabusUrl: insertCourse.syllabusUrl || null,
+        icon: insertCourse.icon,
+        category: insertCourse.category,
+        isActive: insertCourse.isActive ?? true,
+        features: null, // Explicitly set to null instead of empty array
+        batchDates: null, // Explicitly set to null instead of empty array
+      })
+      .returning();
+    return course;
   }
 
   async updateCourse(id: number, courseUpdate: Partial<InsertCourse>): Promise<Course | undefined> {
