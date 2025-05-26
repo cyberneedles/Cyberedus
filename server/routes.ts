@@ -123,14 +123,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log("POST /api/courses hit!");
     console.log("Request body:", req.body);
     
-    // Ensure JSON response
-    res.setHeader('Content-Type', 'application/json');
-    
     try {
       const courseData = req.body;
       const course = await storage.createCourse(courseData);
       console.log("Course created successfully:", course);
-      res.status(201).json(course);
+      res.json(course);
     } catch (error) {
       console.error('Create course error:', error);
       res.status(500).json({ message: "Failed to create course" });
