@@ -7,28 +7,25 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+const API_BASE_URL = 'http://localhost:3001';
+
 export async function apiRequest(
   method: string,
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const res = await fetch(url, {
+  // Convert /api/ URLs to the separate API server
+  const apiUrl = url.startsWith('/api/') ? `${API_BASE_URL}${url.replace('/api', '')}` : url;
+  
+  const res = await fetch(apiUrl, {
     method,
     headers: {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "X-Requested-With": "XMLHttpRequest",
     },
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
-
-  // Check if we got HTML instead of JSON (Vite middleware issue)
-  const contentType = res.headers.get("content-type");
-  if (contentType && contentType.includes("text/html")) {
-    console.error("API Error: Received HTML instead of JSON for:", url);
-    throw new Error("Invalid JSON response from server");
-  }
 
   await throwIfResNotOk(res);
   return res;
@@ -40,7 +37,11 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    const res = await fetch(queryKey[0] as string, {
+    // Convert /api/ URLs to the separate API server
+    const url = queryKey[0] as string;
+    const apiUrl = url.startsWith('/api/') ? `${API_BASE_URL}${url.replace('/api', '')}` : url;
+    
+    const res = await fetch(apiUrl, {
       credentials: "include",
     });
 
