@@ -93,7 +93,6 @@ export default function AdminDashboard() {
   // Course mutations
   const createCourseMutation = useMutation({
     mutationFn: async (data: CourseFormData) => {
-      console.log("Sending course data:", data);
       const response = await fetch("/api/courses", {
         method: "POST",
         headers: {
@@ -102,20 +101,11 @@ export default function AdminDashboard() {
         body: JSON.stringify(data),
       });
       
-      console.log("Response status:", response.status);
-      const responseText = await response.text();
-      console.log("Response text:", responseText);
-      
       if (!response.ok) {
         throw new Error("Failed to create course");
       }
       
-      try {
-        return JSON.parse(responseText);
-      } catch (e) {
-        console.error("Failed to parse JSON:", e);
-        throw new Error("Invalid JSON response from server");
-      }
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
