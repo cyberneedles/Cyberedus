@@ -15,6 +15,12 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Force JSON responses for all API routes
+  app.use('/api', (req, res, next) => {
+    res.setHeader('Content-Type', 'application/json');
+    next();
+  });
+
   // Configure session middleware
   app.use(session({
     secret: process.env.SESSION_SECRET || 'cyberedus-secret-key-2024',
@@ -123,8 +129,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     console.log("POST /api/courses hit!");
     console.log("Request body:", req.body);
     
-    // Set proper headers first
+    // Force proper JSON response headers
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Cache-Control', 'no-cache');
     
     try {
       const courseData = req.body;
@@ -133,10 +140,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const course = await storage.createCourse(courseData);
       console.log("Course created successfully:", course);
       
-      res.status(201).json(course);
+      // Ensure we return immediately with JSON
+      return res.status(201).json(course);
     } catch (error) {
       console.error('Create course error:', error);
-      res.status(500).json({ message: "Failed to create course", error: String(error) });
+      return res.status(500).json({ message: "Failed to create course", error: String(error) });
     }
   });
 
