@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
+import { AnimatedLoading, LoadingButton } from "@/components/ui/animated-loading";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -613,19 +614,13 @@ export default function AdminDashboard() {
                             >
                               Cancel
                             </Button>
-                            <Button 
-                              type="submit" 
-                              disabled={createCourseMutation.isPending}
+                            <LoadingButton 
+                              isLoading={createCourseMutation.isPending}
+                              variant="security"
+                              className="min-w-[140px]"
                             >
-                              {createCourseMutation.isPending ? (
-                                <>
-                                  <div className="w-4 h-4 mr-2 animate-spin border-2 border-white border-t-transparent rounded-full" />
-                                  Creating...
-                                </>
-                              ) : (
-                                "Create Course"
-                              )}
-                            </Button>
+                              Create Course
+                            </LoadingButton>
                           </div>
                         </form>
                       </Form>
