@@ -99,9 +99,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCourse(insertCourse: InsertCourse): Promise<Course> {
+    // Convert empty arrays to null to avoid PostgreSQL array literal issues
+    const courseData = {
+      ...insertCourse,
+      features: insertCourse.features && insertCourse.features.length > 0 ? insertCourse.features : null,
+      batchDates: insertCourse.batchDates && insertCourse.batchDates.length > 0 ? insertCourse.batchDates : null,
+    };
+    
     const [course] = await db
       .insert(courses)
-      .values(insertCourse)
+      .values(courseData)
       .returning();
     return course;
   }
