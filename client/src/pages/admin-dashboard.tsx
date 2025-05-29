@@ -894,6 +894,49 @@ export default function AdminDashboard() {
                 </div>
               </CardContent>
             </Card>
+            
+            {/* Edit Course Dialog */}
+            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+              <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Edit Course</DialogTitle>
+                  <DialogDescription>
+                    Update course information, curriculum, batches, and fees
+                  </DialogDescription>
+                </DialogHeader>
+                <EnhancedCourseForm
+                  initialData={selectedCourse || undefined}
+                  onSubmit={onEditSubmit}
+                  isLoading={updateCourseMutation.isPending}
+                  isEdit={true}
+                />
+              </DialogContent>
+            </Dialog>
+
+            {/* Delete Course Dialog */}
+            <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Course</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete "{courseToDelete?.title}"? This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      if (courseToDelete) {
+                        deleteCourseMutation.mutate(courseToDelete.id);
+                      }
+                    }}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    Delete
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </TabsContent>
 
           {/* Leads Tab */}
