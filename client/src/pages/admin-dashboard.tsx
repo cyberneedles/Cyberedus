@@ -28,6 +28,7 @@ import { z } from "zod";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { EnhancedCourseForm } from "@/components/enhanced-course-form";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
@@ -849,154 +850,11 @@ export default function AdminDashboard() {
                           Create a comprehensive course with overview, curriculum, batches, and fees
                         </DialogDescription>
                       </DialogHeader>
-                      <Form {...createForm}>
-                        <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-6">
-                          <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                              control={createForm.control}
-                              name="title"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Course Title</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="Enter course title" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={createForm.control}
-                              name="slug"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Slug</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="course-slug" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          
-                          <FormField
-                            control={createForm.control}
-                            name="description"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Description</FormLabel>
-                                <FormControl>
-                                  <Textarea placeholder="Course description" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          
-                          <div className="grid grid-cols-3 gap-4">
-                            <FormField
-                              control={createForm.control}
-                              name="level"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Level</FormLabel>
-                                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Select level" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      <SelectItem value="beginner">Beginner</SelectItem>
-                                      <SelectItem value="intermediate">Intermediate</SelectItem>
-                                      <SelectItem value="advanced">Advanced</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={createForm.control}
-                              name="duration"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Duration</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="e.g., 8 weeks" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={createForm.control}
-                              name="price"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Price</FormLabel>
-                                  <FormControl>
-                                    <Input 
-                                      type="number" 
-                                      placeholder="0" 
-                                      {...field}
-                                      onChange={(e) => field.onChange(Number(e.target.value))}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          
-                          <div className="grid grid-cols-2 gap-4">
-                            <FormField
-                              control={createForm.control}
-                              name="category"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Category</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="e.g., Cybersecurity" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <FormField
-                              control={createForm.control}
-                              name="icon"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Icon</FormLabel>
-                                  <FormControl>
-                                    <Input placeholder="e.g., shield" {...field} />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                          
-                          <div className="flex justify-end gap-3 pt-4">
-                            <Button 
-                              type="button" 
-                              variant="outline" 
-                              onClick={() => setIsCreateDialogOpen(false)}
-                            >
-                              Cancel
-                            </Button>
-                            <LoadingButton 
-                              isLoading={createCourseMutation.isPending}
-                              variant="security"
-                              className="min-w-[140px]"
-                            >
-                              Create Course
-                            </LoadingButton>
-                          </div>
-                        </form>
-                      </Form>
+                      <EnhancedCourseForm
+                        onSubmit={onCreateSubmit}
+                        isLoading={createCourseMutation.isPending}
+                        isEdit={false}
+                      />
                     </DialogContent>
                   </Dialog>
                 </div>
