@@ -10,7 +10,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
+import { CoursePreviewPane } from "./course-preview-pane";
 
 // Enhanced course form schema with all sections
 const enhancedCourseSchema = z.object({
@@ -69,6 +70,8 @@ interface EnhancedCourseFormProps {
 }
 
 export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }: EnhancedCourseFormProps) {
+  const [showPreview, setShowPreview] = useState(false);
+  
   const form = useForm<EnhancedCourseFormData>({
     resolver: zodResolver(enhancedCourseSchema),
     defaultValues: {
@@ -94,6 +97,9 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
       ...initialData,
     },
   });
+
+  // Watch form values for live preview
+  const watchedValues = form.watch();
 
   // Curriculum management
   const addCurriculumSection = () => {
@@ -154,14 +160,31 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <Tabs defaultValue="basic" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="basic">Basic Info</TabsTrigger>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-            <TabsTrigger value="batches">Batches</TabsTrigger>
-            <TabsTrigger value="fees">Fees</TabsTrigger>
-          </TabsList>
+        {/* Preview Toggle */}
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Course Details</h3>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowPreview(!showPreview)}
+            className="flex items-center gap-2"
+          >
+            {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            {showPreview ? "Hide Preview" : "Show Preview"}
+          </Button>
+        </div>
+
+        <div className={`grid ${showPreview ? "grid-cols-2" : "grid-cols-1"} gap-6`}>
+          {/* Form Section */}
+          <div className="space-y-6">
+            <Tabs defaultValue="basic" className="w-full">
+              <TabsList className="grid w-full grid-cols-5">
+                <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
+                <TabsTrigger value="batches">Batches</TabsTrigger>
+                <TabsTrigger value="fees">Fees</TabsTrigger>
+              </TabsList>
 
           {/* Basic Information Tab */}
           <TabsContent value="basic" className="space-y-4">
@@ -676,10 +699,23 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
           </TabsContent>
         </Tabs>
 
-        <div className="flex justify-end gap-3 pt-6 border-t">
-          <Button type="submit" disabled={isLoading} className="min-w-[140px]">
-            {isLoading ? "Saving..." : isEdit ? "Update Course" : "Create Course"}
-          </Button>
+            <div className="flex justify-end gap-3 pt-6 border-t">
+              <Button type="submit" disabled={isLoading} className="min-w-[140px]">
+                {isLoading ? "Saving..." : isEdit ? "Update Course" : "Create Course"}
+              </Button>
+            </div>
+          </div>
+
+          {/* Preview Section */}
+          {showPreview && (
+            <div className="border-l border-gray-200 dark:border-gray-700">
+              <div className="sticky top-0 bg-white dark:bg-gray-800 p-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Live Preview</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">See how your course will look to students</p>
+              </div>
+              <CoursePreviewPane data={watchedValues} />
+            </div>
+          )}
         </div>
       </form>
     </Form>
