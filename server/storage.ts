@@ -118,15 +118,6 @@ export class DatabaseStorage implements IStorage {
         category: insertCourse.category,
         isActive: insertCourse.isActive ?? true,
         features: null, // Explicitly set to null instead of empty array
-        // Enhanced course fields
-        overview: insertCourse.overview || null,
-        mainImage: insertCourse.mainImage || null,
-        logo: insertCourse.logo || null,
-        curriculum: insertCourse.curriculum || null,
-        batches: insertCourse.batches || null,
-        fees: insertCourse.fees || null,
-        careerOpportunities: insertCourse.careerOpportunities || null,
-        toolsAndTechnologies: insertCourse.toolsAndTechnologies || null,
         batchDates: null, // Explicitly set to null instead of empty array
       })
       .returning();

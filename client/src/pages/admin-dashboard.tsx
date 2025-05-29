@@ -850,11 +850,32 @@ export default function AdminDashboard() {
                           Create a comprehensive course with overview, curriculum, batches, and fees
                         </DialogDescription>
                       </DialogHeader>
-                      <EnhancedCourseForm
-                        onSubmit={onCreateSubmit}
-                        isLoading={createCourseMutation.isPending}
-                        isEdit={false}
-                      />
+                      <div className="space-y-6">
+                        <div className="text-sm text-orange-600 bg-orange-50 p-3 rounded-lg">
+                          Preview functionality available, but enhanced fields are temporarily disabled until database schema is updated.
+                        </div>
+                        <EnhancedCourseForm
+                          onSubmit={(data) => {
+                            // Filter to only basic fields that exist in database
+                            const basicData = {
+                              title: data.title,
+                              slug: data.slug,
+                              description: data.description,
+                              duration: data.duration,
+                              prerequisites: data.prerequisites,
+                              mode: data.mode,
+                              level: data.level,
+                              price: data.price,
+                              category: data.category,
+                              icon: data.icon,
+                              isActive: data.isActive
+                            };
+                            onCreateSubmit(basicData as any);
+                          }}
+                          isLoading={createCourseMutation.isPending}
+                          isEdit={false}
+                        />
+                      </div>
                     </DialogContent>
                   </Dialog>
                 </div>
