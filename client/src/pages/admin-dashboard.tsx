@@ -851,10 +851,6 @@ export default function AdminDashboard() {
                       </DialogHeader>
                       <Form {...createForm}>
                         <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-6">
-                          {/* Basic Information Section */}
-                          <div className="border rounded-lg p-4">
-                            <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
-                            <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-4">
                             <FormField
                               control={createForm.control}
