@@ -1,0 +1,40 @@
+It appears you're encountering an error within the deleteCourseMutation's onError handler. While the exact error message is truncated in the provided code, the surrounding logic suggests a likely cause.
+
+Here's a breakdown:
+
+Error Handling in deleteCourseMutation: The onError callback for deleteCourseMutation is designed to display a toast notification when a course deletion fails.
+Potential for Truncated Message: The description property of the toast is set to error.message || "Failed to delete course". If the error.message is a very long string, it might be getting cut off or causing issues in the toast function, leading to the "Why this error happens" error you're seeing in the console (which is likely an error originating from the toast function itself trying to handle the malformed or excessively long description).
+To potentially fix this error:
+
+Inspect the error.message: During development, log the error.message inside the onError handler to see its full content and identify if it's unexpectedly large or contains problematic characters.
+Limit the error.message length: You could truncate the error.message before passing it to the toast function to prevent potential issues with overly long strings.
+Relevant Code Snippets:
+
+The deleteCourseMutation definition, specifically the onError handler:
+js
+
+const deleteCourseMutation = useMutation({
+      mutationFn: async (id: number) => {
+        const response = await fetch(/api/courses/${id}, {
+          method: "DELETE",
+        });
+        if (!response.ok) {
+          throw new Error("Failed to delete course");
+        }
+        return response.json();
+      },
+      onSuccess: () => {
+        // ... success handling ...
+      },
+      onError: (error: any) => {
+        toast({
+          title: "Error",
+          description: error.messag... // <--- Error likely originates here
+          variant: "destructive",
+        });
+      },
+    });
+Use code snippets with caution
+
+This file was loaded because it is the source code for the Admin Dashboard page of your application. It was likely initiated by a user navigating to that page in their browser.
+
