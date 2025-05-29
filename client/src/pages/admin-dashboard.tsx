@@ -836,22 +836,13 @@ export default function AdminDashboard() {
                     <CardTitle>Course Management</CardTitle>
                     <CardDescription>Manage your educational content</CardDescription>
                   </div>
-                  <div className="flex gap-2">
-                    <Button 
-                      onClick={() => window.open('/admin/courses/new', '_blank')}
-                      variant="default"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create Course (Desktop)
-                    </Button>
-                    <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-                      <DialogTrigger asChild>
-                        <Button variant="outline">
-                          <Plus className="w-4 h-4 mr-2" />
-                          Quick Add
-                        </Button>
-                      </DialogTrigger>
-                    </div>
+                  <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Course
+                      </Button>
+                    </DialogTrigger>
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                       <DialogHeader>
                         <DialogTitle>Create New Course</DialogTitle>
