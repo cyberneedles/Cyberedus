@@ -20,11 +20,42 @@ export const courses = pgTable("courses", {
   mode: text("mode").notNull(), // "online", "offline", "both"
   level: text("level").notNull(), // "beginner", "intermediate", "advanced"
   price: integer("price"),
-  features: jsonb("features").$type<string[]>().default([]),
+  features: jsonb("features").$type<string[]>(),
   syllabusUrl: text("syllabus_url"),
-  batchDates: jsonb("batch_dates").$type<string[]>().default([]),
+  batchDates: jsonb("batch_dates").$type<string[]>(),
   icon: text("icon").notNull(),
   category: text("category").notNull(),
+  
+  // Enhanced course page sections
+  overview: text("overview"), // Rich text content for overview section
+  mainImage: text("main_image"), // Main course image
+  logo: text("logo"), // Course logo
+  
+  // Curriculum structure
+  curriculum: jsonb("curriculum").$type<{
+    sectionTitle: string;
+    items: string[];
+  }[]>(),
+  
+  // Batches information
+  batches: jsonb("batches").$type<{
+    startDate: string;
+    time: string;
+    mode: string;
+    instructor: string;
+  }[]>(),
+  
+  // Fee structures
+  fees: jsonb("fees").$type<{
+    label: string;
+    amount: number;
+    notes: string;
+  }[]>(),
+  
+  // Additional course details
+  careerOpportunities: jsonb("career_opportunities").$type<string[]>(),
+  toolsAndTechnologies: text("tools_and_technologies"),
+  
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
@@ -101,6 +132,23 @@ export const insertUserSchema = createInsertSchema(users).omit({
 export const insertCourseSchema = createInsertSchema(courses).omit({
   id: true,
   createdAt: true,
+}).extend({
+  curriculum: z.array(z.object({
+    sectionTitle: z.string(),
+    items: z.array(z.string()),
+  })).optional(),
+  batches: z.array(z.object({
+    startDate: z.string(),
+    time: z.string(),
+    mode: z.string(),
+    instructor: z.string(),
+  })).optional(),
+  fees: z.array(z.object({
+    label: z.string(),
+    amount: z.number(),
+    notes: z.string(),
+  })).optional(),
+  careerOpportunities: z.array(z.string()).optional(),
 });
 
 export const insertQuizSchema = createInsertSchema(quizzes).omit({

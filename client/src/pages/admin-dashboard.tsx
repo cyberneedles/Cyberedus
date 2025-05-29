@@ -34,7 +34,7 @@ import { Switch } from "@/components/ui/switch";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import type { Course, Lead, Testimonial, BlogPost, FAQ, InsertCourse } from "@shared/schema";
 
-// Course form schema
+// Enhanced course form schema with all sections
 const courseFormSchema = z.object({
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -50,6 +50,36 @@ const courseFormSchema = z.object({
   syllabusUrl: z.string().url().optional().or(z.literal("")),
   batchDates: z.array(z.string()).default([]),
   isActive: z.boolean().default(true),
+  
+  // Enhanced course page sections
+  overview: z.string().optional(),
+  mainImage: z.string().optional(),
+  logo: z.string().optional(),
+  
+  // Curriculum structure
+  curriculum: z.array(z.object({
+    sectionTitle: z.string(),
+    items: z.array(z.string()),
+  })).default([]),
+  
+  // Batches information
+  batches: z.array(z.object({
+    startDate: z.string(),
+    time: z.string(),
+    mode: z.string(),
+    instructor: z.string(),
+  })).default([]),
+  
+  // Fee structures
+  fees: z.array(z.object({
+    label: z.string(),
+    amount: z.number(),
+    notes: z.string(),
+  })).default([]),
+  
+  // Additional course details
+  careerOpportunities: z.array(z.string()).default([]),
+  toolsAndTechnologies: z.string().optional(),
 });
 
 type CourseFormData = z.infer<typeof courseFormSchema>;
@@ -812,12 +842,19 @@ export default function AdminDashboard() {
                         Add Course
                       </Button>
                     </DialogTrigger>
-                    <DialogContent className="max-w-2xl">
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                       <DialogHeader>
                         <DialogTitle>Create New Course</DialogTitle>
+                        <DialogDescription>
+                          Create a comprehensive course with overview, curriculum, batches, and fees
+                        </DialogDescription>
                       </DialogHeader>
                       <Form {...createForm}>
-                        <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-4">
+                        <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-6">
+                          {/* Basic Information Section */}
+                          <div className="border rounded-lg p-4">
+                            <h3 className="text-lg font-semibold mb-4">Basic Information</h3>
+                            <div className="space-y-4">
                           <div className="grid grid-cols-2 gap-4">
                             <FormField
                               control={createForm.control}

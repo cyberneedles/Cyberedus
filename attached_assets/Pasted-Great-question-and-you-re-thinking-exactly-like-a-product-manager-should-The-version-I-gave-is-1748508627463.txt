@@ -1,0 +1,169 @@
+Great question — and you're thinking exactly like a product manager should.
+
+The version I gave is **good for an initial developer request**, but if you want to make it **“Replit-perfect”** — meaning highly executable with minimal back-and-forth — we can definitely tighten and expand it. Replit devs will appreciate **explicit data models, field types, and UI expectations**.
+
+Here’s a **fully upgraded version** you can paste into Replit with everything clearly spelled out:
+
+---
+
+### 🛠️ **Feature Request: Full Course Page Management in Admin Dashboard**
+
+#### 👋 What I Have
+
+In the current admin dashboard under **`/admin/courses`**, I can create and edit basic course data:
+
+* `title` (string)
+* `slug` (string)
+* `description` (text)
+* `level` (enum or string)
+* `duration` (string or number)
+* `price` (number)
+* `category` (enum or string)
+* `icon` (image upload)
+
+These are used to populate the **course card** on the public `/courses` listing.
+
+#### ✅ What I Want (Full Admin Editing of Course Detail Page)
+
+Please expand the admin dashboard so I can fully manage the **course detail page** as well. Here's what needs to be added:
+
+---
+
+### 1. 📝 **Overview Section**
+
+* Field: `overview` (rich text editor or textarea)
+* Stored as HTML or Markdown
+* Displayed at top of course detail page
+
+---
+
+### 2. 📚 **Curriculum Section**
+
+* Structure:
+
+```json
+"curriculum": [
+  {
+    "sectionTitle": "Introduction to X",
+    "items": [
+      "Lesson 1: Basics",
+      "Lesson 2: Advanced topics"
+    ]
+  },
+  ...
+]
+```
+
+* Admin UI should allow:
+
+  * Add/remove/edit sections
+  * Add/remove/edit items within a section
+
+---
+
+### 3. ⏰ **Batches Section**
+
+* Structure:
+
+```json
+"batches": [
+  {
+    "startDate": "2025-06-15",
+    "time": "10:00 AM - 12:00 PM",
+    "mode": "online",
+    "instructor": "John Doe"
+  },
+  ...
+]
+```
+
+* Admin should be able to:
+
+  * Add/remove/edit batches
+  * Choose “mode” from dropdown (online/offline)
+  * Instructor field can be free text or dropdown (if instructors are in DB)
+
+---
+
+### 4. 💰 **Fees Section**
+
+* Allow multiple fee structures (optional)
+
+```json
+"fees": [
+  {
+    "label": "Standard Plan",
+    "amount": 1999,
+    "notes": "Includes certificate"
+  },
+  ...
+]
+```
+
+* Otherwise, a single `feeDescription` field is fine if simpler.
+
+---
+
+### 5. 📸 **Media Uploads**
+
+* Add support for:
+
+  * `mainImage` (image upload, shown on course detail)
+  * `logo` (image upload, shown on course card or detail header)
+* Accept JPG/PNG, ideally under 1MB
+
+---
+
+### ✅ Admin Interface Expectations
+
+* These new sections should appear when editing a course (`/admin/courses/:id`)
+* Form fields should be pre-populated with existing data for editing
+* Save button should commit all fields (current + new) to the backend
+
+---
+
+### 📦 Suggested Schema (optional for dev)
+
+```json
+{
+  "title": "Course Title",
+  "slug": "course-title",
+  "description": "...",
+  "level": "Beginner",
+  "duration": "4 weeks",
+  "price": 2999,
+  "category": "Design",
+  "icon": "icon-url",
+  "mainImage": "image-url",
+  "logo": "logo-url",
+  "overview": "<p>Rich text HTML</p>",
+  "curriculum": [...],
+  "batches": [...],
+  "fees": [...]
+}
+```
+
+---
+
+### 📎 Attachments
+
+I've attached screenshots of:
+
+* Current admin layout
+* Public course page with the desired sections
+
+Let me know if you need:
+
+* Wireframes
+* DB schema migrations
+* Field validation rules
+
+Thanks!
+
+---
+
+### ✅ Ready to Paste into Replit
+
+You can paste this directly into a Replit chat, comment, or planning doc, and a developer should be able to act on it without needing follow-up clarification.
+
+Let me know if you’d like me to turn this into a **GitHub issue template**, **Trello card**, or **Notion spec**.
