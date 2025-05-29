@@ -139,7 +139,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const courses = await storage.getAllCourses();
       res.json(courses);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch courses" });
+      console.error("Get courses error:", error);
+      res.status(500).json({ message: "Failed to fetch courses", error: error.message });
     }
   });
 
