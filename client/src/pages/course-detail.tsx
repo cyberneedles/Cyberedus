@@ -167,7 +167,7 @@ export default function CourseDetail() {
                   <h3 className="text-2xl font-bold text-foreground mb-6">Course Overview</h3>
                   <div className="prose prose-lg max-w-none text-muted-foreground">
                     {course.overview ? (
-                      <div dangerouslySetInnerHTML={{ __html: course.overview }} />
+                      <div dangerouslySetInnerHTML={{ __html: String(course.overview) }} />
                     ) : (
                       <p>{course.description}</p>
                     )}
@@ -192,7 +192,7 @@ export default function CourseDetail() {
                   <h3 className="text-2xl font-bold text-foreground mb-6">Tools & Technologies</h3>
                   {course.toolsAndTechnologies ? (
                     <div className="prose prose-lg max-w-none text-muted-foreground">
-                      <div dangerouslySetInnerHTML={{ __html: course.toolsAndTechnologies }} />
+                      <div dangerouslySetInnerHTML={{ __html: String(course.toolsAndTechnologies) }} />
                     </div>
                   ) : (
                     <p className="text-muted-foreground">
@@ -488,7 +488,7 @@ export default function CourseDetail() {
                 Take our quiz to assess your current understanding and see how this course can help you grow.
               </p>
             </div>
-            <QuizComponent />
+            <QuizComponent courseId={course.id} />
           </div>
         </section>
       )}
