@@ -6,6 +6,10 @@ import { pool } from "./db";
 import { insertLeadSchema, insertBlogPostSchema, insertTestimonialSchema } from "@shared/schema";
 import { z } from "zod";
 
+// Simple in-memory session store for development
+const adminSessions = new Map<string, { isAdmin: boolean; adminEmail: string; timestamp: number }>();
+const SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours
+
 // Extend session interface to include admin flag
 declare module 'express-session' {
   interface SessionData {
@@ -17,16 +21,25 @@ declare module 'express-session' {
 // Admin authentication middleware
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
   console.log('Auth check - Session ID:', req.sessionID);
-  console.log('Auth check - Is Admin:', req.session.isAdmin);
-  console.log('Auth check - Admin Email:', req.session.adminEmail);
   
-  // Check if admin session exists
-  if (!req.session.isAdmin) {
-    console.log('Authentication failed - isAdmin flag missing');
-    return res.status(401).json({ error: "Authentication required" });
+  // Check express-session first
+  if (req.session.isAdmin) {
+    console.log('Auth via express-session - Admin:', req.session.adminEmail);
+    return next();
   }
   
-  next();
+  // Fallback to in-memory session store
+  const sessionData = adminSessions.get(req.sessionID);
+  if (sessionData && sessionData.isAdmin && (Date.now() - sessionData.timestamp <= SESSION_TIMEOUT)) {
+    console.log('Auth via memory store - Admin:', sessionData.adminEmail);
+    // Restore session data
+    req.session.isAdmin = true;
+    req.session.adminEmail = sessionData.adminEmail;
+    return next();
+  }
+  
+  console.log('Authentication failed - no valid session found');
+  return res.status(401).json({ error: "Authentication required" });
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -73,8 +86,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
             return res.status(500).json({ error: "Session save failed" });
           }
           
+          // Also store in memory backup
+          adminSessions.set(req.sessionID, {
+            isAdmin: true,
+            adminEmail: email,
+            timestamp: Date.now()
+          });
+          
           console.log('Admin session created and saved - Session ID:', req.sessionID);
           console.log('Session data after save:', { isAdmin: req.session.isAdmin, adminEmail: req.session.adminEmail });
+          console.log('Memory store backup created');
           
           res.json({ 
             success: true, 
