@@ -1,45 +1,49 @@
-import type { Express, Request, Response, NextFunction } from "express";
+import type { Express } from "express";
 import { createServer, type Server } from "http";
-import session from "express-session";
-import { storage } from "./storage";
+import express, { type Request, Response, NextFunction } from "express";
+import session from 'express-session';
 import { pool } from "./db";
 import { insertLeadSchema, insertBlogPostSchema, insertTestimonialSchema } from "@shared/schema";
 import { z } from "zod";
 
+// Simple in-memory admin session store
+let adminSession: { authenticated: boolean; timestamp: number } | null = null;
+const SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours
+
 // Admin authentication middleware
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
-  console.log('Auth check - Session exists:', !!req.session);
-  console.log('Auth check - User in session:', !!req.session?.user);
-  console.log('Auth check - Session data:', req.session?.user);
+  console.log('Auth check - Admin session:', adminSession);
   
-  if (!req.session?.user) {
+  // Check if admin session exists and is not expired
+  if (!adminSession || 
+      !adminSession.authenticated || 
+      (Date.now() - adminSession.timestamp > SESSION_TIMEOUT)) {
+    adminSession = null;
     return res.status(401).json({ error: "Authentication required" });
   }
+  
   next();
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Completely bypass Vite for API routes - must be first
   app.use('/api', (req, res, next) => {
-    // Prevent any caching or middleware interference
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
     res.setHeader('X-API-Route', 'true');
     next();
   });
 
-  // Configure session middleware
+  // Configure session middleware with proper store
   app.use(session({
     secret: process.env.SESSION_SECRET || 'cyberedus-secret-key-2024',
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: {
       secure: false, // Set to true in production with HTTPS
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'lax'
+    },
+    name: 'cyberedus.session'
   }));
 
   // Admin authentication routes
@@ -47,60 +51,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, password } = req.body;
       
+      console.log('Admin login attempt for:', email);
+      
       if (!email || !password) {
-        return res.status(400).json({ error: "Email and password are required" });
+        return res.status(400).json({ error: "Email and password required" });
       }
 
-      // Direct database authentication (bypassing Drizzle for now)
-      console.log('Login attempt for email:', email);
+      // Direct database query for admin authentication
+      const query = `
+        SELECT id, email, "isAdmin"
+        FROM users 
+        WHERE email = $1 AND password = $2 AND "isAdmin" = true
+      `;
       
-      // Direct query to database
-      const directResult = await pool.query(
-        'SELECT id, email, role FROM users WHERE email = $1 AND password = $2',
-        [email, password]
-      );
+      const directResult = await pool.query(query, [email, password]);
       
-      console.log('Direct query result:', directResult.rows);
+      console.log('Query result:', directResult.rows);
       
-      if (directResult.rows.length === 0 || directResult.rows[0].role !== 'admin') {
+      if (directResult.rows.length === 0) {
         console.log('Access denied - Invalid credentials or not admin');
         return res.status(401).json({ error: "Access denied" });
       }
       
       const adminUser = directResult.rows[0];
 
-      // Set session
-      req.session.user = {
-        id: adminUser.id,
-        email: adminUser.email,
-        name: adminUser.email.split('@')[0], // Use email prefix as name
-        isAdmin: true
+      // Set simple admin session
+      adminSession = {
+        authenticated: true,
+        timestamp: Date.now()
       };
       
-      // Save session and send response
-      req.session.save((err) => {
-        if (err) {
-          console.error('Session save error:', err);
-          return res.status(500).json({ error: "Session error" });
-        }
-        
-        // Set proper session cookie
-        res.cookie('connect.sid', req.sessionID, { 
-          httpOnly: true, 
-          secure: false, 
-          maxAge: 24 * 60 * 60 * 1000 
-        });
-        
-        res.json({ 
-          success: true, 
-          user: {
-            id: adminUser.id,
-            email: adminUser.email,
-            name: adminUser.email.split('@')[0],
-            isAdmin: true
-          },
-          redirect: '/admin'
-        });
+      console.log('Admin session created:', adminSession);
+      res.json({ 
+        success: true, 
+        user: {
+          id: adminUser.id,
+          email: adminUser.email,
+          name: adminUser.email.split('@')[0],
+          isAdmin: true
+        },
+        redirect: '/admin'
       });
     } catch (error) {
       console.error('Admin login error:', error);
@@ -108,388 +98,354 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin logout route
   app.post("/api/admin/logout", (req, res) => {
-    if (req.session) {
-      req.session.destroy((err) => {
-        if (err) {
-          return res.status(500).json({ error: "Could not log out" });
-        }
-        res.json({ success: true });
-      });
-    } else {
-      res.json({ success: true });
-    }
+    adminSession = null;
+    res.json({ success: true });
   });
 
+  // Admin session check
   app.get("/api/admin/session", (req, res) => {
-    console.log('Session check - sessionID:', req.sessionID);
-    console.log('Session data:', req.session);
+    console.log('Session check - Admin session:', adminSession);
     
-    if (req.session && req.session.user && req.session.user.isAdmin) {
-      console.log('User is authenticated as admin');
+    if (adminSession && adminSession.authenticated && 
+        (Date.now() - adminSession.timestamp <= SESSION_TIMEOUT)) {
       res.json({ 
-        authenticated: true, 
-        user: req.session.user 
+        authenticated: true,
+        user: {
+          id: 1,
+          email: 'admin@cyberedus.com',
+          name: 'admin',
+          isAdmin: true
+        }
       });
     } else {
-      console.log('User not authenticated or not admin');
+      adminSession = null;
       res.json({ authenticated: false });
     }
   });
 
-  // Admin status check
-  app.get("/api/admin/status", (req, res) => {
-    console.log('Status check - Session:', req.session);
-    console.log('Status check - User:', (req.session as any)?.user);
-    
-    if ((req.session as any)?.user) {
-      res.json({ 
-        authenticated: true, 
-        user: (req.session as any).user 
-      });
-    } else {
-      res.json({ authenticated: false });
+  // Test database connection endpoint
+  app.get("/api/test-db", async (req, res) => {
+    try {
+      const result = await pool.query('SELECT NOW()');
+      res.json({ success: true, timestamp: result.rows[0].now });
+    } catch (error) {
+      console.error('Database test error:', error);
+      res.status(500).json({ error: "Database connection failed" });
     }
   });
 
-  // Courses API
+  // Course routes
   app.get("/api/courses", async (req, res) => {
     try {
-      const courses = await storage.getAllCourses();
-      res.json(courses);
+      const result = await pool.query('SELECT * FROM courses ORDER BY "createdAt" DESC');
+      res.json(result.rows);
     } catch (error) {
-      console.error("Get courses error:", error);
-      res.status(500).json({ message: "Failed to fetch courses", error: error.message });
-    }
-  });
-
-
-
-  app.post("/api/courses", async (req, res) => {
-    console.log("POST /api/courses hit!");
-    console.log("Request body:", req.body);
-    
-    // Force JSON response headers
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Cache-Control', 'no-cache');
-    
-    try {
-      // Clean the data - remove problematic array fields that cause Supabase issues
-      const { features, batchDates, ...cleanData } = req.body;
-      console.log("About to create course with cleaned data:", cleanData);
-      
-      const course = await storage.createCourse(cleanData);
-      console.log("Course created successfully:", course);
-      
-      res.status(201).json(course);
-    } catch (error) {
-      console.error('Create course error:', error);
-      res.status(500).json({ message: "Failed to create course", error: String(error) });
-    }
-  });
-
-  app.patch("/api/courses/:id", requireAuth, async (req, res) => {
-    try {
-      const courseId = parseInt(req.params.id);
-      const courseData = req.body;
-      const course = await storage.updateCourse(courseId, courseData);
-      
-      if (!course) {
-        return res.status(404).json({ message: "Course not found" });
-      }
-      
-      res.json(course);
-    } catch (error) {
-      console.error('Update course error:', error);
-      res.status(500).json({ message: "Failed to update course" });
-    }
-  });
-
-  app.delete("/api/courses/:id", requireAuth, async (req, res) => {
-    try {
-      const courseId = parseInt(req.params.id);
-      const success = await storage.deleteCourse(courseId);
-      
-      if (!success) {
-        return res.status(404).json({ message: "Course not found" });
-      }
-      
-      res.json({ success: true, message: "Course deleted successfully" });
-    } catch (error) {
-      console.error('Delete course error:', error);
-      res.status(500).json({ message: "Failed to delete course" });
+      console.error('Get courses error:', error);
+      res.status(500).json({ error: "Failed to fetch courses" });
     }
   });
 
   app.get("/api/courses/:slug", async (req, res) => {
     try {
-      const course = await storage.getCourseBySlug(req.params.slug);
-      if (!course) {
-        return res.status(404).json({ message: "Course not found" });
+      const { slug } = req.params;
+      const result = await pool.query('SELECT * FROM courses WHERE slug = $1', [slug]);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Course not found" });
       }
-      res.json(course);
+      
+      res.json(result.rows[0]);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch course" });
+      console.error('Get course error:', error);
+      res.status(500).json({ error: "Failed to fetch course" });
     }
   });
 
-  // Quiz API
-  app.get("/api/courses/:id/quiz", async (req, res) => {
+  app.post("/api/courses", requireAuth, async (req, res) => {
     try {
-      const courseId = parseInt(req.params.id);
-      const quiz = await storage.getQuizByCourseId(courseId);
-      if (!quiz) {
-        return res.status(404).json({ message: "Quiz not found" });
-      }
-      res.json(quiz);
+      const courseData = req.body;
+      
+      const query = `
+        INSERT INTO courses (title, slug, description, duration, level, price, category, icon, overview, "mainImage", logo, curriculum, batches, fees, "careerOpportunities", "toolsAndTechnologies", "createdAt", "updatedAt")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW(), NOW())
+        RETURNING *
+      `;
+      
+      const values = [
+        courseData.title,
+        courseData.slug,
+        courseData.description,
+        courseData.duration,
+        courseData.level,
+        courseData.price || null,
+        courseData.category,
+        courseData.icon,
+        courseData.overview || null,
+        courseData.mainImage || null,
+        courseData.logo || null,
+        JSON.stringify(courseData.curriculum || []),
+        JSON.stringify(courseData.batches || []),
+        JSON.stringify(courseData.fees || []),
+        JSON.stringify(courseData.careerOpportunities || []),
+        courseData.toolsAndTechnologies || null
+      ];
+      
+      const result = await pool.query(query, values);
+      res.json(result.rows[0]);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch quiz" });
+      console.error('Create course error:', error);
+      res.status(500).json({ error: "Failed to create course" });
     }
   });
 
-  // Lead generation API
-  const leadFormSchema = insertLeadSchema.extend({
-    quizResults: z.object({
-      score: z.number(),
-      totalQuestions: z.number(),
-      answers: z.array(z.number()),
-    }).optional(),
+  app.put("/api/courses/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const courseData = req.body;
+      
+      const query = `
+        UPDATE courses 
+        SET title = $1, slug = $2, description = $3, duration = $4, level = $5, 
+            price = $6, category = $7, icon = $8, overview = $9, "mainImage" = $10, 
+            logo = $11, curriculum = $12, batches = $13, fees = $14, 
+            "careerOpportunities" = $15, "toolsAndTechnologies" = $16, "updatedAt" = NOW()
+        WHERE id = $17
+        RETURNING *
+      `;
+      
+      const values = [
+        courseData.title,
+        courseData.slug,
+        courseData.description,
+        courseData.duration,
+        courseData.level,
+        courseData.price || null,
+        courseData.category,
+        courseData.icon,
+        courseData.overview || null,
+        courseData.mainImage || null,
+        courseData.logo || null,
+        JSON.stringify(courseData.curriculum || []),
+        JSON.stringify(courseData.batches || []),
+        JSON.stringify(courseData.fees || []),
+        JSON.stringify(courseData.careerOpportunities || []),
+        courseData.toolsAndTechnologies || null,
+        id
+      ];
+      
+      const result = await pool.query(query, values);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Course not found" });
+      }
+      
+      res.json(result.rows[0]);
+    } catch (error) {
+      console.error('Update course error:', error);
+      res.status(500).json({ error: "Failed to update course" });
+    }
   });
 
+  app.delete("/api/courses/:id", requireAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      
+      const result = await pool.query('DELETE FROM courses WHERE id = $1 RETURNING *', [id]);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Course not found" });
+      }
+      
+      res.json({ success: true, deleted: result.rows[0] });
+    } catch (error) {
+      console.error('Delete course error:', error);
+      res.status(500).json({ error: "Failed to delete course" });
+    }
+  });
+
+  // Lead routes
   app.post("/api/leads", async (req, res) => {
     try {
-      const validatedData = leadFormSchema.parse(req.body);
-      const lead = await storage.createLead(validatedData);
+      const leadData = insertLeadSchema.parse(req.body);
       
-      // Here you would integrate with Google Sheets API
-      // For now, we'll just log the lead
-      console.log("New lead generated:", lead);
+      const query = `
+        INSERT INTO leads (name, email, phone, course, message, "createdAt")
+        VALUES ($1, $2, $3, $4, $5, NOW())
+        RETURNING *
+      `;
       
-      res.json({ message: "Lead captured successfully", id: lead.id });
+      const values = [
+        leadData.name,
+        leadData.email,
+        leadData.phone || null,
+        leadData.course || null,
+        leadData.message || null
+      ];
+      
+      const result = await pool.query(query, values);
+      res.json(result.rows[0]);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid form data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to capture lead" });
+      console.error('Create lead error:', error);
+      res.status(500).json({ error: "Failed to create lead" });
     }
   });
 
-  app.get("/api/leads", async (req, res) => {
+  app.get("/api/leads", requireAuth, async (req, res) => {
     try {
-      const leads = await storage.getAllLeads();
-      res.json(leads);
+      const result = await pool.query('SELECT * FROM leads ORDER BY "createdAt" DESC');
+      res.json(result.rows);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch leads" });
+      console.error('Get leads error:', error);
+      res.status(500).json({ error: "Failed to fetch leads" });
     }
   });
 
-  // Blog API
+  // Blog routes
   app.get("/api/blog", async (req, res) => {
     try {
-      const published = req.query.published;
-      const posts = await storage.getAllBlogPosts(published === "true" ? true : published === "false" ? false : undefined);
-      res.json(posts);
+      const { published } = req.query;
+      let query = 'SELECT * FROM blog_posts';
+      const values: any[] = [];
+      
+      if (published !== undefined) {
+        query += ' WHERE published = $1';
+        values.push(published === 'true');
+      }
+      
+      query += ' ORDER BY "createdAt" DESC';
+      
+      const result = await pool.query(query, values);
+      res.json(result.rows);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch blog posts" });
+      console.error('Get blog posts error:', error);
+      res.status(500).json({ error: "Failed to fetch blog posts" });
     }
   });
 
   app.get("/api/blog/:slug", async (req, res) => {
     try {
-      const post = await storage.getBlogPostBySlug(req.params.slug);
-      if (!post) {
-        return res.status(404).json({ message: "Blog post not found" });
+      const { slug } = req.params;
+      const result = await pool.query('SELECT * FROM blog_posts WHERE slug = $1', [slug]);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ error: "Blog post not found" });
       }
-      res.json(post);
+      
+      res.json(result.rows[0]);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch blog post" });
+      console.error('Get blog post error:', error);
+      res.status(500).json({ error: "Failed to fetch blog post" });
     }
   });
 
-  app.post("/api/blog", async (req, res) => {
+  app.post("/api/blog", requireAuth, async (req, res) => {
     try {
-      const validatedData = insertBlogPostSchema.parse(req.body);
-      const post = await storage.createBlogPost(validatedData);
-      res.json(post);
+      const postData = insertBlogPostSchema.parse(req.body);
+      
+      const query = `
+        INSERT INTO blog_posts (title, slug, content, excerpt, "featuredImage", published, tags, "createdAt", "updatedAt")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+        RETURNING *
+      `;
+      
+      const values = [
+        postData.title,
+        postData.slug,
+        postData.content,
+        postData.excerpt || null,
+        postData.featuredImage || null,
+        postData.published || false,
+        JSON.stringify(postData.tags || [])
+      ];
+      
+      const result = await pool.query(query, values);
+      res.json(result.rows[0]);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid blog post data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to create blog post" });
+      console.error('Create blog post error:', error);
+      res.status(500).json({ error: "Failed to create blog post" });
     }
   });
 
-  app.put("/api/blog/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const validatedData = insertBlogPostSchema.parse(req.body);
-      const post = await storage.updateBlogPost(id, validatedData);
-      if (!post) {
-        return res.status(404).json({ message: "Blog post not found" });
-      }
-      res.json(post);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid blog post data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to update blog post" });
-    }
-  });
-
-  app.delete("/api/blog/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const success = await storage.deleteBlogPost(id);
-      if (!success) {
-        return res.status(404).json({ message: "Blog post not found" });
-      }
-      res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to delete blog post" });
-    }
-  });
-
-  app.put("/api/blog/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const validatedData = insertBlogPostSchema.partial().parse(req.body);
-      const post = await storage.updateBlogPost(id, validatedData);
-      if (!post) {
-        return res.status(404).json({ message: "Blog post not found" });
-      }
-      res.json(post);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid blog post data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to update blog post" });
-    }
-  });
-
-  app.delete("/api/blog/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const deleted = await storage.deleteBlogPost(id);
-      if (!deleted) {
-        return res.status(404).json({ message: "Blog post not found" });
-      }
-      res.json({ message: "Blog post deleted successfully" });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to delete blog post" });
-    }
-  });
-
-  // Testimonials API
+  // Testimonial routes
   app.get("/api/testimonials", async (req, res) => {
     try {
-      const approved = req.query.approved === "true";
-      const courseId = req.query.courseId ? parseInt(req.query.courseId as string) : undefined;
+      const { approved, courseId } = req.query;
+      let query = 'SELECT * FROM testimonials';
+      const values: any[] = [];
+      const conditions: string[] = [];
       
-      let testimonials;
-      if (courseId) {
-        testimonials = await storage.getTestimonialsByCourse(courseId);
-      } else {
-        testimonials = await storage.getAllTestimonials(approved);
+      if (approved !== undefined) {
+        conditions.push(`approved = $${values.length + 1}`);
+        values.push(approved === 'true');
       }
       
-      res.json(testimonials);
+      if (courseId !== undefined) {
+        conditions.push(`"courseId" = $${values.length + 1}`);
+        values.push(parseInt(courseId as string));
+      }
+      
+      if (conditions.length > 0) {
+        query += ' WHERE ' + conditions.join(' AND ');
+      }
+      
+      query += ' ORDER BY "createdAt" DESC';
+      
+      const result = await pool.query(query, values);
+      res.json(result.rows);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch testimonials" });
+      console.error('Get testimonials error:', error);
+      res.status(500).json({ error: "Failed to fetch testimonials" });
     }
   });
 
   app.post("/api/testimonials", async (req, res) => {
     try {
-      const validatedData = insertTestimonialSchema.parse(req.body);
-      const testimonial = await storage.createTestimonial(validatedData);
-      res.json(testimonial);
+      const testimonialData = insertTestimonialSchema.parse(req.body);
+      
+      const query = `
+        INSERT INTO testimonials (name, email, "courseId", content, rating, approved, "createdAt")
+        VALUES ($1, $2, $3, $4, $5, $6, NOW())
+        RETURNING *
+      `;
+      
+      const values = [
+        testimonialData.name,
+        testimonialData.email,
+        testimonialData.courseId || null,
+        testimonialData.content,
+        testimonialData.rating || 5,
+        testimonialData.approved || false
+      ];
+      
+      const result = await pool.query(query, values);
+      res.json(result.rows[0]);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid testimonial data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to create testimonial" });
+      console.error('Create testimonial error:', error);
+      res.status(500).json({ error: "Failed to create testimonial" });
     }
   });
 
-  app.put("/api/testimonials/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const validatedData = insertTestimonialSchema.parse(req.body);
-      const testimonial = await storage.updateTestimonial(id, validatedData);
-      if (!testimonial) {
-        return res.status(404).json({ message: "Testimonial not found" });
-      }
-      res.json(testimonial);
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid testimonial data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to update testimonial" });
-    }
-  });
-
-  app.delete("/api/testimonials/:id", async (req, res) => {
-    try {
-      const id = parseInt(req.params.id);
-      const success = await storage.deleteTestimonial(id);
-      if (!success) {
-        return res.status(404).json({ message: "Testimonial not found" });
-      }
-      res.json({ success: true });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to delete testimonial" });
-    }
-  });
-
-  // FAQs API
+  // FAQ routes
   app.get("/api/faqs", async (req, res) => {
     try {
-      const active = req.query.active === "true";
-      const faqs = await storage.getAllFAQs(active);
-      res.json(faqs);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch FAQs" });
-    }
-  });
-
-  // Authentication API (simplified)
-  app.post("/api/auth/login", async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      const user = await storage.getUserByEmail(email);
+      const { active } = req.query;
+      let query = 'SELECT * FROM faqs';
+      const values: any[] = [];
       
-      if (!user || user.password !== password) {
-        return res.status(401).json({ message: "Invalid credentials" });
+      if (active !== undefined) {
+        query += ' WHERE active = $1';
+        values.push(active === 'true');
       }
       
-      // In a real app, you'd generate a JWT token here
-      res.json({ 
-        message: "Login successful", 
-        user: { id: user.id, email: user.email, role: user.role } 
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Login failed" });
-    }
-  });
-
-  // Contact form (special lead endpoint)
-  app.post("/api/contact", async (req, res) => {
-    try {
-      const contactData = {
-        ...req.body,
-        source: "contact_form",
-      };
-      const validatedData = insertLeadSchema.parse(contactData);
-      const lead = await storage.createLead(validatedData);
+      query += ' ORDER BY "createdAt" DESC';
       
-      console.log("Contact form submission:", lead);
-      
-      res.json({ message: "Message sent successfully" });
+      const result = await pool.query(query, values);
+      res.json(result.rows);
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({ message: "Invalid form data", errors: error.errors });
-      }
-      res.status(500).json({ message: "Failed to send message" });
+      console.error('Get FAQs error:', error);
+      res.status(500).json({ error: "Failed to fetch FAQs" });
     }
   });
 
