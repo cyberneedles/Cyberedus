@@ -128,19 +128,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Check users table schema
-  app.get("/api/debug/users-schema", async (req, res) => {
+  // Check table schemas
+  app.get("/api/debug/schema/:table", async (req, res) => {
     try {
+      const { table } = req.params;
       const result = await pool.query(`
         SELECT column_name, data_type, is_nullable 
         FROM information_schema.columns 
-        WHERE table_name = 'users' 
+        WHERE table_name = $1 
         ORDER BY ordinal_position
-      `);
+      `, [table]);
       res.json(result.rows);
     } catch (error) {
-      console.error('Users schema error:', error);
-      res.status(500).json({ error: "Failed to get users schema" });
+      console.error('Schema error:', error);
+      res.status(500).json({ error: "Failed to get schema" });
     }
   });
 
@@ -220,18 +221,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         courseData.title,
         courseData.slug,
         courseData.description,
-        courseData.duration,
-        courseData.level,
+        courseData.duration || null,
+        courseData.level || null,
         courseData.price || null,
-        courseData.category,
-        courseData.icon,
+        courseData.category || null,
+        courseData.icon || null,
         courseData.overview || null,
         courseData.mainImage || null,
         courseData.logo || null,
-        JSON.stringify(courseData.curriculum || []),
-        JSON.stringify(courseData.batches || []),
-        JSON.stringify(courseData.fees || []),
-        JSON.stringify(courseData.careerOpportunities || []),
+        courseData.curriculum ? JSON.stringify(courseData.curriculum) : null,
+        courseData.batches ? JSON.stringify(courseData.batches) : null,
+        courseData.fees ? JSON.stringify(courseData.fees) : null,
+        courseData.careerOpportunities ? JSON.stringify(courseData.careerOpportunities) : null,
         courseData.toolsAndTechnologies || null
       ];
       
