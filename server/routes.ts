@@ -17,10 +17,12 @@ declare module 'express-session' {
 // Admin authentication middleware
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
   console.log('Auth check - Session ID:', req.sessionID);
-  console.log('Auth check - Session data:', req.session);
+  console.log('Auth check - Is Admin:', req.session.isAdmin);
+  console.log('Auth check - Admin Email:', req.session.adminEmail);
   
   // Check if admin session exists
   if (!req.session.isAdmin) {
+    console.log('Authentication failed - isAdmin flag missing');
     return res.status(401).json({ error: "Authentication required" });
   }
   
@@ -37,8 +39,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Configure session middleware with proper store
   app.use(session({
     secret: process.env.SESSION_SECRET || 'cyberedus-secret-key-2024',
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     cookie: {
       secure: false, // Set to true in production with HTTPS
       httpOnly: true,
@@ -61,20 +63,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Simple hardcoded admin authentication for development
       if (email === 'admin@cyberedus.com' && password === 'admin123') {
-        // Set session data
+        // Set session data and save explicitly
         req.session.isAdmin = true;
         req.session.adminEmail = email;
         
-        console.log('Admin session created - Session ID:', req.sessionID);
-        res.json({ 
-          success: true, 
-          user: {
-            id: 1,
-            email: email,
-            name: 'admin',
-            isAdmin: true
-          },
-          redirect: '/admin'
+        req.session.save((err) => {
+          if (err) {
+            console.error('Session save error:', err);
+            return res.status(500).json({ error: "Session save failed" });
+          }
+          
+          console.log('Admin session created and saved - Session ID:', req.sessionID);
+          console.log('Session data after save:', { isAdmin: req.session.isAdmin, adminEmail: req.session.adminEmail });
+          
+          res.json({ 
+            success: true, 
+            user: {
+              id: 1,
+              email: email,
+              name: 'admin',
+              isAdmin: true
+            },
+            redirect: '/admin'
+          });
         });
       } else {
         console.log('Access denied - Invalid credentials');
