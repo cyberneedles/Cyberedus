@@ -59,9 +59,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Direct database query for admin authentication
       const query = `
-        SELECT id, email, "isAdmin"
+        SELECT id, email, is_admin
         FROM users 
-        WHERE email = $1 AND password = $2 AND "isAdmin" = true
+        WHERE email = $1 AND password = $2 AND is_admin = true
       `;
       
       const directResult = await pool.query(query, [email, password]);
@@ -133,6 +133,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Database test error:', error);
       res.status(500).json({ error: "Database connection failed" });
+    }
+  });
+
+  // Check users table schema
+  app.get("/api/debug/users-schema", async (req, res) => {
+    try {
+      const result = await pool.query(`
+        SELECT column_name, data_type, is_nullable 
+        FROM information_schema.columns 
+        WHERE table_name = 'users' 
+        ORDER BY ordinal_position
+      `);
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Users schema error:', error);
+      res.status(500).json({ error: "Failed to get users schema" });
     }
   });
 
@@ -405,18 +421,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const testimonialData = insertTestimonialSchema.parse(req.body);
       
       const query = `
-        INSERT INTO testimonials (name, email, "courseId", content, rating, approved, "createdAt")
+        INSERT INTO testimonials (name, course_name, review, rating, course_id, is_approved, created_at)
         VALUES ($1, $2, $3, $4, $5, $6, NOW())
         RETURNING *
       `;
       
       const values = [
         testimonialData.name,
-        testimonialData.email,
-        testimonialData.courseId || null,
-        testimonialData.content,
+        testimonialData.courseName || null,
+        testimonialData.review,
         testimonialData.rating || 5,
-        testimonialData.approved || false
+        testimonialData.courseId || null,
+        testimonialData.isApproved || false
       ];
       
       const result = await pool.query(query, values);
@@ -435,11 +451,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const values: any[] = [];
       
       if (active !== undefined) {
-        query += ' WHERE active = $1';
+        query += ' WHERE is_active = $1';
         values.push(active === 'true');
       }
       
-      query += ' ORDER BY "createdAt" DESC';
+      query += ' ORDER BY created_at DESC';
       
       const result = await pool.query(query, values);
       res.json(result.rows);
