@@ -169,9 +169,7 @@ export default function CourseDetail() {
                 <div>
                   <h3 className="text-2xl font-bold text-foreground mb-6">What This Course Means to You</h3>
                   <p className="text-muted-foreground mb-6">
-                    This course is designed to transform your career by providing you with industry-relevant skills 
-                    and hands-on experience. Whether you're starting fresh or looking to advance your career, 
-                    this program will give you the confidence and expertise needed to succeed in today's competitive market.
+                    {course.overview || course.description}
                   </p>
                   
                   <h4 className="text-xl font-semibold text-foreground mb-4">Prerequisites</h4>
@@ -181,26 +179,18 @@ export default function CourseDetail() {
                   
                   <h4 className="text-xl font-semibold text-foreground mb-4">Career Opportunities</h4>
                   <ul className="space-y-2 text-muted-foreground">
-                    {course.category === "cybersecurity" ? (
-                      <>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Cybersecurity Analyst</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Penetration Tester</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Security Consultant</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Incident Response Specialist</li>
-                      </>
-                    ) : course.category === "development" ? (
-                      <>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Full Stack Developer</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Software Engineer</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Backend Developer</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>DevOps Engineer</li>
-                      </>
+                    {course.careerOpportunities && course.careerOpportunities.length > 0 ? (
+                      course.careerOpportunities.map((opportunity, index) => (
+                        <li key={index} className="flex items-center">
+                          <i className="fas fa-check text-accent mr-2"></i>
+                          {opportunity}
+                        </li>
+                      ))
                     ) : (
                       <>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Enhanced Interview Skills</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Professional Networking</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Career Advancement</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Industry Connections</li>
+                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Enhanced Career Prospects</li>
+                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Industry Recognition</li>
+                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Professional Growth</li>
                       </>
                     )}
                   </ul>
@@ -210,18 +200,63 @@ export default function CourseDetail() {
                   <h3 className="text-2xl font-bold text-foreground mb-6">What We Offer</h3>
                   
                   <div className="space-y-4">
-                    {course.features?.map((feature, index) => (
-                      <Card key={index}>
-                        <CardContent className="p-4">
-                          <div className="flex items-center">
-                            <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                              <i className="fas fa-star text-primary"></i>
+                    {course.features && course.features.length > 0 ? (
+                      course.features.map((feature, index) => (
+                        <Card key={index}>
+                          <CardContent className="p-4">
+                            <div className="flex items-center">
+                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+                                <i className="fas fa-star text-primary"></i>
+                              </div>
+                              <span className="font-medium text-foreground">{feature}</span>
                             </div>
-                            <span className="font-medium text-foreground">{feature}</span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          </CardContent>
+                        </Card>
+                      ))
+                    ) : (
+                      <>
+                        <Card>
+                          <CardContent className="p-4">
+                            <div className="flex items-center">
+                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+                                <i className="fas fa-book text-primary"></i>
+                              </div>
+                              <span className="font-medium text-foreground">Comprehensive Study Materials</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardContent className="p-4">
+                            <div className="flex items-center">
+                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+                                <i className="fas fa-laptop text-primary"></i>
+                              </div>
+                              <span className="font-medium text-foreground">24/7 Lab Access</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardContent className="p-4">
+                            <div className="flex items-center">
+                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+                                <i className="fas fa-users text-primary"></i>
+                              </div>
+                              <span className="font-medium text-foreground">Placement Support</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        <Card>
+                          <CardContent className="p-4">
+                            <div className="flex items-center">
+                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
+                                <i className="fas fa-certificate text-primary"></i>
+                              </div>
+                              <span className="font-medium text-foreground">Industry Certification</span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </>
+                    )}
                   </div>
 
                   <Card className="mt-6">
@@ -233,8 +268,7 @@ export default function CourseDetail() {
                     </CardHeader>
                     <CardContent>
                       <p className="text-muted-foreground">
-                        You'll work with industry-standard tools and the latest technologies used by professionals worldwide. 
-                        All software and lab environments are provided as part of the course.
+                        {course.toolsAndTechnologies || "You'll work with industry-standard tools and the latest technologies used by professionals worldwide. All software and lab environments are provided as part of the course."}
                       </p>
                     </CardContent>
                   </Card>
@@ -246,202 +280,279 @@ export default function CourseDetail() {
               <div className="max-w-4xl">
                 <h3 className="text-2xl font-bold text-foreground mb-6">Course Curriculum</h3>
                 <Accordion type="single" collapsible className="w-full">
-                  {course.category === "cybersecurity" ? (
-                    <>
-                      <AccordionItem value="module-1">
-                        <AccordionTrigger>Module 1: Introduction to Cybersecurity</AccordionTrigger>
+                  {course.curriculum && course.curriculum.length > 0 ? (
+                    course.curriculum.map((section, index) => (
+                      <AccordionItem key={index} value={`section-${index}`}>
+                        <AccordionTrigger>{section.sectionTitle}</AccordionTrigger>
                         <AccordionContent>
                           <ul className="space-y-2 text-muted-foreground">
-                            <li>• Understanding cybersecurity fundamentals</li>
-                            <li>• Types of cyber threats and attacks</li>
-                            <li>• Security frameworks and compliance</li>
-                            <li>• Hands-on lab: Setting up security environment</li>
+                            {section.items.map((item, itemIndex) => (
+                              <li key={itemIndex}>• {item}</li>
+                            ))}
                           </ul>
                         </AccordionContent>
                       </AccordionItem>
-                      <AccordionItem value="module-2">
-                        <AccordionTrigger>Module 2: Network Security</AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="space-y-2 text-muted-foreground">
-                            <li>• Network protocols and architecture</li>
-                            <li>• Firewalls and intrusion detection systems</li>
-                            <li>• VPNs and secure communications</li>
-                            <li>• Hands-on lab: Network scanning and analysis</li>
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="module-3">
-                        <AccordionTrigger>Module 3: Penetration Testing</AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="space-y-2 text-muted-foreground">
-                            <li>• Penetration testing methodology</li>
-                            <li>• Reconnaissance and information gathering</li>
-                            <li>• Vulnerability assessment and exploitation</li>
-                            <li>• Hands-on lab: Real-world penetration testing</li>
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </>
-                  ) : course.category === "development" ? (
-                    <>
-                      <AccordionItem value="module-1">
-                        <AccordionTrigger>Module 1: Frontend Development</AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="space-y-2 text-muted-foreground">
-                            <li>• HTML5, CSS3, and responsive design</li>
-                            <li>• JavaScript fundamentals and ES6+</li>
-                            <li>• Frontend frameworks (React/Angular)</li>
-                            <li>• Hands-on project: Interactive web application</li>
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="module-2">
-                        <AccordionTrigger>Module 2: Backend Development</AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="space-y-2 text-muted-foreground">
-                            <li>• Server-side programming concepts</li>
-                            <li>• Database design and management</li>
-                            <li>• API development and integration</li>
-                            <li>• Hands-on project: RESTful API development</li>
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="module-3">
-                        <AccordionTrigger>Module 3: Full Stack Integration</AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="space-y-2 text-muted-foreground">
-                            <li>• Connecting frontend and backend</li>
-                            <li>• Authentication and authorization</li>
-                            <li>• Testing and deployment strategies</li>
-                            <li>• Capstone project: Complete web application</li>
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </>
+                    ))
                   ) : (
-                    <>
-                      <AccordionItem value="module-1">
-                        <AccordionTrigger>Week 1: Resume & Profile Building</AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="space-y-2 text-muted-foreground">
-                            <li>• Professional resume writing</li>
-                            <li>• LinkedIn profile optimization</li>
-                            <li>• Portfolio development</li>
-                            <li>• Personal branding strategies</li>
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="module-2">
-                        <AccordionTrigger>Week 2: Interview Mastery</AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="space-y-2 text-muted-foreground">
-                            <li>• Technical interview preparation</li>
-                            <li>• Behavioral interview techniques</li>
-                            <li>• Mock interviews with feedback</li>
-                            <li>• Salary negotiation strategies</li>
-                          </ul>
-                        </AccordionContent>
-                      </AccordionItem>
-                    </>
+                    <div className="text-center text-muted-foreground py-8">
+                      <p>Curriculum details will be updated soon.</p>
+                    </div>
                   )}
                 </Accordion>
               </div>
             </TabsContent>
             
             <TabsContent value="batches" className="mt-8">
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid lg:grid-cols-2 gap-12">
                 <div>
                   <h3 className="text-2xl font-bold text-foreground mb-6">Upcoming Batches</h3>
-                  <div className="space-y-4">
-                    {course.batchDates?.map((date, index) => (
-                      <Card key={index}>
-                        <CardContent className="p-6">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="text-lg font-semibold text-foreground">
-                                Batch {index + 1}
+                  {course.batches && course.batches.length > 0 ? (
+                    <div className="space-y-4">
+                      {course.batches.map((batch, index) => (
+                        <Card key={index}>
+                          <CardContent className="p-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center">
+                                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
+                                  <i className="fas fa-calendar text-primary"></i>
+                                </div>
+                                <div>
+                                  <div className="font-semibold text-foreground">Batch {index + 1}</div>
+                                  <div className="text-sm text-muted-foreground">Starts {batch.startDate}</div>
+                                </div>
                               </div>
-                              <div className="text-muted-foreground">
-                                Starts: {new Date(date).toLocaleDateString('en-IN', { 
-                                  day: 'numeric', 
-                                  month: 'long', 
-                                  year: 'numeric' 
-                                })}
+                              <Badge variant="secondary" className="capitalize">
+                                {batch.mode}
+                              </Badge>
+                            </div>
+                            <div className="space-y-2 text-sm text-muted-foreground">
+                              <div className="flex items-center">
+                                <i className="fas fa-clock mr-2"></i>
+                                {batch.time}
                               </div>
-                              <div className="text-sm text-accent mt-1">
-                                <i className="fas fa-users mr-1"></i>
-                                Limited seats available
+                              <div className="flex items-center">
+                                <i className="fas fa-user mr-2"></i>
+                                Instructor: {batch.instructor}
                               </div>
                             </div>
-                            <Button className="btn-primary">
-                              Reserve Seat
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center text-muted-foreground py-8">
+                      <p>Batch schedules will be announced soon.</p>
+                    </div>
+                  )}
                 </div>
                 
                 <div>
                   <h3 className="text-2xl font-bold text-foreground mb-6">Schedule Details</h3>
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center">
-                          <i className="fas fa-clock text-primary mr-3"></i>
-                          <div>
-                            <div className="font-medium text-foreground">Class Timings</div>
-                            <div className="text-muted-foreground">Weekdays: 7:00 PM - 9:00 PM</div>
-                            <div className="text-muted-foreground">Weekends: 10:00 AM - 2:00 PM</div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <i className="fas fa-calendar text-primary mr-3"></i>
-                          <div>
-                            <div className="font-medium text-foreground">Duration</div>
-                            <div className="text-muted-foreground">{course.duration}</div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <i className="fas fa-laptop text-primary mr-3"></i>
-                          <div>
-                            <div className="font-medium text-foreground">Mode</div>
-                            <div className="text-muted-foreground capitalize">
-                              {course.mode === "both" ? "Online & Offline Available" : course.mode}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-center">
-                          <i className="fas fa-certificate text-primary mr-3"></i>
-                          <div>
-                            <div className="font-medium text-foreground">Certification</div>
-                            <div className="text-muted-foreground">Industry-recognized certificate</div>
-                          </div>
+                  <div className="space-y-6">
+                    <div className="flex items-center">
+                      <i className="fas fa-clock text-primary mr-3"></i>
+                      <div>
+                        <div className="font-medium text-foreground">Class Timings</div>
+                        <div className="text-muted-foreground">Weekdays: 7:00 PM - 9:00 PM</div>
+                        <div className="text-muted-foreground">Weekends: 10:00 AM - 2:00 PM</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <i className="fas fa-calendar text-primary mr-3"></i>
+                      <div>
+                        <div className="font-medium text-foreground">Duration</div>
+                        <div className="text-muted-foreground">{course.duration}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <i className="fas fa-laptop text-primary mr-3"></i>
+                      <div>
+                        <div className="font-medium text-foreground">Mode</div>
+                        <div className="text-muted-foreground capitalize">
+                          {course.mode === "hybrid" ? "Online & Offline Available" : course.mode}
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
+                    
+                    <div className="flex items-center">
+                      <i className="fas fa-certificate text-primary mr-3"></i>
+                      <div>
+                        <div className="font-medium text-foreground">Certification</div>
+                        <div className="text-muted-foreground">Industry-recognized certificate</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </TabsContent>
             
             <TabsContent value="fees" className="mt-8">
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid lg:grid-cols-2 gap-12">
                 <div>
                   <h3 className="text-2xl font-bold text-foreground mb-6">Fee Structure</h3>
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <span className="font-medium text-foreground">Course Fee</span>
-                          <span className="text-2xl font-bold text-primary">
-                            ₹{course.price?.toLocaleString() || "Contact for pricing"}
-                          </span>
+                  {course.fees && course.fees.length > 0 ? (
+                    <div className="space-y-4">
+                      {course.fees.map((fee, index) => (
+                        <Card key={index}>
+                          <CardContent className="p-6">
+                            <div className="flex items-center justify-between mb-2">
+                              <div className="font-semibold text-foreground">{fee.label}</div>
+                              <div className="text-2xl font-bold text-primary">₹{fee.amount.toLocaleString()}</div>
+                            </div>
+                            <p className="text-sm text-muted-foreground">{fee.notes}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  ) : (
+                    <Card>
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="font-semibold text-foreground">Course Fee</div>
+                          <div className="text-2xl font-bold text-primary">₹{course.price?.toLocaleString()}</div>
                         </div>
+                      </CardContent>
+                    </Card>
+                  )}
+                  
+                  <div className="mt-6 space-y-4">
+                    <h4 className="font-semibold text-foreground">Payment Options</h4>
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      <div className="flex items-center">
+                        <i className="fas fa-credit-card mr-2"></i>
+                        Full payment (5% discount)
+                      </div>
+                      <div className="flex items-center">
+                        <i className="fas fa-calendar-alt mr-2"></i>
+                        Installments available
+                      </div>
+                      <div className="flex items-center">
+                        <i className="fas fa-graduation-cap mr-2"></i>
+                        Student discounts available
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-2xl font-bold text-foreground mb-6">What's Included</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center p-4 border rounded-lg">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                        <i className="fas fa-book text-blue-600"></i>
+                      </div>
+                      <div>
+                        <div className="font-medium text-foreground">Study Materials</div>
+                        <div className="text-sm text-muted-foreground">Comprehensive course materials and resources</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center p-4 border rounded-lg">
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                        <i className="fas fa-flask text-green-600"></i>
+                      </div>
+                      <div>
+                        <div className="font-medium text-foreground">Lab Access</div>
+                        <div className="text-sm text-muted-foreground">24/7 access to practice labs and environments</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center p-4 border rounded-lg">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                        <i className="fas fa-users text-purple-600"></i>
+                      </div>
+                      <div>
+                        <div className="font-medium text-foreground">Placement Support</div>
+                        <div className="text-sm text-muted-foreground">Resume building and interview preparation</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center p-4 border rounded-lg">
+                      <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                        <i className="fas fa-certificate text-orange-600"></i>
+                      </div>
+                      <div>
+                        <div className="font-medium text-foreground">Industry Certification</div>
+                        <div className="text-sm text-muted-foreground">Recognized certificate upon completion</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 hero-gradient">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+            Ready to Transform Your Career?
+          </h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            Join thousands of professionals who have advanced their careers with our comprehensive training programs.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button className="btn-primary text-lg px-8 py-3" onClick={handleEnrollClick}>
+              Enroll Now
+            </Button>
+            <Button 
+              variant="outline" 
+              className="text-lg px-8 py-3"
+              onClick={handleSyllabusDownload}
+            >
+              Download Syllabus
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Lead Form Modal */}
+      {showSyllabusForm && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-background rounded-2xl p-8 max-w-md w-full">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold text-foreground">Download Syllabus</h3>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setShowSyllabusForm(false)}
+              >
+                ×
+              </Button>
+            </div>
+            <LeadForm 
+              courseSlug={slug || ""}
+              onSuccess={() => setShowSyllabusForm(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Quiz Component */}
+      {quiz && (
+        <section className="py-20">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
+                Test Your Knowledge
+              </h2>
+              <p className="text-xl text-muted-foreground">
+                Take our quiz to assess your current understanding and see how this course can help you grow.
+              </p>
+            </div>
+            <QuizComponent quiz={quiz} />
+          </div>
+        </section>
+      )}
+
+      <Footer />
+    </div>
+  );
+}
                         
                         <div className="border-t border-border pt-4">
                           <div className="space-y-2 text-sm">
