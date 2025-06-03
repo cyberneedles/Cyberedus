@@ -10,21 +10,23 @@ import { apiRequest } from "@/lib/queryClient";
 import { trackEvent } from "@/lib/analytics";
 
 interface LeadFormProps {
-  source: string;
+  source?: string;
   courseInterest?: string;
   buttonText?: string;
   title?: string;
   description?: string;
   onSubmit?: () => void;
+  onSuccess?: () => void;
 }
 
 export default function LeadForm({ 
-  source, 
+  source = "website", 
   courseInterest, 
   buttonText = "Submit", 
   title = "Get in Touch",
   description,
-  onSubmit 
+  onSubmit,
+  onSuccess 
 }: LeadFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
@@ -65,6 +67,7 @@ export default function LeadForm({
       });
 
       onSubmit?.();
+      onSuccess?.();
     } catch (error) {
       console.error("Failed to submit lead:", error);
       toast({

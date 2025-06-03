@@ -10,14 +10,15 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import LeadForm from "@/components/forms/lead-form";
 import QuizComponent from "@/components/quiz/quiz-component";
+import type { Course } from "@shared/schema";
 
 export default function CourseDetail() {
   const [, params] = useRoute("/course/:slug");
   const slug = params?.slug;
   const [showSyllabusForm, setShowSyllabusForm] = useState(false);
 
-  const { data: course, isLoading } = useQuery({
-    queryKey: ["/api/courses", slug],
+  const { data: course, isLoading } = useQuery<Course>({
+    queryKey: [`/api/courses/${slug}`],
     enabled: !!slug,
   });
 
