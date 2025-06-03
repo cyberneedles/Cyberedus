@@ -139,7 +139,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Course routes
   app.get("/api/courses", async (req, res) => {
     try {
-      const result = await pool.query('SELECT * FROM courses ORDER BY "createdAt" DESC');
+      const result = await pool.query('SELECT * FROM courses ORDER BY created_at DESC');
       res.json(result.rows);
     } catch (error) {
       console.error('Get courses error:', error);
@@ -168,7 +168,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const courseData = req.body;
       
       const query = `
-        INSERT INTO courses (title, slug, description, duration, level, price, category, icon, overview, "mainImage", logo, curriculum, batches, fees, "careerOpportunities", "toolsAndTechnologies", "createdAt", "updatedAt")
+        INSERT INTO courses (title, slug, description, duration, level, price, category, icon, overview, main_image, logo, curriculum, batches, fees, career_opportunities, tools_and_technologies, created_at, updated_at)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW(), NOW())
         RETURNING *
       `;
@@ -208,9 +208,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const query = `
         UPDATE courses 
         SET title = $1, slug = $2, description = $3, duration = $4, level = $5, 
-            price = $6, category = $7, icon = $8, overview = $9, "mainImage" = $10, 
+            price = $6, category = $7, icon = $8, overview = $9, main_image = $10, 
             logo = $11, curriculum = $12, batches = $13, fees = $14, 
-            "careerOpportunities" = $15, "toolsAndTechnologies" = $16, "updatedAt" = NOW()
+            career_opportunities = $15, tools_and_technologies = $16, updated_at = NOW()
         WHERE id = $17
         RETURNING *
       `;
@@ -271,7 +271,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const leadData = insertLeadSchema.parse(req.body);
       
       const query = `
-        INSERT INTO leads (name, email, phone, course, message, "createdAt")
+        INSERT INTO leads (name, email, phone, course_interest, message, created_at)
         VALUES ($1, $2, $3, $4, $5, NOW())
         RETURNING *
       `;
@@ -280,7 +280,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         leadData.name,
         leadData.email,
         leadData.phone || null,
-        leadData.course || null,
+        leadData.courseInterest || null,
         leadData.message || null
       ];
       
@@ -294,7 +294,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/leads", requireAuth, async (req, res) => {
     try {
-      const result = await pool.query('SELECT * FROM leads ORDER BY "createdAt" DESC');
+      const result = await pool.query('SELECT * FROM leads ORDER BY created_at DESC');
       res.json(result.rows);
     } catch (error) {
       console.error('Get leads error:', error);
@@ -310,11 +310,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const values: any[] = [];
       
       if (published !== undefined) {
-        query += ' WHERE published = $1';
+        query += ' WHERE is_published = $1';
         values.push(published === 'true');
       }
       
-      query += ' ORDER BY "createdAt" DESC';
+      query += ' ORDER BY created_at DESC';
       
       const result = await pool.query(query, values);
       res.json(result.rows);
@@ -345,7 +345,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const postData = insertBlogPostSchema.parse(req.body);
       
       const query = `
-        INSERT INTO blog_posts (title, slug, content, excerpt, "featuredImage", published, tags, "createdAt", "updatedAt")
+        INSERT INTO blog_posts (title, slug, content, excerpt, featured_image, is_published, category, created_at, updated_at)
         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
         RETURNING *
       `;
@@ -356,8 +356,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         postData.content,
         postData.excerpt || null,
         postData.featuredImage || null,
-        postData.published || false,
-        JSON.stringify(postData.tags || [])
+        postData.isPublished || false,
+        postData.category || 'General'
       ];
       
       const result = await pool.query(query, values);
@@ -377,12 +377,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const conditions: string[] = [];
       
       if (approved !== undefined) {
-        conditions.push(`approved = $${values.length + 1}`);
+        conditions.push(`is_approved = $${values.length + 1}`);
         values.push(approved === 'true');
       }
       
       if (courseId !== undefined) {
-        conditions.push(`"courseId" = $${values.length + 1}`);
+        conditions.push(`course_id = $${values.length + 1}`);
         values.push(parseInt(courseId as string));
       }
       
@@ -390,7 +390,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         query += ' WHERE ' + conditions.join(' AND ');
       }
       
-      query += ' ORDER BY "createdAt" DESC';
+      query += ' ORDER BY created_at DESC';
       
       const result = await pool.query(query, values);
       res.json(result.rows);
