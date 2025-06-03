@@ -8,6 +8,10 @@ import { z } from "zod";
 
 // Admin authentication middleware
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+  console.log('Auth check - Session exists:', !!req.session);
+  console.log('Auth check - User in session:', !!req.session?.user);
+  console.log('Auth check - Session data:', req.session?.user);
+  
   if (!req.session?.user) {
     return res.status(401).json({ error: "Authentication required" });
   }
@@ -133,6 +137,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin status check
+  app.get("/api/admin/status", (req, res) => {
+    console.log('Status check - Session:', req.session);
+    console.log('Status check - User:', (req.session as any)?.user);
+    
+    if ((req.session as any)?.user) {
+      res.json({ 
+        authenticated: true, 
+        user: (req.session as any).user 
+      });
+    } else {
+      res.json({ authenticated: false });
+    }
+  });
+
   // Courses API
   app.get("/api/courses", async (req, res) => {
     try {
@@ -169,7 +188,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/courses/:id", async (req, res) => {
+  app.patch("/api/courses/:id", requireAuth, async (req, res) => {
     try {
       const courseId = parseInt(req.params.id);
       const courseData = req.body;
