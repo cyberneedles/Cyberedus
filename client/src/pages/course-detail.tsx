@@ -1,7 +1,8 @@
-import { useParams, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useRoute } from "wouter";
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -9,41 +10,30 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import LeadForm from "@/components/forms/lead-form";
 import QuizComponent from "@/components/quiz/quiz-component";
-import { Course, Quiz } from "@shared/schema";
-import { trackEvent } from "@/lib/analytics";
-import { useState } from "react";
 
 export default function CourseDetail() {
-  const { slug } = useParams();
+  const [, params] = useRoute("/course/:slug");
+  const slug = params?.slug;
   const [showSyllabusForm, setShowSyllabusForm] = useState(false);
 
-  const { data: course, isLoading } = useQuery<Course>({
-    queryKey: [`/api/courses/${slug}`],
+  const { data: course, isLoading } = useQuery({
+    queryKey: ["/api/courses", slug],
+    enabled: !!slug,
   });
 
-  const { data: quiz } = useQuery<Quiz>({
-    queryKey: [`/api/courses/${course?.id}/quiz`],
+  const { data: quiz } = useQuery({
+    queryKey: ["/api/quiz", course?.id],
     enabled: !!course?.id,
   });
-
-  const handleEnrollClick = () => {
-    trackEvent("enroll_click", "course", slug);
-  };
-
-  const handleSyllabusDownload = () => {
-    trackEvent("syllabus_download", "course", slug);
-    setShowSyllabusForm(true);
-  };
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="pt-20 pb-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-center h-64">
-              <div className="spinner w-8 h-8"></div>
-            </div>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading course details...</p>
           </div>
         </div>
         <Footer />
@@ -55,15 +45,10 @@ export default function CourseDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="pt-20 pb-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center py-16">
-              <h1 className="text-4xl font-bold text-foreground mb-4">Course Not Found</h1>
-              <p className="text-muted-foreground mb-8">The course you're looking for doesn't exist.</p>
-              <Link href="/courses">
-                <Button className="btn-primary">View All Courses</Button>
-              </Link>
-            </div>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-foreground mb-4">Course Not Found</h1>
+            <p className="text-muted-foreground">The requested course could not be found.</p>
           </div>
         </div>
         <Footer />
@@ -71,91 +56,102 @@ export default function CourseDetail() {
     );
   }
 
+  const handleEnrollClick = () => {
+    setShowSyllabusForm(true);
+  };
+
+  const handleSyllabusDownload = () => {
+    setShowSyllabusForm(true);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-20 pb-16 hero-gradient">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
-            <div className="animate-fade-in">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center">
-                  <i className={`${course.icon} text-3xl text-primary`}></i>
-                </div>
-                <div className="flex gap-2">
-                  <Badge variant="secondary" className="capitalize">
-                    {course.category}
-                  </Badge>
-                  <Badge variant="outline" className="capitalize">
-                    {course.level}
-                  </Badge>
-                </div>
+      <section className="relative py-20 hero-gradient overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-6">
+                <Badge variant="secondary" className="capitalize">
+                  {course.level}
+                </Badge>
+                <Badge variant="outline" className="capitalize">
+                  {course.category}
+                </Badge>
               </div>
               
               <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
                 {course.title}
               </h1>
+              
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
                 {course.description}
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <Button 
-                  className="btn-primary text-lg"
-                  onClick={handleEnrollClick}
-                >
-                  <i className="fas fa-graduation-cap mr-2"></i>Enroll Now
+              <div className="flex flex-wrap gap-6 mb-8">
+                <div className="flex items-center">
+                  <i className="fas fa-clock text-primary mr-2"></i>
+                  <span className="text-muted-foreground">{course.duration}</span>
+                </div>
+                <div className="flex items-center">
+                  <i className="fas fa-signal text-primary mr-2"></i>
+                  <span className="text-muted-foreground capitalize">{course.level}</span>
+                </div>
+                <div className="flex items-center">
+                  <i className="fas fa-certificate text-primary mr-2"></i>
+                  <span className="text-muted-foreground">Certificate Included</span>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button className="btn-primary text-lg px-8 py-3" onClick={handleEnrollClick}>
+                  Enroll Now
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="btn-secondary"
+                  className="text-lg px-8 py-3"
                   onClick={handleSyllabusDownload}
                 >
-                  <i className="fas fa-download mr-2"></i>Download Syllabus
+                  Download Syllabus
                 </Button>
               </div>
               
-              {/* Quick Course Info */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-8 border-t border-border">
-                <div className="text-center">
-                  <div className="text-lg font-bold text-primary">{course.duration}</div>
-                  <div className="text-sm text-muted-foreground">Duration</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-bold text-primary capitalize">{course.level}</div>
-                  <div className="text-sm text-muted-foreground">Level</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-lg font-bold text-primary capitalize">
-                    {course.mode === "both" ? "Hybrid" : course.mode}
+              {course.price && (
+                <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/10">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Course Fee</span>
+                    <span className="text-2xl font-bold text-primary">₹{course.price.toLocaleString()}</span>
                   </div>
-                  <div className="text-sm text-muted-foreground">Mode</div>
                 </div>
-                {course.price && (
-                  <div className="text-center">
-                    <div className="text-lg font-bold text-primary">₹{course.price.toLocaleString()}</div>
-                    <div className="text-sm text-muted-foreground">Fee</div>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
             
-            <div className="mt-12 lg:mt-0">
-              <img 
-                src="https://images.unsplash.com/photo-1517180102446-f3ece451e9d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
-                alt={`${course.title} training environment`}
-                className="rounded-2xl shadow-2xl w-full h-auto"
-              />
+            <div className="relative">
+              {course.mainImage && (
+                <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl">
+                  <img 
+                    src={course.mainImage} 
+                    alt={course.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+              <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-primary/10 rounded-full blur-xl"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Course Details Tabs */}
+      {/* Course Details */}
       <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="overview" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -167,117 +163,65 @@ export default function CourseDetail() {
             <TabsContent value="overview" className="mt-8">
               <div className="grid lg:grid-cols-2 gap-12">
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">What This Course Means to You</h3>
-                  <p className="text-muted-foreground mb-6">
-                    {course.overview || course.description}
-                  </p>
-                  
-                  <h4 className="text-xl font-semibold text-foreground mb-4">Prerequisites</h4>
-                  <p className="text-muted-foreground mb-6">
-                    {course.prerequisites || "No specific prerequisites required - suitable for beginners"}
-                  </p>
-                  
-                  <h4 className="text-xl font-semibold text-foreground mb-4">Career Opportunities</h4>
-                  <ul className="space-y-2 text-muted-foreground">
-                    {course.careerOpportunities && course.careerOpportunities.length > 0 ? (
-                      course.careerOpportunities.map((opportunity, index) => (
-                        <li key={index} className="flex items-center">
-                          <i className="fas fa-check text-accent mr-2"></i>
-                          {opportunity}
-                        </li>
-                      ))
+                  <h3 className="text-2xl font-bold text-foreground mb-6">Course Overview</h3>
+                  <div className="prose prose-lg max-w-none text-muted-foreground">
+                    {course.overview ? (
+                      <div dangerouslySetInnerHTML={{ __html: course.overview }} />
                     ) : (
-                      <>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Enhanced Career Prospects</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Industry Recognition</li>
-                        <li className="flex items-center"><i className="fas fa-check text-accent mr-2"></i>Professional Growth</li>
-                      </>
+                      <p>{course.description}</p>
                     )}
-                  </ul>
+                  </div>
+                  
+                  {course.careerOpportunities && course.careerOpportunities.length > 0 && (
+                    <div className="mt-8">
+                      <h4 className="text-xl font-semibold text-foreground mb-4">Career Opportunities</h4>
+                      <ul className="space-y-2">
+                        {course.careerOpportunities.map((opportunity, index) => (
+                          <li key={index} className="flex items-center text-muted-foreground">
+                            <i className="fas fa-check text-primary mr-3"></i>
+                            {opportunity}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
                 
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">What We Offer</h3>
+                  <h3 className="text-2xl font-bold text-foreground mb-6">Tools & Technologies</h3>
+                  {course.toolsAndTechnologies ? (
+                    <div className="prose prose-lg max-w-none text-muted-foreground">
+                      <div dangerouslySetInnerHTML={{ __html: course.toolsAndTechnologies }} />
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground">
+                      You'll learn industry-standard tools and technologies used by professionals in the field.
+                    </p>
+                  )}
                   
-                  <div className="space-y-4">
-                    {course.features && course.features.length > 0 ? (
-                      course.features.map((feature, index) => (
-                        <Card key={index}>
-                          <CardContent className="p-4">
-                            <div className="flex items-center">
-                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                                <i className="fas fa-star text-primary"></i>
-                              </div>
-                              <span className="font-medium text-foreground">{feature}</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))
-                    ) : (
-                      <>
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex items-center">
-                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                                <i className="fas fa-book text-primary"></i>
-                              </div>
-                              <span className="font-medium text-foreground">Comprehensive Study Materials</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex items-center">
-                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                                <i className="fas fa-laptop text-primary"></i>
-                              </div>
-                              <span className="font-medium text-foreground">24/7 Lab Access</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex items-center">
-                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                                <i className="fas fa-users text-primary"></i>
-                              </div>
-                              <span className="font-medium text-foreground">Placement Support</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                        <Card>
-                          <CardContent className="p-4">
-                            <div className="flex items-center">
-                              <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                                <i className="fas fa-certificate text-primary"></i>
-                              </div>
-                              <span className="font-medium text-foreground">Industry Certification</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </>
-                    )}
+                  <div className="mt-8">
+                    <h4 className="text-xl font-semibold text-foreground mb-4">What You'll Learn</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center p-3 bg-primary/5 rounded-lg">
+                        <i className="fas fa-shield-alt text-primary mr-3"></i>
+                        <span className="text-foreground">Advanced Security Concepts</span>
+                      </div>
+                      <div className="flex items-center p-3 bg-blue-500/5 rounded-lg">
+                        <i className="fas fa-code text-blue-600 mr-3"></i>
+                        <span className="text-foreground">Hands-on Practical Skills</span>
+                      </div>
+                      <div className="flex items-center p-3 bg-green-500/5 rounded-lg">
+                        <i className="fas fa-certificate text-green-600 mr-3"></i>
+                        <span className="text-foreground">Industry Certification</span>
+                      </div>
+                    </div>
                   </div>
-
-                  <Card className="mt-6">
-                    <CardHeader>
-                      <CardTitle className="flex items-center">
-                        <i className="fas fa-tools mr-2 text-primary"></i>
-                        Tools & Technologies
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground">
-                        {course.toolsAndTechnologies || "You'll work with industry-standard tools and the latest technologies used by professionals worldwide. All software and lab environments are provided as part of the course."}
-                      </p>
-                    </CardContent>
-                  </Card>
                 </div>
               </div>
             </TabsContent>
             
             <TabsContent value="curriculum" className="mt-8">
-              <div className="max-w-4xl">
+              <div>
                 <h3 className="text-2xl font-bold text-foreground mb-6">Course Curriculum</h3>
                 <Accordion type="single" collapsible className="w-full">
                   {course.curriculum && course.curriculum.length > 0 ? (
@@ -525,7 +469,6 @@ export default function CourseDetail() {
               </Button>
             </div>
             <LeadForm 
-              courseSlug={slug || ""}
               onSuccess={() => setShowSyllabusForm(false)}
             />
           </div>
@@ -544,148 +487,7 @@ export default function CourseDetail() {
                 Take our quiz to assess your current understanding and see how this course can help you grow.
               </p>
             </div>
-            <QuizComponent quiz={quiz} />
-          </div>
-        </section>
-      )}
-
-      <Footer />
-    </div>
-  );
-}
-                        
-                        <div className="border-t border-border pt-4">
-                          <div className="space-y-2 text-sm">
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Registration Fee</span>
-                              <span className="text-foreground">₹1,000</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Study Materials</span>
-                              <span className="text-accent">Included</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Lab Access</span>
-                              <span className="text-accent">Included</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span className="text-muted-foreground">Certification</span>
-                              <span className="text-accent">Included</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="mt-6">
-                    <CardContent className="p-6">
-                      <h4 className="font-semibold text-foreground mb-4">Payment Options</h4>
-                      <div className="space-y-3">
-                        <div className="flex items-center">
-                          <i className="fas fa-credit-card text-primary mr-3"></i>
-                          <span className="text-muted-foreground">Full payment (5% discount)</span>
-                        </div>
-                        <div className="flex items-center">
-                          <i className="fas fa-calendar-alt text-primary mr-3"></i>
-                          <span className="text-muted-foreground">Installments available</span>
-                        </div>
-                        <div className="flex items-center">
-                          <i className="fas fa-graduation-cap text-primary mr-3"></i>
-                          <span className="text-muted-foreground">Student discounts available</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-                
-                <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">What's Included</h3>
-                  <div className="space-y-4">
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 bg-accent/10 rounded-lg flex items-center justify-center mr-3">
-                            <i className="fas fa-book text-accent"></i>
-                          </div>
-                          <div>
-                            <div className="font-medium text-foreground">Study Materials</div>
-                            <div className="text-sm text-muted-foreground">Comprehensive course materials and resources</div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-3">
-                            <i className="fas fa-laptop-code text-primary"></i>
-                          </div>
-                          <div>
-                            <div className="font-medium text-foreground">Lab Access</div>
-                            <div className="text-sm text-muted-foreground">24/7 access to practice labs and environments</div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 bg-secondary/10 rounded-lg flex items-center justify-center mr-3">
-                            <i className="fas fa-users text-secondary"></i>
-                          </div>
-                          <div>
-                            <div className="font-medium text-foreground">Placement Support</div>
-                            <div className="text-sm text-muted-foreground">Resume building and interview preparation</div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
-                            <i className="fas fa-certificate text-purple-600"></i>
-                          </div>
-                          <div>
-                            <div className="font-medium text-foreground">Industry Certification</div>
-                            <div className="text-sm text-muted-foreground">Recognized certificate upon completion</div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </div>
-      </section>
-
-      {/* Quiz Section */}
-      {quiz && (
-        <section className="py-20 bg-muted/50">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <QuizComponent courseId={course.id} />
-          </div>
-        </section>
-      )}
-
-      {/* Syllabus Download Form */}
-      {showSyllabusForm && (
-        <section className="py-20 bg-card">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <LeadForm 
-              source="syllabus_download"
-              courseInterest={course.title}
-              buttonText="Download Syllabus"
-              title="Download Course Syllabus"
-              description="Get the complete course syllabus with detailed module breakdown"
-              onSubmit={() => setShowSyllabusForm(false)}
-            />
+            <QuizComponent />
           </div>
         </section>
       )}
