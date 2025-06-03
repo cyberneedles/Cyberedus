@@ -6,19 +6,21 @@ import { pool } from "./db";
 import { insertLeadSchema, insertBlogPostSchema, insertTestimonialSchema } from "@shared/schema";
 import { z } from "zod";
 
-// Simple in-memory admin session store
-let adminSession: { authenticated: boolean; timestamp: number } | null = null;
-const SESSION_TIMEOUT = 24 * 60 * 60 * 1000; // 24 hours
+// Extend session interface to include admin flag
+declare module 'express-session' {
+  interface SessionData {
+    isAdmin?: boolean;
+    adminEmail?: string;
+  }
+}
 
 // Admin authentication middleware
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
-  console.log('Auth check - Admin session:', adminSession);
+  console.log('Auth check - Session ID:', req.sessionID);
+  console.log('Auth check - Session data:', req.session);
   
-  // Check if admin session exists and is not expired
-  if (!adminSession || 
-      !adminSession.authenticated || 
-      (Date.now() - adminSession.timestamp > SESSION_TIMEOUT)) {
-    adminSession = null;
+  // Check if admin session exists
+  if (!req.session.isAdmin) {
     return res.status(401).json({ error: "Authentication required" });
   }
   
@@ -59,13 +61,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Simple hardcoded admin authentication for development
       if (email === 'admin@cyberedus.com' && password === 'admin123') {
-        // Set simple admin session
-        adminSession = {
-          authenticated: true,
-          timestamp: Date.now()
-        };
+        // Set session data
+        req.session.isAdmin = true;
+        req.session.adminEmail = email;
         
-        console.log('Admin session created:', adminSession);
+        console.log('Admin session created - Session ID:', req.sessionID);
         res.json({ 
           success: true, 
           user: {
@@ -88,27 +88,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Admin logout route
   app.post("/api/admin/logout", (req, res) => {
-    adminSession = null;
-    res.json({ success: true });
+    req.session.destroy((err) => {
+      if (err) {
+        console.error('Session destroy error:', err);
+        return res.status(500).json({ error: "Could not log out" });
+      }
+      res.json({ success: true });
+    });
   });
 
   // Admin session check
   app.get("/api/admin/session", (req, res) => {
-    console.log('Session check - Admin session:', adminSession);
+    console.log('Session check - Session ID:', req.sessionID);
+    console.log('Session check - Is Admin:', req.session.isAdmin);
     
-    if (adminSession && adminSession.authenticated && 
-        (Date.now() - adminSession.timestamp <= SESSION_TIMEOUT)) {
+    if (req.session.isAdmin) {
       res.json({ 
         authenticated: true,
         user: {
           id: 1,
-          email: 'admin@cyberedus.com',
+          email: req.session.adminEmail || 'admin@cyberedus.com',
           name: 'admin',
           isAdmin: true
         }
       });
     } else {
-      adminSession = null;
       res.json({ authenticated: false });
     }
   });
@@ -207,8 +211,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const courseData = req.body;
       
       const query = `
-        INSERT INTO courses (title, slug, description, duration, level, price, category, icon, overview, main_image, logo, curriculum, batches, fees, career_opportunities, tools_and_technologies, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW(), NOW())
+        INSERT INTO courses (title, slug, description, duration, level, price, category, icon, overview, main_image, logo, curriculum, batches, fees, career_opportunities, tools_and_technologies, created_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW())
         RETURNING *
       `;
       
@@ -249,7 +253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         SET title = $1, slug = $2, description = $3, duration = $4, level = $5, 
             price = $6, category = $7, icon = $8, overview = $9, main_image = $10, 
             logo = $11, curriculum = $12, batches = $13, fees = $14, 
-            career_opportunities = $15, tools_and_technologies = $16, updated_at = NOW()
+            career_opportunities = $15, tools_and_technologies = $16
         WHERE id = $17
         RETURNING *
       `;
