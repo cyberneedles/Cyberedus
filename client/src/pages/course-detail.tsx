@@ -23,7 +23,7 @@ export default function CourseDetail() {
   });
 
   const { data: quiz } = useQuery({
-    queryKey: ["/api/quiz", course?.id],
+    queryKey: [`/api/courses/${course?.id}/quiz`],
     enabled: !!course?.id,
   });
 
