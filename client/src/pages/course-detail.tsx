@@ -10,7 +10,7 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import LeadForm from "@/components/forms/lead-form";
 import QuizComponent from "@/components/quiz/quiz-component";
-import type { Course } from "@shared/schema";
+import type { Course, Quiz } from "@shared/schema";
 import { FormLabel } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
@@ -41,8 +41,8 @@ export default function CourseDetail() {
       const fetchedCourse: Course = await response.json();
       console.log('Fetched raw course data:', fetchedCourse);
 
-      // Ensure all potentially null fields default to empty strings or empty arrays
-      const parsedCourse = {
+      // Ensure all potentially null fields have proper defaults
+      const parsedCourse: Course = {
         ...fetchedCourse,
         curriculum: Array.isArray(fetchedCourse.curriculum) ? fetchedCourse.curriculum : [],
         batches: Array.isArray(fetchedCourse.batches) ? fetchedCourse.batches : [],
@@ -53,6 +53,11 @@ export default function CourseDetail() {
         toolsAndTechnologies: fetchedCourse.toolsAndTechnologies || "",
         whatYouWillLearn: fetchedCourse.whatYouWillLearn || "",
         syllabusUrl: fetchedCourse.syllabusUrl || "",
+        overview: fetchedCourse.overview || "",
+        features: fetchedCourse.features || [],
+        prerequisites: fetchedCourse.prerequisites || null,
+        price: fetchedCourse.price || null,
+        isActive: fetchedCourse.isActive ?? true,
       };
       console.log('Processed course data in CourseDetail:', parsedCourse);
       return parsedCourse;
@@ -60,7 +65,7 @@ export default function CourseDetail() {
     enabled: !!slug,
   });
 
-  const { data: quiz } = useQuery({
+  const { data: quiz } = useQuery<Quiz | null>({
     queryKey: [`/api/courses/${course?.id}/quiz`],
     enabled: !!course?.id,
   });
@@ -315,24 +320,24 @@ export default function CourseDetail() {
                             <i className="fas fa-calendar-alt mr-3 text-primary"></i>
                             <span className="font-semibold text-foreground dark:text-white">Start Date:</span>
                             <span className="ml-2 text-muted-foreground dark:text-[#b0b0b0]">{batch.startDate}</span>
-                                </div>
+                          </div>
                           <div className="flex items-center text-muted-foreground mb-3">
                             <i className="fas fa-clock mr-3 text-primary"></i>
                             <span className="font-semibold text-foreground dark:text-white">Time:</span>
-                            <span className="ml-2 text-muted-foreground dark:text-[#b0b0b0]">{batch.startTime} - {batch.endTime}</span>
-                                    </div>
+                            <span className="ml-2 text-muted-foreground dark:text-[#b0b0b0]">{batch.time}</span>
+                          </div>
                           <div className="flex items-center text-muted-foreground mb-3">
                             <i className="fas fa-laptop-code mr-3 text-primary"></i>
                             <span className="font-semibold text-foreground dark:text-white">Mode:</span>
                             <span className="ml-2 capitalize text-muted-foreground dark:text-[#b0b0b0]">{batch.mode}</span>
-                                  </div>
+                          </div>
                           <div className="flex items-center text-muted-foreground">
                             <i className="fas fa-chalkboard-teacher mr-3 text-primary"></i>
                             <span className="font-semibold text-foreground dark:text-white">Instructor:</span>
                             <span className="ml-2 text-muted-foreground dark:text-[#b0b0b0]">{batch.instructor}</span>
-                            </div>
-                          </CardContent>
-                        </Card>
+                          </div>
+                        </CardContent>
+                      </Card>
                     ))
                   ) : (
                     <p className="text-muted-foreground dark:text-[#b0b0b0]">No upcoming batches scheduled.</p>
@@ -373,7 +378,7 @@ export default function CourseDetail() {
             <h2 className="text-4xl font-bold text-foreground mb-10 text-center dark:text-white">Test Your Knowledge</h2>
             <Card className="bg-card dark:bg-[#2a2a2a] border border-border/50 dark:border-[#3a3a3a] rounded-2xl shadow-lg p-6 md:p-8">
               <CardContent>
-                <QuizComponent quiz={quiz} />
+                <QuizComponent courseId={course?.id} />
               </CardContent>
             </Card>
           </div>
@@ -399,7 +404,7 @@ export default function CourseDetail() {
             buttonText={leadFormSource.includes("Enroll Now") ? "Enroll Now" : "Download Syllabus"}
             onSuccess={() => setIsLeadFormOpen(false)}
             courseSlug={course?.slug}
-            syllabusDownloadUrl={course?.syllabusUrl}
+            syllabusDownloadUrl={course?.syllabusUrl || undefined}
           />
         </DialogContent>
       </Dialog>

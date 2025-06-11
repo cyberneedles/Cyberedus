@@ -15,12 +15,22 @@ interface QuizComponentProps {
   courseId?: number;
 }
 
+interface LeadFormData {
+  name: string;
+  email: string;
+  phone: string;
+  currentLocation: string;
+  courseInterest?: string;
+  experience?: string;
+  message?: string;
+}
+
 export default function QuizComponent({ courseId }: QuizComponentProps) {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState<"lead" | "quiz" | "results">("lead");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
-  const [leadData, setLeadData] = useState<any>(null);
+  const [leadData, setLeadData] = useState<LeadFormData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Default quiz questions for general assessment
@@ -55,7 +65,7 @@ export default function QuizComponent({ courseId }: QuizComponentProps) {
   const questions = quiz?.questions || defaultQuestions;
   const progressPercentage = ((currentQuestion + 1) / questions.length) * 100;
 
-  const handleLeadSubmit = (data: any) => {
+  const handleLeadSubmit = (data: LeadFormData) => {
     setLeadData(data);
     setCurrentStep("quiz");
     trackEvent("quiz_started", "engagement", "assessment");
@@ -154,7 +164,7 @@ export default function QuizComponent({ courseId }: QuizComponentProps) {
           title="Get Your Personalized Results"
           description="Complete this short form to access your customized course recommendations"
           buttonText="Start Assessment"
-          onSubmit={handleLeadSubmit}
+          onSubmit={(formData) => handleLeadSubmit(formData)}
         />
       </div>
     );

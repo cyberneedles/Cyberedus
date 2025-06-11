@@ -115,22 +115,21 @@ export class DatabaseStorage implements IStorage {
           mode: insertCourse.mode,
           level: insertCourse.level,
           price: insertCourse.price || null,
-          syllabus_url: insertCourse.syllabusUrl || '',
+          syllabusUrl: insertCourse.syllabusUrl || null,
           icon: insertCourse.icon,
           category: insertCourse.category,
-          is_active: insertCourse.isActive ?? true,
+          isActive: insertCourse.isActive ?? true,
           features: null, // Explicitly set to null instead of empty array
-          batch_dates: null, // Explicitly set to null instead of empty array
-          // Enhanced course fields
+          batchDates: [],
           overview: insertCourse.overview || null,
-          main_image: insertCourse.mainImage || '',
+          mainImage: insertCourse.mainImage || null,
           logo: insertCourse.logo || null,
           curriculum: insertCourse.curriculum || null,
           batches: insertCourse.batches || null,
           fees: insertCourse.fees || null,
-          career_opportunities: insertCourse.careerOpportunities || '',
-          tools_and_technologies: insertCourse.toolsAndTechnologies || '',
-          what_you_will_learn: insertCourse.whatYouWillLearn || ''
+          careerOpportunities: insertCourse.careerOpportunities || null,
+          toolsAndTechnologies: insertCourse.toolsAndTechnologies || null,
+          whatYouWillLearn: insertCourse.whatYouWillLearn || null,
         })
         .returning();
       console.log("DatabaseStorage: Successfully created course in DB:", course);
@@ -157,7 +156,7 @@ export class DatabaseStorage implements IStorage {
       .delete(courses)
       .where(eq(courses.id, id))
       .returning();
-    return result.length > 0;
+    return Array.isArray(result) ? result.length > 0 : false;
   }
 
   async getQuizByCourseId(courseId: number): Promise<Quiz | undefined> {
@@ -225,7 +224,7 @@ export class DatabaseStorage implements IStorage {
 
   async deleteBlogPost(id: number): Promise<boolean> {
     const result = await db.delete(blogPosts).where(eq(blogPosts.id, id));
-    return result.rowCount > 0;
+    return Array.isArray(result) ? result.length > 0 : false;
   }
 
   async getAllTestimonials(approved?: boolean): Promise<Testimonial[]> {
@@ -260,7 +259,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(testimonials)
       .where(eq(testimonials.id, id));
-    return result.rowCount > 0;
+    return Array.isArray(result) ? result.length > 0 : false;
   }
 
   async getAllFAQs(active?: boolean): Promise<FAQ[]> {
@@ -306,11 +305,10 @@ export class MemStorage implements IStorage {
     // Create admin user
     const adminUser: User = {
       id: this.currentId++,
-      name: "Admin User",
       email: "admin@cyberedu.com",
       password: "admin123",
-      is_admin: true,
-      created_at: new Date(),
+      role: "admin",
+      createdAt: new Date(),
     };
     this.users.set(adminUser.id, adminUser);
 
@@ -329,6 +327,17 @@ export class MemStorage implements IStorage {
         icon: "fas fa-shield-alt",
         category: "cybersecurity",
         batchDates: ["2024-02-15", "2024-03-01", "2024-03-15"],
+        isActive: true,
+        syllabusUrl: null,
+        overview: null,
+        mainImage: null,
+        logo: null,
+        curriculum: null,
+        batches: null,
+        fees: null,
+        careerOpportunities: null,
+        toolsAndTechnologies: null,
+        whatYouWillLearn: null,
       },
       {
         title: "Advanced Cybersecurity Mastery",
@@ -343,6 +352,17 @@ export class MemStorage implements IStorage {
         icon: "fas fa-brain",
         category: "cybersecurity",
         batchDates: ["2024-02-20", "2024-03-10", "2024-04-01"],
+        isActive: true,
+        syllabusUrl: null,
+        overview: null,
+        mainImage: null,
+        logo: null,
+        curriculum: null,
+        batches: null,
+        fees: null,
+        careerOpportunities: null,
+        toolsAndTechnologies: null,
+        whatYouWillLearn: null,
       },
       {
         title: "Bug Bounty Program",
@@ -357,6 +377,17 @@ export class MemStorage implements IStorage {
         icon: "fas fa-bug",
         category: "cybersecurity",
         batchDates: ["2024-02-25", "2024-03-20", "2024-04-15"],
+        isActive: true,
+        syllabusUrl: null,
+        overview: null,
+        mainImage: null,
+        logo: null,
+        curriculum: null,
+        batches: null,
+        fees: null,
+        careerOpportunities: null,
+        toolsAndTechnologies: null,
+        whatYouWillLearn: null,
       },
       {
         title: "Full Stack Java Development",
@@ -371,6 +402,17 @@ export class MemStorage implements IStorage {
         icon: "fab fa-java",
         category: "development",
         batchDates: ["2024-02-18", "2024-03-05", "2024-03-25"],
+        isActive: true,
+        syllabusUrl: null,
+        overview: null,
+        mainImage: null,
+        logo: null,
+        curriculum: null,
+        batches: null,
+        fees: null,
+        careerOpportunities: null,
+        toolsAndTechnologies: null,
+        whatYouWillLearn: null,
       },
       {
         title: "Python Programming",
@@ -385,6 +427,17 @@ export class MemStorage implements IStorage {
         icon: "fab fa-python",
         category: "development",
         batchDates: ["2024-02-12", "2024-02-28", "2024-03-18"],
+        isActive: true,
+        syllabusUrl: null,
+        overview: null,
+        mainImage: null,
+        logo: null,
+        curriculum: null,
+        batches: null,
+        fees: null,
+        careerOpportunities: null,
+        toolsAndTechnologies: null,
+        whatYouWillLearn: null,
       },
       {
         title: "Interview Preparation Bootcamp",
@@ -399,15 +452,47 @@ export class MemStorage implements IStorage {
         icon: "fas fa-handshake",
         category: "career",
         batchDates: ["2024-02-26", "2024-03-12", "2024-03-26"],
+        isActive: true,
+        syllabusUrl: null,
+        overview: null,
+        mainImage: null,
+        logo: null,
+        curriculum: null,
+        batches: null,
+        fees: null,
+        careerOpportunities: null,
+        toolsAndTechnologies: null,
+        whatYouWillLearn: null,
       },
     ];
 
     courseData.forEach(course => {
       const newCourse: Course = {
         id: this.currentId++,
-        ...course,
-        isActive: true,
+        mode: course.mode,
         createdAt: new Date(),
+        title: course.title,
+        slug: course.slug,
+        description: course.description,
+        duration: course.duration,
+        prerequisites: course.prerequisites || null,
+        level: course.level,
+        price: course.price || null,
+        features: course.features || null,
+        icon: course.icon,
+        category: course.category,
+        isActive: course.isActive,
+        syllabusUrl: course.syllabusUrl || null,
+        overview: course.overview || null,
+        mainImage: course.mainImage || null,
+        logo: course.logo || null,
+        curriculum: course.curriculum || null,
+        batches: course.batches || null,
+        fees: course.fees || null,
+        careerOpportunities: course.careerOpportunities || null,
+        toolsAndTechnologies: course.toolsAndTechnologies || null,
+        whatYouWillLearn: course.whatYouWillLearn || null,
+        batchDates: course.batchDates || [],
       };
       this.courses.set(newCourse.id, newCourse);
     });
@@ -463,26 +548,32 @@ export class MemStorage implements IStorage {
         answer: "Yes, we provide comprehensive placement assistance including resume building, interview preparation, and direct connections with our 40+ industry partners. While we don't guarantee placement, we provide real support and mentoring to help you succeed.",
         category: "placement",
         order: 1,
+        isActive: true,
       },
       {
         question: "What is the 80% practical approach?",
         answer: "Our curriculum is designed with 80% hands-on practice and 20% theory. Students work on real projects, use industry tools, and solve actual cybersecurity challenges rather than just learning concepts.",
         category: "curriculum",
         order: 2,
+        isActive: true,
       },
       {
         question: "Are there any prerequisites for cybersecurity courses?",
         answer: "For CEH, you only need basic computer knowledge. For Advanced Cybersecurity, some IT/networking knowledge is preferred. For Bug Bounty, familiarity with networking & OSI layers is recommended.",
         category: "prerequisites",
         order: 3,
+        isActive: true,
       },
     ];
 
     faqData.forEach(faq => {
       const newFaq: FAQ = {
         id: this.currentId++,
-        ...faq,
-        isActive: true,
+        category: faq.category,
+        question: faq.question,
+        answer: faq.answer,
+        isActive: faq.isActive,
+        order: faq.order || 0,
       };
       this.faqs.set(newFaq.id, newFaq);
     });
@@ -524,9 +615,11 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentId++;
-    const user: User = { 
-      ...insertUser, 
+    const user: User = {
       id,
+      email: insertUser.email,
+      password: insertUser.password,
+      role: insertUser.role || "user",
       createdAt: new Date(),
     };
     this.users.set(id, user);
@@ -543,13 +636,35 @@ export class MemStorage implements IStorage {
 
   async createCourse(insertCourse: InsertCourse): Promise<Course> {
     const id = this.currentId++;
-    const course: Course = {
-      ...insertCourse,
+    const newCourse: Course = {
       id,
+      mode: insertCourse.mode,
       createdAt: new Date(),
+      title: insertCourse.title,
+      slug: insertCourse.slug,
+      description: insertCourse.description,
+      duration: insertCourse.duration,
+      prerequisites: insertCourse.prerequisites || null,
+      level: insertCourse.level,
+      price: insertCourse.price || null,
+      features: insertCourse.features || null,
+      icon: insertCourse.icon,
+      category: insertCourse.category,
+      isActive: insertCourse.isActive ?? true,
+      syllabusUrl: insertCourse.syllabusUrl || null,
+      overview: insertCourse.overview || null,
+      mainImage: insertCourse.mainImage || null,
+      logo: insertCourse.logo || null,
+      curriculum: insertCourse.curriculum || null,
+      batches: insertCourse.batches || null,
+      fees: insertCourse.fees || null,
+      careerOpportunities: insertCourse.careerOpportunities || null,
+      toolsAndTechnologies: insertCourse.toolsAndTechnologies || null,
+      whatYouWillLearn: insertCourse.whatYouWillLearn || null,
+      batchDates: insertCourse.batchDates || [],
     };
-    this.courses.set(id, course);
-    return course;
+    this.courses.set(id, newCourse);
+    return newCourse;
   }
 
   async updateCourse(id: number, courseUpdate: Partial<InsertCourse>): Promise<Course | undefined> {
@@ -568,9 +683,11 @@ export class MemStorage implements IStorage {
   async createQuiz(insertQuiz: InsertQuiz): Promise<Quiz> {
     const id = this.currentId++;
     const quiz: Quiz = {
-      ...insertQuiz,
       id,
       createdAt: new Date(),
+      title: insertQuiz.title,
+      courseId: insertQuiz.courseId || null,
+      questions: insertQuiz.questions,
     };
     this.quizzes.set(id, quiz);
     return quiz;
@@ -588,9 +705,17 @@ export class MemStorage implements IStorage {
   async createLead(insertLead: InsertLead): Promise<Lead> {
     const id = this.currentId++;
     const lead: Lead = {
-      ...insertLead,
       id,
+      email: insertLead.email,
+      name: insertLead.name,
       createdAt: new Date(),
+      phone: insertLead.phone,
+      currentLocation: insertLead.currentLocation || null,
+      courseInterest: insertLead.courseInterest || null,
+      source: insertLead.source,
+      experience: insertLead.experience || null,
+      message: insertLead.message || null,
+      quizResults: insertLead.quizResults || null,
     };
     this.leads.set(id, lead);
     return lead;
@@ -619,9 +744,17 @@ export class MemStorage implements IStorage {
   async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
     const id = this.currentId++;
     const post: BlogPost = {
-      ...insertPost,
-      id,
+      id: this.currentId++,
       createdAt: new Date(),
+      title: insertPost.title,
+      slug: insertPost.slug,
+      category: insertPost.category,
+      content: insertPost.content,
+      excerpt: insertPost.excerpt,
+      featuredImage: insertPost.featuredImage || null,
+      authorId: insertPost.authorId || null,
+      isPublished: insertPost.isPublished ?? false,
+      readingTime: insertPost.readingTime || 0,
       updatedAt: new Date(),
     };
     this.blogPosts.set(id, post);
@@ -664,9 +797,17 @@ export class MemStorage implements IStorage {
   async createTestimonial(insertTestimonial: InsertTestimonial): Promise<Testimonial> {
     const id = this.currentId++;
     const testimonial: Testimonial = {
-      ...insertTestimonial,
-      id,
+      id: this.currentId++,
+      name: insertTestimonial.name,
       createdAt: new Date(),
+      courseId: insertTestimonial.courseId || null,
+      courseName: insertTestimonial.courseName,
+      rating: insertTestimonial.rating,
+      review: insertTestimonial.review,
+      jobTitle: insertTestimonial.jobTitle || null,
+      company: insertTestimonial.company || null,
+      image: insertTestimonial.image || null,
+      isApproved: insertTestimonial.isApproved ?? false,
     };
     this.testimonials.set(id, testimonial);
     return testimonial;
@@ -683,11 +824,31 @@ export class MemStorage implements IStorage {
   async createFAQ(insertFaq: InsertFAQ): Promise<FAQ> {
     const id = this.currentId++;
     const faq: FAQ = {
-      ...insertFaq,
-      id,
+      id: this.currentId++,
+      category: insertFaq.category,
+      question: insertFaq.question,
+      answer: insertFaq.answer,
+      isActive: insertFaq.isActive ?? true,
+      order: insertFaq.order || 0,
     };
     this.faqs.set(id, faq);
     return faq;
+  }
+
+  async deleteCourse(id: number): Promise<boolean> {
+    return this.courses.delete(id);
+  }
+
+  async updateTestimonial(id: number, testimonialUpdate: Partial<InsertTestimonial>): Promise<Testimonial | undefined> {
+    const testimonial = this.testimonials.get(id);
+    if (!testimonial) return undefined;
+    const updatedTestimonial = { ...testimonial, ...testimonialUpdate };
+    this.testimonials.set(id, updatedTestimonial);
+    return updatedTestimonial;
+  }
+
+  async deleteTestimonial(id: number): Promise<boolean> {
+    return this.testimonials.delete(id);
   }
 }
 

@@ -8,6 +8,7 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Testimonial, Course } from "@shared/schema";
 import { BackgroundContainer } from "@/components/BackgroundContainer";
+import { trackEvent } from "@/lib/analytics";
 
 export default function Testimonials() {
   const [searchTerm, setSearchTerm] = useState("");

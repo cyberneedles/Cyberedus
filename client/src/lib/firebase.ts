@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
 import { signInWithEmailAndPassword as firebaseAuthSignInWithEmailAndPassword } from 'firebase/auth';
 
@@ -87,7 +87,7 @@ export interface Lead {
 
 // Helper functions for Firebase operations
 export const createCourse = async (courseData: Omit<Course, 'id' | 'createdAt' | 'updatedAt'>) => {
-  const docRef = await db.collection('courses').add({
+  const docRef = await addDoc(collection(db, 'courses'), {
     ...courseData,
     createdAt: new Date(),
     updatedAt: new Date()
@@ -96,7 +96,7 @@ export const createCourse = async (courseData: Omit<Course, 'id' | 'createdAt' |
 };
 
 export const getCourses = async () => {
-  const snapshot = await db.collection('courses').get();
+  const snapshot = await getDocs(collection(db, 'courses'));
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -104,7 +104,7 @@ export const getCourses = async () => {
 };
 
 export const createTestimonial = async (testimonialData: Omit<Testimonial, 'id' | 'createdAt'>) => {
-  const docRef = await db.collection('testimonials').add({
+  const docRef = await addDoc(collection(db, 'testimonials'), {
     ...testimonialData,
     createdAt: new Date()
   });
@@ -112,7 +112,7 @@ export const createTestimonial = async (testimonialData: Omit<Testimonial, 'id' 
 };
 
 export const getTestimonials = async () => {
-  const snapshot = await db.collection('testimonials').get();
+  const snapshot = await getDocs(collection(db, 'testimonials'));
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -120,7 +120,7 @@ export const getTestimonials = async () => {
 };
 
 export const createBlogPost = async (postData: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>) => {
-  const docRef = await db.collection('blog').add({
+  const docRef = await addDoc(collection(db, 'blog'), {
     ...postData,
     createdAt: new Date(),
     updatedAt: new Date()
@@ -129,7 +129,7 @@ export const createBlogPost = async (postData: Omit<BlogPost, 'id' | 'createdAt'
 };
 
 export const getBlogPosts = async () => {
-  const snapshot = await db.collection('blog').get();
+  const snapshot = await getDocs(collection(db, 'blog'));
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -137,7 +137,7 @@ export const getBlogPosts = async () => {
 };
 
 export const createFAQ = async (faqData: Omit<FAQ, 'id' | 'createdAt'>) => {
-  const docRef = await db.collection('faqs').add({
+  const docRef = await addDoc(collection(db, 'faqs'), {
     ...faqData,
     createdAt: new Date()
   });
@@ -145,7 +145,7 @@ export const createFAQ = async (faqData: Omit<FAQ, 'id' | 'createdAt'>) => {
 };
 
 export const getFAQs = async () => {
-  const snapshot = await db.collection('faqs').get();
+  const snapshot = await getDocs(collection(db, 'faqs'));
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -153,7 +153,7 @@ export const getFAQs = async () => {
 };
 
 export const createLead = async (leadData: Omit<Lead, 'id' | 'createdAt'>) => {
-  const docRef = await db.collection('leads').add({
+  const docRef = await addDoc(collection(db, 'leads'), {
     ...leadData,
     createdAt: new Date(),
     status: 'new'
@@ -162,7 +162,7 @@ export const createLead = async (leadData: Omit<Lead, 'id' | 'createdAt'>) => {
 };
 
 export const getLeads = async () => {
-  const snapshot = await db.collection('leads').get();
+  const snapshot = await getDocs(collection(db, 'leads'));
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()

@@ -73,10 +73,7 @@ export default function EnhancedLeadCapture({
         ...data,
         quizResults: quizResults || undefined
       };
-      return apiRequest("/api/leads", {
-        method: "POST",
-        body: JSON.stringify(leadData),
-      });
+      return apiRequest("POST", "/api/leads", leadData);
     },
     onSuccess: () => {
       toast({
