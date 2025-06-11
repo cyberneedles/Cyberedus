@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { trackEvent } from "@/lib/analytics";
+import { BackgroundContainer } from "@/components/BackgroundContainer";
 
 export default function About() {
   const observerRef = useRef<IntersectionObserver>();
@@ -31,11 +32,11 @@ export default function About() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <BackgroundContainer>
       <Header />
       
       {/* Hero Section */}
-      <section className="pt-20 pb-16 hero-gradient">
+      <section className="pt-32 pb-16 hero-gradient lg:pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center animate-fade-in">
             <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
@@ -49,7 +50,7 @@ export default function About() {
       </section>
 
       {/* Mission, Vision, Impact */}
-      <section className="py-20 bg-card">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="animate-on-scroll">
@@ -113,7 +114,7 @@ export default function About() {
       </section>
 
       {/* Our Values */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 animate-on-scroll">
             <h2 className="text-4xl font-bold text-foreground mb-4">Our Core Values</h2>
@@ -197,14 +198,14 @@ export default function About() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-card">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 animate-on-scroll">
             <h2 className="text-4xl font-bold text-foreground mb-4">Meet Our Expert Faculty</h2>
             <p className="text-xl text-muted-foreground">Industry veterans with years of practical experience</p>
           </div>
           
-          <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center animate-on-scroll">
               <img 
                 src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300" 
@@ -249,15 +250,15 @@ export default function About() {
             
             <div className="text-center animate-on-scroll">
               <img 
-                src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=300&h=300" 
-                alt="Sneha Gupta - Career Counselor and Placement Expert" 
+                src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&h=300" 
+                alt="Dr. Kavitha Rao - Head of Research and Curriculum" 
                 className="w-40 h-40 rounded-full mx-auto mb-6 object-cover shadow-lg"
               />
-              <h3 className="text-xl font-bold text-foreground mb-2">Sneha Gupta</h3>
-              <p className="text-primary font-semibold mb-2">Career Counselor</p>
-              <p className="text-sm text-muted-foreground mb-4">HR expertise, 500+ placements</p>
+              <h3 className="text-xl font-bold text-foreground mb-2">Dr. Kavitha Rao</h3>
+              <p className="text-primary font-semibold mb-2">Head of Research and Curriculum</p>
+              <p className="text-sm text-muted-foreground mb-4">PhD in AI Security, published author</p>
               <div className="text-sm text-muted-foreground">
-                Former HR director at Wipro, specializes in career guidance and interview preparation.
+                Leads curriculum development, ensuring cutting-edge content and research integration.
               </div>
             </div>
           </div>
@@ -265,7 +266,7 @@ export default function About() {
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 animate-on-scroll">
             <h2 className="text-4xl font-bold text-foreground mb-4">Why Choose CyberEdu?</h2>
@@ -335,7 +336,7 @@ export default function About() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-card">
+      <section className="py-20 bg-transparent">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-on-scroll">
           <h2 className="text-4xl font-bold text-foreground mb-6">Ready to Join Our Community?</h2>
           <p className="text-xl text-muted-foreground mb-8">
@@ -356,6 +357,6 @@ export default function About() {
       </section>
 
       <Footer />
-    </div>
+    </BackgroundContainer>
   );
 }

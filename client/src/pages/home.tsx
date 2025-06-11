@@ -1,4 +1,4 @@
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,16 +12,18 @@ import { Course, Testimonial } from "@shared/schema";
 import { useEffect, useRef, useState } from "react";
 import { useMouseParallax, useParallax } from "@/hooks/use-parallax";
 import { ScrollReveal, StaggerReveal } from "@/hooks/use-scroll-reveal";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Home() {
   const observerRef = useRef<IntersectionObserver>();
   const { mousePosition } = useMouseParallax();
   const parallaxData = useParallax();
   
-  // Dynamic background mood generator
-  const [backgroundMood, setBackgroundMood] = useState('calm');
-  const [userInteractionCount, setUserInteractionCount] = useState(0);
-  const lastInteractionTime = useRef(Date.now());
+  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
+  const [leadFormSource, setLeadFormSource] = useState('');
+  const navigate = useNavigate();
 
   // Intelligent scroll animation system
   useEffect(() => {
@@ -103,51 +105,6 @@ export default function Home() {
     };
   }, []);
 
-  // Dynamic mood generator based on user interaction
-  useEffect(() => {
-    const handleUserInteraction = (e: Event) => {
-      const now = Date.now();
-      const timeSinceLastInteraction = now - lastInteractionTime.current;
-      
-      setUserInteractionCount(prev => prev + 1);
-      lastInteractionTime.current = now;
-
-      // Determine mood based on interaction patterns
-      if (timeSinceLastInteraction < 1000) {
-        // Rapid interactions - energetic mood
-        setBackgroundMood('energetic');
-      } else if (e.type === 'click' || e.type === 'touchstart') {
-        // Deliberate clicks - focused mood
-        setBackgroundMood('focused');
-      } else if (e.type === 'mousemove') {
-        // Mouse movement - interactive mood
-        setBackgroundMood('interactive');
-      }
-
-      // Reset to calm after 5 seconds of no interaction
-      setTimeout(() => {
-        const currentTime = Date.now();
-        if (currentTime - lastInteractionTime.current >= 4800) {
-          setBackgroundMood('calm');
-        }
-      }, 5000);
-    };
-
-    // Add interaction listeners
-    document.addEventListener('click', handleUserInteraction);
-    document.addEventListener('mousemove', handleUserInteraction);
-    document.addEventListener('scroll', handleUserInteraction);
-    document.addEventListener('touchstart', handleUserInteraction);
-    document.addEventListener('keydown', handleUserInteraction);
-
-    return () => {
-      document.removeEventListener('click', handleUserInteraction);
-      document.removeEventListener('mousemove', handleUserInteraction);
-      document.removeEventListener('scroll', handleUserInteraction);
-      document.removeEventListener('touchstart', handleUserInteraction);
-      document.removeEventListener('keydown', handleUserInteraction);
-    };
-  }, []);
   
   // Enhanced parallax tracking for different layers
   const [parallaxLayers, setParallaxLayers] = useState({
@@ -204,8 +161,8 @@ export default function Home() {
     return () => observerRef.current?.disconnect();
   }, []);
 
-  const handleCTAClick = (ctaType: string) => {
-    trackEvent("cta_click", "engagement", ctaType);
+  const handleCTAClick = (source: string) => {
+    trackEvent("cta_click", "engagement", source);
   };
 
   // Get scroll position
@@ -228,7 +185,7 @@ export default function Home() {
   const featuredTestimonials = testimonials.slice(0, 3);
 
   return (
-    <div className={`min-h-screen relative overflow-hidden mood-${backgroundMood}`}>
+    <div className={`min-h-screen relative overflow-hidden mood-random-neon`}>
       {/* Ultimate Responsive Background with Dynamic Mood */}
       <div className="ultimate-homepage-bg">
         <div className="mesh-gradient"></div>
@@ -240,60 +197,46 @@ export default function Home() {
       <Header />
       
       {/* Revolutionary Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-50/50 via-white to-slate-100/30 dark:from-slate-900/30 dark:via-slate-800/20 dark:to-slate-900/40">
-        {/* Clean Natural Bubbles Background */}
-        <div className="bubble-lg" style={{ top: '8%', left: '5%', animationDelay: '0s' }}></div>
-        <div className="bubble-md" style={{ top: '20%', right: '12%', animationDelay: '3s' }}></div>
-        <div className="bubble-sm" style={{ top: '35%', left: '8%', animationDelay: '6s' }}></div>
-        <div className="bubble-lg" style={{ top: '55%', right: '20%', animationDelay: '2s' }}></div>
-        <div className="bubble-md" style={{ bottom: '25%', left: '15%', animationDelay: '8s' }}></div>
-        <div className="bubble-sm" style={{ bottom: '40%', right: '8%', animationDelay: '4s' }}></div>
-        <div className="bubble-md" style={{ top: '75%', left: '25%', animationDelay: '10s' }}></div>
-        <div className="bubble-lg" style={{ bottom: '15%', right: '30%', animationDelay: '5s' }}></div>
-        <div className="bubble-sm" style={{ top: '65%', right: '35%', animationDelay: '7s' }}></div>
-        <div className="bubble-md" style={{ top: '45%', left: '35%', animationDelay: '12s' }}></div>
-        
-
-        
+      <section className="relative pt-40 pb-16 lg:pt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
           <div className="lg:grid lg:grid-cols-2 lg:gap-16 items-center">
             <div className="animate-fade-in">
               <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight text-foreground">
-                <span className="block mb-4">Master</span>
-                <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 dark:from-blue-400 dark:via-blue-300 dark:to-cyan-300 bg-clip-text text-transparent font-extrabold">Cybersecurity</span>
+                <span className="block mb-4">Master In</span>
+                <span className="bg-gradient-to-r from-blue-600 via-blue-500 to-cyan-500 dark:from-blue-400 dark:via-blue-300 dark:to-cyan-300 bg-clip-text text-transparent font-extrabold">Info-Sec</span>
               </h1>
               <p className="text-2xl text-muted-foreground mb-10 leading-relaxed">
-                Professional cybersecurity and development training with 
-                <span className="text-foreground font-medium">hands-on experience</span> and 
+                Professional Info-Sec training with <b></b>
+                <span className="text-foreground font-medium">hands-on experience </span>  and <b></b> 
                 <span className="text-foreground font-medium">industry certification</span>
               </p>
               
               <div className="flex flex-col sm:flex-row gap-6 mb-12">
                 <Button 
-                  className="btn-primary text-lg px-10 py-4"
-                  onClick={() => handleCTAClick("get_demo")}
+                  className="btn-primary text-lg px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all w-full sm:w-auto"
+                  onClick={() => {
+                    handleCTAClick("Start Learning - Homepage");
+                    setIsLeadFormOpen(true);
+                  }}
                 >
                   Start Learning
                 </Button>
-                <Button 
-                  className="bg-white hover:bg-black text-black hover:text-white border border-slate-300 hover:border-black text-lg px-10 py-4 transition-all duration-300"
-                  onClick={() => handleCTAClick("connect_counsellor")}
-                >
-                  Schedule Consultation
-                </Button>
+                {/* <Button variant="outline" className="px-6 py-3 text-lg font-semibold rounded-lg shadow-md hover:shadow-xl transition-all"> */}
+                {/* Schedule Consultation */}
+                {/* </Button> */}
               </div>
               
               {/* Compact Rectangle Stats with Intelligent Animation */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-8">
                 <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 intelligent-animate animate-gentle-bounce" data-animation="balloon-float" data-delay="800" style={{animationDelay: '0.2s'}}>
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
-                    1200+
+                    200+
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Students<br/>Trained</div>
                 </div>
                 <div className="text-center p-4 border border-slate-200/50 dark:border-slate-700/50 rounded-lg bg-gradient-to-br from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 shadow-sm hover:shadow-lg transition-all duration-300 intelligent-animate animate-gentle-bounce" data-animation="glow-in" data-delay="950" style={{animationDelay: '0.4s'}}>
                   <div className="text-3xl md:text-4xl font-bold mb-1 bg-gradient-to-b from-slate-600 to-slate-300 dark:from-slate-300 dark:to-slate-500 bg-clip-text text-transparent">
-                    95%
+                    97.5%
                   </div>
                   <div className="text-xs text-slate-600 dark:text-slate-400 font-medium">Placement Rate</div>
                 </div>
@@ -520,7 +463,7 @@ export default function Home() {
             <Button 
               size="lg"
               className="bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-slate-200 px-8 py-3 text-lg font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => handleCTAClick('explore_courses')}
+              onClick={() => navigate('/courses')}
             >
               Explore All Courses
             </Button>
@@ -528,55 +471,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Test Your Knowledge with Parallax */}
-      <section className="py-20 bg-muted/50 relative overflow-hidden">
-        {/* Floating Parallax Elements */}
-        <div 
-          className="absolute top-10 left-10 w-20 h-20 bg-primary/5 rounded-full transition-transform duration-500 ease-out"
-          style={{
-            transform: `translate3d(${parallaxLayers.background.x * 0.8}px, ${parallaxLayers.background.y * 0.8}px, 0)`
-          }}
-        ></div>
-        <div 
-          className="absolute top-32 right-20 w-16 h-16 bg-accent/10 rounded-full transition-transform duration-700 ease-out"
-          style={{
-            transform: `translate3d(${parallaxLayers.midground.x * -0.6}px, ${parallaxLayers.midground.y * 0.6}px, 0)`
-          }}
-        ></div>
-        <div 
-          className="absolute bottom-20 left-32 w-12 h-12 bg-success/10 rounded-full transition-transform duration-400 ease-out"
-          style={{
-            transform: `translate3d(${parallaxLayers.floating.x * 0.4}px, ${parallaxLayers.floating.y * -0.4}px, 0)`
-          }}
-        ></div>
-        
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-          <h2 
-            className="text-4xl font-bold text-foreground mb-4 transition-transform duration-300 ease-out"
-            style={{
-              transform: `translate3d(${parallaxLayers.midground.x * 0.1}px, ${parallaxLayers.midground.y * 0.1}px, 0)`
-            }}
-          >
-            Test Your Knowledge
-          </h2>
-          <p 
-            className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto transition-transform duration-400 ease-out"
-            style={{
-              transform: `translate3d(${parallaxLayers.foreground.x * 0.05}px, ${parallaxLayers.foreground.y * 0.05}px, 0)`
-            }}
-          >
-            Take our quick assessment to see which course is perfect for you
-          </p>
-          <div
-            className="transition-transform duration-500 ease-out"
-            style={{
-              transform: `translate3d(${parallaxLayers.background.x * 0.2}px, ${parallaxLayers.background.y * 0.2}px, 0) scale(${1 + Math.abs(parallaxLayers.midground.y) * 0.0003})`
-            }}
-          >
-            <QuizComponent />
-          </div>
-        </div>
-      </section>
 
       {/* Why Choose Master in InfoSec - Professional Version */}
       <section className="py-24 bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
@@ -774,6 +668,23 @@ export default function Home() {
       ></div>
 
       <Footer />
+
+      {/* Lead Form Dialog */}
+      <Dialog open={isLeadFormOpen} onOpenChange={setIsLeadFormOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Get Started</DialogTitle>
+            <DialogDescription>
+              Fill in your details to get started with your learning journey.
+            </DialogDescription>
+          </DialogHeader>
+          <LeadForm
+            source="Homepage - Start Learning"
+            buttonText="Get Started"
+            onSuccess={() => setIsLeadFormOpen(false)}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

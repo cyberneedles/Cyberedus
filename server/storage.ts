@@ -96,41 +96,51 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCourseBySlug(slug: string): Promise<Course | undefined> {
+    console.log("DatabaseStorage: Attempting to fetch course by slug:", slug);
     const [course] = await db.select().from(courses).where(eq(courses.slug, slug));
+    console.log("DatabaseStorage: Course fetched by slug:", course);
     return course || undefined;
   }
 
   async createCourse(insertCourse: InsertCourse): Promise<Course> {
-    // Use Drizzle with explicit null for arrays to avoid malformed array literals
-    const [course] = await db
-      .insert(courses)
-      .values({
-        title: insertCourse.title,
-        slug: insertCourse.slug,
-        description: insertCourse.description,
-        duration: insertCourse.duration,
-        prerequisites: insertCourse.prerequisites || null,
-        mode: insertCourse.mode,
-        level: insertCourse.level,
-        price: insertCourse.price || null,
-        syllabusUrl: insertCourse.syllabusUrl || null,
-        icon: insertCourse.icon,
-        category: insertCourse.category,
-        isActive: insertCourse.isActive ?? true,
-        features: null, // Explicitly set to null instead of empty array
-        batchDates: null, // Explicitly set to null instead of empty array
-        // Enhanced course fields
-        overview: insertCourse.overview || null,
-        mainImage: insertCourse.mainImage || null,
-        logo: insertCourse.logo || null,
-        curriculum: insertCourse.curriculum || null,
-        batches: insertCourse.batches || null,
-        fees: insertCourse.fees || null,
-        careerOpportunities: insertCourse.careerOpportunities || null,
-        toolsAndTechnologies: insertCourse.toolsAndTechnologies || null
-      })
-      .returning();
-    return course;
+    try {
+      const [course] = await db
+        .insert(courses)
+        .values({
+          title: insertCourse.title,
+          slug: insertCourse.slug,
+          description: insertCourse.description,
+          duration: insertCourse.duration,
+          prerequisites: insertCourse.prerequisites || null,
+          mode: insertCourse.mode,
+          level: insertCourse.level,
+          price: insertCourse.price || null,
+          syllabus_url: insertCourse.syllabusUrl || '',
+          icon: insertCourse.icon,
+          category: insertCourse.category,
+          is_active: insertCourse.isActive ?? true,
+          features: null, // Explicitly set to null instead of empty array
+          batch_dates: null, // Explicitly set to null instead of empty array
+          // Enhanced course fields
+          overview: insertCourse.overview || null,
+          main_image: insertCourse.mainImage || '',
+          logo: insertCourse.logo || null,
+          curriculum: insertCourse.curriculum || null,
+          batches: insertCourse.batches || null,
+          fees: insertCourse.fees || null,
+          career_opportunities: insertCourse.careerOpportunities || '',
+          tools_and_technologies: insertCourse.toolsAndTechnologies || '',
+          what_you_will_learn: insertCourse.whatYouWillLearn || ''
+        })
+        .returning();
+      console.log("DatabaseStorage: Successfully created course in DB:", course);
+      console.log("DatabaseStorage: Tools & Technologies stored:", course.toolsAndTechnologies);
+      console.log("DatabaseStorage: What You Will Learn stored:", course.whatYouWillLearn);
+      return course;
+    } catch (error) {
+      console.error("DatabaseStorage: Error creating course:", error);
+      throw error;
+    }
   }
 
   async updateCourse(id: number, courseUpdate: Partial<InsertCourse>): Promise<Course | undefined> {

@@ -43,7 +43,7 @@ export default function HeroSection() {
                 backgroundSize: '200% 200%',
                 animation: 'textShimmer 3s ease-in-out infinite'
               }}>
-                Master Cybersecurity
+                Master In Cybersecurity
               </span>
               <br />
               <span className="text-muted-foreground dopamine-hover stagger-animation">Skills That Matter</span>

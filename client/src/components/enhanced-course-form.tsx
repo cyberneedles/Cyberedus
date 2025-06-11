@@ -12,9 +12,12 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
 import { CoursePreviewPane } from "./course-preview-pane";
+import TimePicker from 'react-time-picker';
+import 'react-time-picker/dist/TimePicker.css';
+import 'react-clock/dist/Clock.css';
 
 // Enhanced course form schema with all sections
-const enhancedCourseSchema = z.object({
+export const enhancedCourseSchema = z.object({
   // Basic Information
   title: z.string().min(1, "Title is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -41,7 +44,8 @@ const enhancedCourseSchema = z.object({
   // Batches information
   batches: z.array(z.object({
     startDate: z.string(),
-    time: z.string(),
+    startTime: z.string().optional(),
+    endTime: z.string().optional(),
     mode: z.string(),
     instructor: z.string(),
   })).default([]),
@@ -56,11 +60,15 @@ const enhancedCourseSchema = z.object({
   // Additional details
   careerOpportunities: z.array(z.string()).default([]),
   toolsAndTechnologies: z.string().optional(),
+  whatYouWillLearn: z.string().optional(),
   
   isActive: z.boolean().default(true),
-});
+  syllabusUrl: z.string().optional(),
+}).refine(data => {
+  return true;
+}, { message: "" }); // Generic message to be overridden by specific checks
 
-type EnhancedCourseFormData = z.infer<typeof enhancedCourseSchema>;
+export type EnhancedCourseFormData = z.infer<typeof enhancedCourseSchema>;
 
 interface EnhancedCourseFormProps {
   initialData?: Partial<EnhancedCourseFormData>;
@@ -71,6 +79,7 @@ interface EnhancedCourseFormProps {
 
 export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }: EnhancedCourseFormProps) {
   const [showPreview, setShowPreview] = useState(false);
+  const [activeTab, setActiveTab] = useState("basic");
   
   const form = useForm<EnhancedCourseFormData>({
     resolver: zodResolver(enhancedCourseSchema),
@@ -93,7 +102,9 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
       fees: [],
       careerOpportunities: [],
       toolsAndTechnologies: "",
+      whatYouWillLearn: "",
       isActive: true,
+      syllabusUrl: "",
       ...initialData,
     },
   });
@@ -127,7 +138,7 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
   // Batch management
   const addBatch = () => {
     const current = form.getValues("batches");
-    form.setValue("batches", [...current, { startDate: "", time: "", mode: "online", instructor: "" }]);
+    form.setValue("batches", [...current, { startDate: "", startTime: "", endTime: "", mode: "online", instructor: "" }]);
   };
 
   const removeBatch = (index: number) => {
@@ -157,9 +168,49 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
     form.setValue("careerOpportunities", current.filter((_, i) => i !== index));
   };
 
+  // Function to handle next button click
+  const handleNextClick = () => {
+    const tabOrder = ["basic", "overview", "curriculum", "batches", "fees"];
+    const currentIndex = tabOrder.indexOf(activeTab);
+    if (currentIndex < tabOrder.length - 1) {
+      setActiveTab(tabOrder[currentIndex + 1]);
+    }
+  };
+
+  // Get the next tab name for the button label
+  const getNextTabLabel = () => {
+    const tabOrder = ["basic", "overview", "curriculum", "batches", "fees"];
+    const currentIndex = tabOrder.indexOf(activeTab);
+    if (currentIndex < tabOrder.length - 1) {
+      const nextTab = tabOrder[currentIndex + 1];
+      return `Next: ${nextTab.charAt(0).toUpperCase() + nextTab.slice(1)}`;
+    }
+    return "Next";
+  };
+
+  const onSubmitHandler = (data: EnhancedCourseFormData) => {
+    // Ensure optional fields are included even if empty
+    const dataToSend = {
+      ...data,
+      prerequisites: data.prerequisites || "",
+      overview: data.overview || "",
+      mainImage: data.mainImage || "",
+      logo: data.logo || "",
+      toolsAndTechnologies: data.toolsAndTechnologies || "",
+      whatYouWillLearn: data.whatYouWillLearn || "",
+      // JSONB fields will be handled correctly by JSON.stringify in the backend
+      curriculum: data.curriculum,
+      batches: data.batches,
+      fees: data.fees,
+      careerOpportunities: data.careerOpportunities,
+      syllabusUrl: data.syllabusUrl || "",
+    };
+    onSubmit(dataToSend);
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmitHandler)} className="space-y-6">
         {/* Preview Toggle */}
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold">Course Details</h3>
@@ -177,7 +228,7 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
         <div className={`grid ${showPreview ? "grid-cols-2" : "grid-cols-1"} gap-6`}>
           {/* Form Section */}
           <div className="space-y-6">
-            <Tabs defaultValue="basic" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="basic">Basic Info</TabsTrigger>
                 <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -323,28 +374,67 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
+                      {/* Main Image Field */}
                   <FormField
                     control={form.control}
                     name="mainImage"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Main Image URL</FormLabel>
+                            <FormLabel>Main Image</FormLabel>
+                            <div className="flex flex-col space-y-2">
+                              {/* Input/Button based on Source Selection */}
+                              <div className="w-full">
                         <FormControl>
-                          <Input placeholder="https://example.com/image.jpg" {...field} />
+                                    <Input 
+                                      type="file" 
+                                      accept="image/*"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        const reader = new FileReader();
+                                        reader.onloadend = () => {
+                                          field.onChange(reader.result as string);
+                                        };
+                                        reader.readAsDataURL(file);
+                                      }
+                                    }}
+                                    />
                         </FormControl>
+                              </div>
+                            </div>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
+                      {/* Logo Field */}
                   <FormField
                     control={form.control}
                     name="logo"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Logo URL</FormLabel>
+                            <FormLabel>Logo</FormLabel>
+                             <div className="flex flex-col space-y-2">
+                               {/* Input/Button based on Source Selection */}
+                               <div className="w-full">
                         <FormControl>
-                          <Input placeholder="https://example.com/logo.jpg" {...field} />
+                                      <Input 
+                                        type="file" 
+                                        accept="image/*"
+                                     onChange={(e) => {
+                                       const file = e.target.files?.[0];
+                                       if (file) {
+                                         const reader = new FileReader();
+                                         reader.onloadend = () => {
+                                           field.onChange(reader.result as string);
+                                         };
+                                         reader.readAsDataURL(file);
+                                       }
+                                     }}
+                                      />
                         </FormControl>
+                               </div>
+                             </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -397,6 +487,24 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
                   )}
                 />
 
+                    {/* New: What You'll Learn Field */}
+                    <FormField
+                      control={form.control}
+                      name="whatYouWillLearn"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>What You'll Learn</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="Add the learning outcomes or skills students will gain…" 
+                              {...field} 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
                 <div>
                   <FormLabel>Career Opportunities</FormLabel>
                   <div className="space-y-2 mt-2">
@@ -432,6 +540,40 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
                     </Button>
                   </div>
                 </div>
+
+                {/* Syllabus Upload Field */}
+                <FormField
+                  control={form.control}
+                  name="syllabusUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Upload Syllabus (PDF only)</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="file" 
+                          accept="application/pdf"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              // For now, store as a Data URL or mock a URL
+                              // In a real application, you'd upload this to cloud storage (e.g., S3)
+                              // and store the returned URL.
+                              const reader = new FileReader();
+                              reader.onloadend = () => {
+                                field.onChange(reader.result as string);
+                              };
+                              reader.readAsDataURL(file);
+                            } else {
+                              field.onChange(""); // Clear the field if no file selected
+                            }
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
               </CardContent>
             </Card>
           </TabsContent>
@@ -557,16 +699,24 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
                         />
                       </div>
                       <div>
-                        <FormLabel className="text-sm">Time</FormLabel>
-                        <Input
-                          placeholder="e.g., 10:00 AM - 12:00 PM"
-                          value={batch.time}
-                          onChange={(e) => {
+                            <FormLabel className="text-sm">Start Time</FormLabel>
+                            <div className="react-time-picker-container">
+                              <TimePicker
+                                onChange={(value) => {
                             const current = form.getValues("batches");
-                            current[index].time = e.target.value;
+                                  current[index].startTime = value ? String(value) : "";
                             form.setValue("batches", [...current]);
                           }}
-                        />
+                                value={batch.startTime || null}
+                                clockIcon={null}
+                                clearIcon={null}
+                                disableClock={true}
+                                format="h:m a"
+                                hourPlaceholder="hh"
+                                minutePlaceholder="mm"
+                                className="react-time-picker"
+                              />
+                            </div>
                       </div>
                     </div>
                     
@@ -591,6 +741,28 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
                           </SelectContent>
                         </Select>
                       </div>
+                          <div>
+                            <FormLabel className="text-sm">End Time</FormLabel>
+                            <div className="react-time-picker-container">
+                              <TimePicker
+                                onChange={(value) => {
+                                  const current = form.getValues("batches");
+                                  current[index].endTime = value ? String(value) : "";
+                                  form.setValue("batches", [...current]);
+                                }}
+                                value={batch.endTime || null}
+                                clockIcon={null}
+                                clearIcon={null}
+                                disableClock={true}
+                                format="h:m a"
+                                hourPlaceholder="hh"
+                                minutePlaceholder="mm"
+                                className="react-time-picker"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                        
                       <div>
                         <FormLabel className="text-sm">Instructor</FormLabel>
                         <Input
@@ -602,7 +774,6 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
                             form.setValue("batches", [...current]);
                           }}
                         />
-                      </div>
                     </div>
                   </div>
                 ))}
@@ -700,7 +871,20 @@ export function EnhancedCourseForm({ initialData, onSubmit, isLoading, isEdit }:
         </Tabs>
 
             <div className="flex justify-end gap-3 pt-6 border-t">
-              <Button type="submit" disabled={isLoading} className="min-w-[140px]">
+              {activeTab !== "fees" && (
+                <Button 
+                  type="button" 
+                  onClick={handleNextClick}
+                  className="min-w-[140px]"
+                >
+                  {getNextTabLabel()}
+                </Button>
+              )}
+              <Button 
+                type="submit" 
+                disabled={isLoading} 
+                className="min-w-[140px]"
+              >
                 {isLoading ? "Saving..." : isEdit ? "Update Course" : "Create Course"}
               </Button>
             </div>

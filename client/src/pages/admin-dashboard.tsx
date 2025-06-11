@@ -18,72 +18,23 @@ import {
   BarChart3,
   DollarSign,
   Target,
-  Award
+  Award,
+  Download
 } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { EnhancedCourseForm } from "@/components/enhanced-course-form";
+import { EnhancedCourseForm, enhancedCourseSchema, EnhancedCourseFormData } from "@/components/enhanced-course-form";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Switch } from "@/components/ui/switch";
 import type { Course, Lead, Testimonial, BlogPost, FAQ, InsertCourse } from "@shared/schema";
-
-// Enhanced course form schema with all sections
-const courseFormSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  slug: z.string().min(1, "Slug is required"),
-  description: z.string().min(1, "Description is required"),
-  duration: z.string().min(1, "Duration is required"),
-  prerequisites: z.string().optional(),
-  mode: z.enum(["online", "offline", "hybrid"]),
-  level: z.enum(["beginner", "intermediate", "advanced"]),
-  price: z.number().min(0, "Price must be positive").optional(),
-  category: z.string().min(1, "Category is required"),
-  icon: z.string().min(1, "Icon is required"),
-  features: z.array(z.string()).default([]),
-  syllabusUrl: z.string().url().optional().or(z.literal("")),
-  batchDates: z.array(z.string()).default([]),
-  isActive: z.boolean().default(true),
-  
-  // Enhanced course page sections
-  overview: z.string().optional(),
-  mainImage: z.string().optional(),
-  logo: z.string().optional(),
-  
-  // Curriculum structure
-  curriculum: z.array(z.object({
-    sectionTitle: z.string(),
-    items: z.array(z.string()),
-  })).default([]),
-  
-  // Batches information
-  batches: z.array(z.object({
-    startDate: z.string(),
-    time: z.string(),
-    mode: z.string(),
-    instructor: z.string(),
-  })).default([]),
-  
-  // Fee structures
-  fees: z.array(z.object({
-    label: z.string(),
-    amount: z.number(),
-    notes: z.string(),
-  })).default([]),
-  
-  // Additional course details
-  careerOpportunities: z.array(z.string()).default([]),
-  toolsAndTechnologies: z.string().optional(),
-});
-
-type CourseFormData = z.infer<typeof courseFormSchema>;
+import { z } from "zod";
 
 // Testimonial form schema
 const testimonialFormSchema = z.object({
@@ -113,6 +64,30 @@ const blogFormSchema = z.object({
 
 type BlogFormData = z.infer<typeof blogFormSchema>;
 
+// Helper to transform course data for the form
+const transformCourseForForm = (course: Course): EnhancedCourseFormData => ({
+  title: course.title ?? "", // Use nullish coalescing for potentially nullable fields
+  slug: course.slug ?? "",
+  description: course.description ?? "",
+  duration: course.duration ?? "",
+  prerequisites: course.prerequisites ?? "",
+  mode: course.mode as "online" | "offline" | "hybrid", // Assuming backend mode is one of these strings
+  level: course.level as "beginner" | "intermediate" | "advanced", // Assuming backend level is one of these strings
+  price: course.price ?? 0,
+  category: course.category ?? "",
+  icon: course.icon ?? "",
+  overview: course.overview ?? "",
+  mainImage: course.mainImage ?? "",
+  logo: course.logo ?? "",
+  toolsAndTechnologies: course.toolsAndTechnologies ?? "",
+  whatYouWillLearn: course.whatYouWillLearn ?? "",
+  curriculum: Array.isArray(course.curriculum) ? course.curriculum : [],
+  batches: Array.isArray(course.batches) ? course.batches : [],
+  fees: Array.isArray(course.fees) ? course.fees : [],
+  careerOpportunities: Array.isArray(course.careerOpportunities) ? course.careerOpportunities : [],
+  isActive: course.isActive ?? true,
+});
+
 export default function AdminDashboard() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
@@ -140,8 +115,8 @@ export default function AdminDashboard() {
   const [blogToDelete, setBlogToDelete] = useState<BlogPost | null>(null);
 
   // Course forms
-  const createForm = useForm<CourseFormData>({
-    resolver: zodResolver(courseFormSchema),
+  const createForm = useForm<EnhancedCourseFormData>({
+    resolver: zodResolver(enhancedCourseSchema),
     defaultValues: {
       title: "",
       slug: "",
@@ -153,15 +128,43 @@ export default function AdminDashboard() {
       price: 0,
       category: "",
       icon: "",
-      features: [],
-      syllabusUrl: "",
-      batchDates: [],
+      overview: "",
+      mainImage: "",
+      logo: "",
+      curriculum: [],
+      batches: [],
+      fees: [],
+      careerOpportunities: [],
+      toolsAndTechnologies: "",
+      whatYouWillLearn: "",
       isActive: true,
     },
   });
 
-  const editForm = useForm<CourseFormData>({
-    resolver: zodResolver(courseFormSchema),
+  const editForm = useForm<EnhancedCourseFormData>({
+    resolver: zodResolver(enhancedCourseSchema),
+    defaultValues: selectedCourse ? transformCourseForForm(selectedCourse) : {
+      title: "",
+      slug: "",
+      description: "",
+      duration: "",
+      prerequisites: "",
+      mode: "online",
+      level: "beginner",
+      price: 0,
+      category: "",
+      icon: "",
+      overview: "",
+      mainImage: "",
+      logo: "",
+      curriculum: [],
+      batches: [],
+      fees: [],
+      careerOpportunities: [],
+      toolsAndTechnologies: "",
+      whatYouWillLearn: "",
+      isActive: true,
+    },
   });
 
   // Testimonial form
@@ -199,44 +202,40 @@ export default function AdminDashboard() {
     },
   });
 
+  // Edit blog form
+  const editBlogForm = useForm<BlogFormData>({
+    resolver: zodResolver(blogFormSchema),
+  });
+
   // Course mutations
   const createCourseMutation = useMutation({
-    mutationFn: async (data: CourseFormData) => {
+    mutationFn: async (data: EnhancedCourseFormData) => {
       const response = await fetch("/api/courses", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "X-Requested-With": "XMLHttpRequest"
         },
         body: JSON.stringify(data),
+        credentials: "include", // This ensures cookies are sent with the request
       });
       
-      // Check if response is JSON
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        const text = await response.text();
-        console.error("Non-JSON response:", text);
-        throw new Error("Server returned invalid response format");
-      }
-      
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to create course");
+        const error = await response.json();
+        throw new Error(error.message || "Failed to create course");
       }
       
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
-      setIsCreateDialogOpen(false);
-      createForm.reset();
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
       toast({
         title: "Success",
-        description: "Course created successfully!",
+        description: "Course created successfully",
       });
+      resetCreateForm();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to create course",
@@ -246,29 +245,33 @@ export default function AdminDashboard() {
   });
 
   const updateCourseMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: number; data: CourseFormData }) => {
+    mutationFn: async ({ id, data }: { id: number; data: EnhancedCourseFormData }) => {
       const response = await fetch(`/api/courses/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
         },
         body: JSON.stringify(data),
+        credentials: "include", // This ensures cookies are sent with the request
       });
+      
       if (!response.ok) {
-        throw new Error("Failed to update course");
+        const error = await response.json();
+        throw new Error(error.message || "Failed to update course");
       }
+      
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/courses"] });
-      setIsEditDialogOpen(false);
-      setSelectedCourse(null);
+      queryClient.invalidateQueries({ queryKey: ["courses"] });
       toast({
         title: "Success",
-        description: "Course updated successfully!",
+        description: "Course updated successfully",
       });
+      resetEditForm();
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast({
         title: "Error",
         description: error.message || "Failed to update course",
@@ -281,6 +284,10 @@ export default function AdminDashboard() {
     mutationFn: async (id: number) => {
       const response = await fetch(`/api/courses/${id}`, {
         method: "DELETE",
+        headers: {
+          "Accept": "application/json",
+        },
+        credentials: "include", // This ensures cookies are sent with the request
       });
       if (!response.ok) {
         throw new Error("Failed to delete course");
@@ -498,22 +505,6 @@ export default function AdminDashboard() {
   // Course management functions
   const handleEditCourse = (course: Course) => {
     setSelectedCourse(course);
-    editForm.reset({
-      title: course.title,
-      slug: course.slug,
-      description: course.description,
-      duration: course.duration,
-      prerequisites: course.prerequisites || "",
-      mode: course.mode as "online" | "offline" | "hybrid",
-      level: course.level as "beginner" | "intermediate" | "advanced",
-      price: course.price || 0,
-      category: course.category,
-      icon: course.icon,
-      features: Array.isArray(course.features) ? course.features : [],
-      syllabusUrl: course.syllabusUrl || "",
-      batchDates: Array.isArray(course.batchDates) ? course.batchDates : [],
-      isActive: course.isActive,
-    });
     setIsEditDialogOpen(true);
   };
 
@@ -522,13 +513,14 @@ export default function AdminDashboard() {
     setIsDeleteDialogOpen(true);
   };
 
-  const onCreateSubmit = (data: CourseFormData) => {
+  const onCreateSubmit = (data: EnhancedCourseFormData) => {
+    console.log('Payload being sent for creation:', data);
     createCourseMutation.mutate(data);
   };
 
-  const onEditSubmit = (data: CourseFormData) => {
+  const onEditSubmit = (data: EnhancedCourseFormData) => {
     if (selectedCourse) {
-      updateCourseMutation.mutate({ id: selectedCourse.id, data });
+      updateCourseMutation.mutate({ id: selectedCourse.id, data: data as EnhancedCourseFormData });
     }
   };
 
@@ -545,7 +537,7 @@ export default function AdminDashboard() {
   // Blog management handlers  
   const handleEditBlog = (post: BlogPost) => {
     setSelectedBlog(post);
-    editForm.reset({
+    editBlogForm.reset({
       title: post.title,
       slug: post.slug,
       content: post.content,
@@ -554,7 +546,6 @@ export default function AdminDashboard() {
       featuredImage: post.featuredImage || "",
       isPublished: post.isPublished,
       readingTime: post.readingTime,
-      authorId: post.authorId || 1,
     });
     setIsEditBlogOpen(true);
   };
@@ -600,12 +591,79 @@ export default function AdminDashboard() {
     }
   };
 
-
-
   const onEditBlogSubmit = (data: BlogFormData) => {
     if (selectedBlog) {
       updateBlogMutation.mutate({ id: selectedBlog.id, data });
     }
+  };
+
+  // Function to download leads as CSV
+  const handleDownloadLeadsCsv = () => {
+    if (leads.length === 0) {
+      toast({
+        title: "No Leads",
+        description: "There are no leads to download.",
+      });
+      return;
+    }
+
+    const headers = [
+      "ID", "Name", "Email", "Phone", "Current Location", 
+      "Course Interest", "Experience", "Message", "Source", "Created At"
+    ];
+    
+    // Define a mapping from display headers to actual lead object keys
+    const headerKeyMap: { [key: string]: keyof Lead | 'createdAtFormatted' } = {
+      "ID": "id",
+      "Name": "name",
+      "Email": "email",
+      "Phone": "phone",
+      "Current Location": "currentLocation",
+      "Course Interest": "courseInterest",
+      "Experience": "experience",
+      "Message": "message",
+      "Source": "source",
+      "Created At": "createdAtFormatted" // Custom key for formatted date
+    };
+
+    // Flatten the lead data for CSV
+    const csvRows = leads.map(lead => ({
+      id: lead.id,
+      name: lead.name,
+      email: lead.email,
+      phone: lead.phone,
+      currentLocation: lead.currentLocation,
+      courseInterest: lead.courseInterest,
+      experience: lead.experience,
+      message: lead.message,
+      source: lead.source,
+      createdAtFormatted: new Date(lead.createdAt).toLocaleString(), // Add formatted date
+    }));
+
+    // Convert array of objects to CSV string
+    const csvContent = [
+      headers.join(','),
+      ...csvRows.map(row => 
+        headers.map(header => {
+          const key = headerKeyMap[header]; // Use the mapping to get the correct key
+          const value = String(row[key as keyof typeof row]).replace(/"/g, '""'); // Escape double quotes
+          return `"${value}"`;
+        }).join(',')
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'leads_data.csv');
+    link.click();
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Download Initiated",
+      description: "Leads data is being downloaded as CSV.",
+    });
   };
 
   // Check authentication from localStorage (immediate, no API calls needed)
@@ -613,27 +671,27 @@ export default function AdminDashboard() {
   const [authChecked, setAuthChecked] = useState(false);
 
   // Fetch all data (hooks must be called FIRST before any conditional logic)
-  const { data: courses = [], isLoading: coursesLoading } = useQuery({
+  const { data: courses = [], isLoading: coursesLoading } = useQuery<Course[]>({
     queryKey: ['/api/courses'],
     enabled: isAuthenticated,
   });
 
-  const { data: leads = [], isLoading: leadsLoading } = useQuery({
+  const { data: leads = [], isLoading: leadsLoading } = useQuery<Lead[]>({
     queryKey: ['/api/leads'],
     enabled: isAuthenticated,
   });
 
-  const { data: testimonials = [], isLoading: testimonialsLoading } = useQuery({
+  const { data: testimonials = [], isLoading: testimonialsLoading } = useQuery<Testimonial[]>({
     queryKey: ['/api/testimonials'],
     enabled: isAuthenticated,
   });
 
-  const { data: blogPosts = [], isLoading: blogPostsLoading } = useQuery({
+  const { data: blogPosts = [], isLoading: blogPostsLoading } = useQuery<BlogPost[]>({
     queryKey: ['/api/blog'],
     enabled: isAuthenticated,
   });
 
-  const { data: faqs = [], isLoading: faqsLoading } = useQuery({
+  const { data: faqs = [], isLoading: faqsLoading } = useQuery<FAQ[]>({
     queryKey: ['/api/faqs'],
     enabled: isAuthenticated,
   });
@@ -670,6 +728,16 @@ export default function AdminDashboard() {
 
   const recentLeads = leads.slice(-5).reverse();
   const recentTestimonials = testimonials.slice(-3).reverse();
+
+  // Reset form functions
+  const resetCreateForm = () => {
+    setIsCreateDialogOpen(false);
+  };
+
+  const resetEditForm = () => {
+    setIsEditDialogOpen(false);
+    setSelectedCourse(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -787,7 +855,7 @@ export default function AdminDashboard() {
                         <div>
                           <p className="font-medium text-gray-900 dark:text-white">{lead.name}</p>
                           <p className="text-sm text-gray-600 dark:text-gray-300">{lead.email}</p>
-                          <p className="text-xs text-gray-500">{lead.course_interest || 'General inquiry'}</p>
+                          <p className="text-xs text-gray-500">{lead.courseInterest || 'General inquiry'}</p>
                         </div>
                         <Badge variant="outline">{lead.source}</Badge>
                       </div>
@@ -811,13 +879,11 @@ export default function AdminDashboard() {
                       <div key={testimonial.id} className="p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                         <div className="flex items-center justify-between mb-2">
                           <p className="font-medium text-gray-900 dark:text-white">{testimonial.name}</p>
-                          <Badge variant={testimonial.approved ? "default" : "secondary"}>
-                            {testimonial.approved ? "Approved" : "Pending"}
+                          <Badge variant={testimonial.isApproved ? "default" : "secondary"}>
+                            {testimonial.isApproved ? "Approved" : "Pending"}
                           </Badge>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                          {testimonial.message}
-                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{testimonial.review}</p>
                         <p className="text-xs text-gray-500 mt-1">{testimonial.company}</p>
                       </div>
                     ))}
@@ -851,9 +917,8 @@ export default function AdminDashboard() {
                         </DialogDescription>
                       </DialogHeader>
                       <EnhancedCourseForm
-                        onSubmit={onCreateSubmit}
+                        onSubmit={(data) => onCreateSubmit(data)}
                         isLoading={createCourseMutation.isPending}
-                        isEdit={false}
                       />
                     </DialogContent>
                   </Dialog>
@@ -904,12 +969,14 @@ export default function AdminDashboard() {
                     Update course information, curriculum, batches, and fees
                   </DialogDescription>
                 </DialogHeader>
-                <EnhancedCourseForm
-                  initialData={selectedCourse || undefined}
-                  onSubmit={onEditSubmit}
-                  isLoading={updateCourseMutation.isPending}
-                  isEdit={true}
-                />
+                {selectedCourse && (
+                  <EnhancedCourseForm
+                    initialData={transformCourseForForm(selectedCourse)}
+                    onSubmit={(data) => updateCourseMutation.mutate({ id: selectedCourse.id, data })}
+                    isLoading={updateCourseMutation.isPending}
+                    isEdit
+                  />
+                )}
               </DialogContent>
             </Dialog>
 
@@ -943,29 +1010,78 @@ export default function AdminDashboard() {
           <TabsContent value="leads">
             <Card>
               <CardHeader>
+                <div className="flex items-center justify-between w-full">
+                  <div>
                 <CardTitle>Lead Management</CardTitle>
-                <CardDescription>Track and manage customer inquiries</CardDescription>
+                    <CardDescription>Track and manage customer inquiries from different sources</CardDescription>
+                  </div>
+                  <Button onClick={handleDownloadLeadsCsv} className="bg-green-600 hover:bg-green-700">
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Leads
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {leads.map((lead: Lead) => (
-                    <div key={lead.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={lead.id} className="p-4 border rounded-lg hover:shadow-md transition-shadow">
+                      <div className="flex items-start justify-between">
                       <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
                         <h3 className="font-semibold text-gray-900 dark:text-white">{lead.name}</h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-300">{lead.email}</p>
-                        <p className="text-sm text-gray-500 mt-1">{lead.phone}</p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <Badge>{lead.source}</Badge>
-                          <span className="text-sm text-gray-500">{lead.course_interest}</span>
+                            <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800">
+                              Lead Came From: {lead.source}
+                            </Badge>
                         </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                            <div>
+                              <p className="text-gray-600 dark:text-gray-300">
+                                <span className="font-medium">Email:</span> {lead.email}
+                              </p>
+                              <p className="text-gray-600 dark:text-gray-300">
+                                <span className="font-medium">Phone:</span> {lead.phone}
+                              </p>
+                              {lead.currentLocation && (
+                                <p className="text-gray-600 dark:text-gray-300">
+                                  <span className="font-medium">Location:</span> {lead.currentLocation}
+                                </p>
+                              )}
                       </div>
-                      <div className="text-right">
+                            <div>
+                              {lead.courseInterest && (
+                                <p className="text-gray-600 dark:text-gray-300">
+                                  <span className="font-medium">Course Interest:</span> {lead.courseInterest}
+                                </p>
+                              )}
+                              {lead.experience && (
+                                <p className="text-gray-600 dark:text-gray-300">
+                                  <span className="font-medium">Experience:</span> {lead.experience}
+                                </p>
+                              )}
+                              {lead.message && (
+                                <p className="text-gray-600 dark:text-gray-300">
+                                  <span className="font-medium">Message:</span> {lead.message}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right ml-4">
                         <p className="text-sm text-gray-500">
-                          {new Date(lead.created_at || '').toLocaleDateString()}
+                          {new Date(lead.createdAt).toLocaleDateString()}
                         </p>
+                          <p className="text-xs text-gray-400 mt-1">
+                            {new Date(lead.createdAt).toLocaleTimeString()}
+                        </p>
+                        </div>
                       </div>
                     </div>
                   ))}
+                  {leads.length === 0 && (
+                    <div className="text-center py-8">
+                      <p className="text-gray-500 dark:text-gray-400">No leads found yet.</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -993,13 +1109,15 @@ export default function AdminDashboard() {
                       <div className="flex items-start justify-between mb-3">
                         <div>
                           <h3 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">{testimonial.role} at {testimonial.company}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">
+                            {testimonial.jobTitle ? `${testimonial.jobTitle}${testimonial.company ? ` at ${testimonial.company}` : ''}` : ''}
+                          </p>
                         </div>
-                        <Badge variant={testimonial.approved ? "default" : "secondary"}>
-                          {testimonial.approved ? "Approved" : "Pending"}
+                        <Badge variant={testimonial.isApproved ? "default" : "secondary"}>
+                          {testimonial.isApproved ? "Approved" : "Pending"}
                         </Badge>
                       </div>
-                      <p className="text-gray-700 dark:text-gray-300 mb-3">{testimonial.message}</p>
+                      <p className="text-gray-700 dark:text-gray-300 mb-3">{testimonial.review}</p>
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-1">
                           {[...Array(testimonial.rating)].map((_, i) => (
@@ -1101,8 +1219,8 @@ export default function AdminDashboard() {
                     <div key={faq.id} className="p-4 border rounded-lg">
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="font-semibold text-gray-900 dark:text-white">{faq.question}</h3>
-                        <Badge variant={faq.active ? "default" : "secondary"}>
-                          {faq.active ? "Active" : "Inactive"}
+                        <Badge variant={faq.isActive ? "default" : "secondary"}>
+                          {faq.isActive ? "Active" : "Inactive"}
                         </Badge>
                       </div>
                       <p className="text-gray-700 dark:text-gray-300 mb-3">{faq.answer}</p>
@@ -1128,7 +1246,7 @@ export default function AdminDashboard() {
 
       {/* Create Testimonial Dialog */}
       <Dialog open={isCreateTestimonialOpen} onOpenChange={setIsCreateTestimonialOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Testimonial</DialogTitle>
             <DialogDescription>

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useRoute } from "wouter";
-import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useState, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,14 +11,52 @@ import Footer from "@/components/layout/footer";
 import LeadForm from "@/components/forms/lead-form";
 import QuizComponent from "@/components/quiz/quiz-component";
 import type { Course } from "@shared/schema";
+import { FormLabel } from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 export default function CourseDetail() {
-  const [, params] = useRoute("/course/:slug");
-  const slug = params?.slug;
+  const { slug } = useParams<{ slug: string }>();
   const [showSyllabusForm, setShowSyllabusForm] = useState(false);
+  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
+  const [leadFormSource, setLeadFormSource] = useState('');
 
-  const { data: course, isLoading } = useQuery<Course>({
-    queryKey: [`/api/courses/${slug}`],
+  const handleEnrollClick = useCallback(() => {
+    setLeadFormSource("Course Detail - Enroll Now");
+    setIsLeadFormOpen(true);
+  }, []);
+
+  const handleSyllabusDownload = useCallback(() => {
+    setLeadFormSource("Course Detail - Download Syllabus");
+    setIsLeadFormOpen(true);
+  }, []);
+
+  const { data: course, isLoading, error } = useQuery<Course | null>({
+    queryKey: ["course", slug],
+    queryFn: async () => {
+      if (!slug) return null;
+      const response = await fetch(`/api/courses/${slug}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const fetchedCourse: Course = await response.json();
+      console.log('Fetched raw course data:', fetchedCourse);
+
+      // Ensure all potentially null fields default to empty strings or empty arrays
+      const parsedCourse = {
+        ...fetchedCourse,
+        curriculum: Array.isArray(fetchedCourse.curriculum) ? fetchedCourse.curriculum : [],
+        batches: Array.isArray(fetchedCourse.batches) ? fetchedCourse.batches : [],
+        fees: Array.isArray(fetchedCourse.fees) ? fetchedCourse.fees : [],
+        careerOpportunities: Array.isArray(fetchedCourse.careerOpportunities) ? fetchedCourse.careerOpportunities : [],
+        mainImage: fetchedCourse.mainImage || "",
+        logo: fetchedCourse.logo || "",
+        toolsAndTechnologies: fetchedCourse.toolsAndTechnologies || "",
+        whatYouWillLearn: fetchedCourse.whatYouWillLearn || "",
+        syllabusUrl: fetchedCourse.syllabusUrl || "",
+      };
+      console.log('Processed course data in CourseDetail:', parsedCourse);
+      return parsedCourse;
+    },
     enabled: !!slug,
   });
 
@@ -31,10 +69,11 @@ export default function CourseDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Loading course details...</p>
+        <div className="pt-20 pb-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-center h-64">
+              <div className="spinner w-8 h-8"></div>
+            </div>
           </div>
         </div>
         <Footer />
@@ -42,14 +81,14 @@ export default function CourseDetail() {
     );
   }
 
-  if (!course) {
+  if (error || !course) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
         <div className="flex items-center justify-center min-h-screen">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-foreground mb-4">Course Not Found</h1>
-            <p className="text-muted-foreground">The requested course could not be found.</p>
+            <p className="text-muted-foreground">{`${error instanceof Error ? error.message : "Failed to load course. Please try again later."}`}</p>
           </div>
         </div>
         <Footer />
@@ -57,86 +96,91 @@ export default function CourseDetail() {
     );
   }
 
-  const handleEnrollClick = () => {
-    setShowSyllabusForm(true);
-  };
-
-  const handleSyllabusDownload = () => {
-    setShowSyllabusForm(true);
-  };
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background text-foreground dark:bg-[#1a1a1a] dark:text-[#e0e0e0]">
       <Header />
       
       {/* Hero Section */}
-      <section className="relative py-20 hero-gradient overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="absolute top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"></div>
+      <section className="relative py-16 md:py-24 hero-gradient overflow-hidden">
+        {/* Visual Enhancement Blobs */}
+        <div className="absolute inset-0 z-0 opacity-20">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+          <div className="absolute top-1/2 right-1/4 w-96 h-96 bg-secondary/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+          <div className="absolute bottom-1/4 left-1/2 w-96 h-96 bg-accent/10 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
         </div>
         
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                <Badge variant="secondary" className="capitalize">
-                  {course.level}
+              {/* Badges */}
+              <div className="flex items-center gap-3 mb-4">
+                <Badge variant="secondary" className="capitalize text-base px-3 py-1 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 text-white shadow-md">
+                  {course?.level}
                 </Badge>
-                <Badge variant="outline" className="capitalize">
-                  {course.category}
+                <Badge variant="outline" className="capitalize text-base px-3 py-1 border-primary text-primary rounded-full hover:bg-primary/10 dark:border-primary-foreground dark:text-primary-foreground">
+                  {course?.category}
                 </Badge>
               </div>
               
-              <h1 className="text-4xl lg:text-5xl font-bold text-foreground mb-6 leading-tight">
-                {course.title}
+              {/* Course Title */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-foreground mb-6 leading-tight lg:leading-tight dark:text-white">
+                {course?.title}
               </h1>
               
-              <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                {course.description}
+              <p className="text-lg text-muted-foreground mb-8 leading-relaxed dark:text-[#b0b0b0]">
+                {course?.description}
               </p>
               
-              <div className="flex flex-wrap gap-6 mb-8">
-                <div className="flex items-center">
-                  <i className="fas fa-clock text-primary mr-2"></i>
-                  <span className="text-muted-foreground">{course.duration}</span>
+              {/* Course Info */}
+              <div className="flex flex-wrap gap-y-4 gap-x-6 mb-8">
+                <div className="flex items-center text-muted-foreground dark:text-[#b0b0b0]">
+                  <i className="fas fa-clock text-primary mr-2 text-xl"></i>
+                  <span className="text-base">
+                    {course?.duration ? (isNaN(Number(course.duration)) ? course.duration : `${course.duration} weeks`) : 'Duration TBD'}
+                  </span>
                 </div>
-                <div className="flex items-center">
-                  <i className="fas fa-signal text-primary mr-2"></i>
-                  <span className="text-muted-foreground capitalize">{course.level}</span>
+                <div className="flex items-center text-muted-foreground dark:text-[#b0b0b0]">
+                  <i className="fas fa-signal text-primary mr-2 text-xl"></i>
+                  <span className="text-base capitalize">{course?.level}</span>
                 </div>
-                <div className="flex items-center">
-                  <i className="fas fa-certificate text-primary mr-2"></i>
-                  <span className="text-muted-foreground">Certificate Included</span>
+                <div className="flex items-center text-muted-foreground dark:text-[#b0b0b0]">
+                  <i className="fas fa-certificate text-primary mr-2 text-xl"></i>
+                  <span className="text-base">Certificate Included</span>
                 </div>
               </div>
               
+              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button className="btn-primary text-lg px-8 py-3" onClick={handleEnrollClick}>
+                <Button 
+                  className="btn-primary text-lg px-8 py-3 rounded-lg shadow-lg hover:shadow-xl transition-all w-full sm:w-auto" 
+                  onClick={handleEnrollClick}
+                >
                   Enroll Now
                 </Button>
                 <Button 
                   variant="outline" 
-                  className="text-lg px-8 py-3"
+                  className="text-lg px-8 py-3 rounded-lg border-2 border-primary text-primary hover:bg-primary/10 transition-all w-full sm:w-auto dark:border-primary-foreground dark:text-primary-foreground dark:hover:bg-primary-foreground/10"
                   onClick={handleSyllabusDownload}
                 >
                   Download Syllabus
                 </Button>
               </div>
               
-              {course.price && (
-                <div className="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/10">
+              {/* Fee Card */}
+              {course?.price !== null && course?.price !== undefined && (
+                <div className="mt-8 p-6 bg-card rounded-2xl border border-border/50 shadow-lg dark:bg-[#2a2a2a] dark:border-[#3a3a3a]">
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground">Course Fee</span>
-                    <span className="text-2xl font-bold text-primary">₹{course.price.toLocaleString()}</span>
+                    <span className="text-muted-foreground text-lg dark:text-[#b0b0b0]">Course Fee</span>
+                    <span className="text-3xl font-extrabold text-primary dark:text-primary-foreground">₹{course.price.toLocaleString()}</span>
                   </div>
                 </div>
               )}
             </div>
             
-            <div className="relative">
-              {course.mainImage && (
-                <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl">
+            {/* Course Image */}
+            <div className="relative flex justify-center lg:justify-end">
+              {course?.mainImage && (
+                <div className="w-full max-w-lg aspect-video rounded-2xl overflow-hidden shadow-2xl transform hover:scale-105 transition-transform duration-300">
                   <img 
                     src={course.mainImage} 
                     alt={course.title}
@@ -144,286 +188,177 @@ export default function CourseDetail() {
                   />
                 </div>
               )}
-              <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-primary/10 rounded-full blur-xl"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Course Details */}
-      <section className="py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Course Details Tabs */}
+      <section className="py-16 md:py-24 bg-secondary-background dark:bg-[#121212]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-              <TabsTrigger value="batches">Batches</TabsTrigger>
-              <TabsTrigger value="fees">Fees</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-12 bg-card rounded-2xl shadow-lg dark:bg-[#2a2a2a]">
+              <TabsTrigger value="overview" className="text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-xl dark:data-[state=active]:bg-primary-foreground dark:data-[state=active]:text-primary transition-all">Overview</TabsTrigger>
+              <TabsTrigger value="curriculum" className="text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-xl dark:data-[state=active]:bg-primary-foreground dark:data-[state=active]:text-primary transition-all">Curriculum</TabsTrigger>
+              <TabsTrigger value="batches" className="text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-xl dark:data-[state=active]:bg-primary-foreground dark:data-[state=active]:text-primary transition-all">Batches</TabsTrigger>
+              <TabsTrigger value="fees" className="text-base font-semibold data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-xl dark:data-[state=active]:bg-primary-foreground dark:data-[state=active]:text-primary transition-all">Fees</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="overview" className="mt-8">
-              <div className="grid lg:grid-cols-2 gap-12">
+            {/* Overview Tab */}
+            <TabsContent value="overview" className="mt-10 p-8 bg-card rounded-2xl shadow-lg dark:bg-[#2a2a2a] dark:border-[#3a3a3a]">
+              <div className="grid lg:grid-cols-2 gap-8">
+                {/* First Column: Course Overview */}
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">Course Overview</h3>
-                  <div className="prose prose-lg max-w-none text-muted-foreground">
-                    {course.overview ? (
-                      <div dangerouslySetInnerHTML={{ __html: String(course.overview) }} />
-                    ) : (
-                      <p>{course.description}</p>
-                    )}
-                  </div>
-                  
-                  {course.careerOpportunities && course.careerOpportunities.length > 0 && (
-                    <div className="mt-8">
-                      <h4 className="text-xl font-semibold text-foreground mb-4">Career Opportunities</h4>
-                      <ul className="space-y-2">
-                        {course.careerOpportunities.map((opportunity, index) => (
-                          <li key={index} className="flex items-center text-muted-foreground">
-                            <i className="fas fa-check text-primary mr-3"></i>
-                            {opportunity}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                  <h3 className="text-3xl font-bold text-foreground mb-6 dark:text-white">Course Overview</h3>
+                  {(course?.overview && course.overview.trim() !== '') ? (
+                    <ul className="text-muted-foreground leading-relaxed dark:text-[#b0b0b0] list-disc pl-5 space-y-2">
+                      {course.overview.split('\n').filter(line => line.trim() !== '').map((line, idx) => (
+                        <li key={idx}>{line.trim()}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground leading-relaxed dark:text-[#b0b0b0]">{course?.description}</p>
                   )}
                 </div>
                 
-                <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">Tools & Technologies</h3>
-                  {course.toolsAndTechnologies ? (
-                    <div className="prose prose-lg max-w-none text-muted-foreground">
-                      <div dangerouslySetInnerHTML={{ __html: String(course.toolsAndTechnologies) }} />
+                {/* Second Column: Career Opportunities, Tools & Technologies, What You'll Learn */}
+                <div className="space-y-10">
+                  {/* Career Opportunities */}
+                  {course?.careerOpportunities && course.careerOpportunities.length > 0 && (
+                    <div>
+                      <h3 className="text-2xl font-bold text-foreground mb-4 dark:text-white">Career Opportunities</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-4"> {/* Adjusted grid for smaller column */}
+                        {course.careerOpportunities.map((opportunity, index) => (
+                          <div key={index} className="bg-card dark:bg-[#2a2a2a] border border-border/50 dark:border-[#3a3a3a] rounded-xl shadow-sm p-4 flex items-center justify-center text-center hover:shadow-md hover:scale-[1.02] transition-all duration-300"> {/* Adjusted padding and shadow */}
+                            <p className="text-base font-semibold text-muted-foreground dark:text-[#b0b0b0]">{opportunity}</p> {/* Adjusted text size */}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div>
+                    <h3 className="text-2xl font-bold text-foreground mb-4 dark:text-white">Tools & Technologies</h3>
+                    {(course?.toolsAndTechnologies && course.toolsAndTechnologies.trim() !== '') ? (
+                      <div className="flex flex-wrap gap-3">
+                        {course.toolsAndTechnologies.split('\n').filter(line => line.trim() !== '').map((tool, idx) => (
+                          <Badge key={idx} variant="outline" className="px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-green-400 to-teal-500 text-white shadow-md hover:from-green-500 hover:to-teal-600 transition-all duration-300">
+                            <i className="fas fa-tools mr-2"></i> {tool.trim()}
+                          </Badge>
+                        ))}
                     </div>
                   ) : (
-                    <p className="text-muted-foreground">
-                      You'll learn industry-standard tools and technologies used by professionals in the field.
-                    </p>
+                      <p className="text-muted-foreground dark:text-[#b0b0b0]">No tools and technologies information available.</p>
                   )}
+                  </div>
                   
-                  <div className="mt-8">
-                    <h4 className="text-xl font-semibold text-foreground mb-4">What You'll Learn</h4>
-                    <div className="space-y-3">
-                      <div className="flex items-center p-3 bg-primary/5 rounded-lg">
-                        <i className="fas fa-shield-alt text-primary mr-3"></i>
-                        <span className="text-foreground">Advanced Security Concepts</span>
-                      </div>
-                      <div className="flex items-center p-3 bg-blue-500/5 rounded-lg">
-                        <i className="fas fa-code text-blue-600 mr-3"></i>
-                        <span className="text-foreground">Hands-on Practical Skills</span>
-                      </div>
-                      <div className="flex items-center p-3 bg-green-500/5 rounded-lg">
-                        <i className="fas fa-certificate text-green-600 mr-3"></i>
-                        <span className="text-foreground">Industry Certification</span>
-                      </div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-foreground mb-4 dark:text-white">What You'll Learn</h3>
+                    {(course?.whatYouWillLearn && course.whatYouWillLearn.trim() !== '') ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {course.whatYouWillLearn.split('\n').filter(line => line.trim() !== '').map((learn, idx) => (
+                          <div key={idx} className="flex items-center p-4 rounded-xl bg-card border border-border/50 shadow-sm dark:bg-[#2a2a2a] dark:border-[#3a3a3a] hover:shadow-md hover:scale-[1.02] transition-all duration-300 group">
+                            <div className="flex-shrink-0 mr-4 text-primary group-hover:text-primary-foreground transition-colors duration-300">
+                              <i className="fas fa-check-circle text-xl"></i> {/* Generic checkmark icon */}
+                            </div>
+                            <p className="text-muted-foreground dark:text-[#b0b0b0] group-hover:text-foreground transition-colors duration-300">
+                              {learn.trim()}
+                            </p>
+                          </div>
+                        ))}
                     </div>
+                  ) : (
+                      <p className="text-muted-foreground dark:text-[#b0b0b0]">No learning outcomes defined.</p>
+                  )}
                   </div>
                 </div>
               </div>
             </TabsContent>
             
-            <TabsContent value="curriculum" className="mt-8">
+            {/* Curriculum Tab */}
+            <TabsContent value="curriculum" className="mt-10 p-8 bg-card rounded-2xl shadow-lg dark:bg-[#2a2a2a] dark:border-[#3a3a3a]">
               <div>
-                <h3 className="text-2xl font-bold text-foreground mb-6">Course Curriculum</h3>
+                <h3 className="text-3xl font-bold text-foreground mb-6 dark:text-white">Course Curriculum</h3>
                 <Accordion type="single" collapsible className="w-full">
-                  {course.curriculum && course.curriculum.length > 0 ? (
-                    course.curriculum.map((section, index) => (
-                      <AccordionItem key={index} value={`section-${index}`}>
-                        <AccordionTrigger>{section.sectionTitle}</AccordionTrigger>
-                        <AccordionContent>
-                          <ul className="space-y-2 text-muted-foreground">
-                            {section.items.map((item, itemIndex) => (
-                              <li key={itemIndex}>• {item}</li>
+                  {course?.curriculum && course.curriculum.length > 0 ? (
+                    course.curriculum.map((section: { sectionTitle: string; items: string[] }, index: number) => (
+                      <AccordionItem key={index} value={`item-${index}`} className="border-b border-border/50 dark:border-[#3a3a3a]">
+                        <AccordionTrigger className="text-lg font-semibold text-foreground hover:no-underline dark:text-white py-4">
+                          {section.sectionTitle}
+                        </AccordionTrigger>
+                        <AccordionContent className="pt-2 pb-4">
+                          <ul className="list-disc pl-5 space-y-2 text-muted-foreground dark:text-[#b0b0b0]">
+                            {section.items.map((item, itemIdx) => (
+                              <li key={itemIdx}>{item}</li>
                             ))}
                           </ul>
                         </AccordionContent>
                       </AccordionItem>
                     ))
                   ) : (
-                    <div className="text-center text-muted-foreground py-8">
-                      <p>Curriculum details will be updated soon.</p>
-                    </div>
+                    <p className="text-muted-foreground dark:text-[#b0b0b0]">No curriculum available for this course.</p>
                   )}
                 </Accordion>
               </div>
             </TabsContent>
             
-            <TabsContent value="batches" className="mt-8">
-              <div className="grid lg:grid-cols-2 gap-12">
-                <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">Upcoming Batches</h3>
-                  {course.batches && course.batches.length > 0 ? (
-                    <div className="space-y-4">
-                      {course.batches.map((batch, index) => (
-                        <Card key={index}>
-                          <CardContent className="p-6">
-                            <div className="flex items-center justify-between mb-4">
-                              <div className="flex items-center">
-                                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mr-4">
-                                  <i className="fas fa-calendar text-primary"></i>
+            {/* Batches Tab */}
+            <TabsContent value="batches" className="mt-10 p-8 bg-card rounded-2xl shadow-lg dark:bg-[#2a2a2a] dark:border-[#3a3a3a]">
+              <div>
+                <h3 className="text-3xl font-bold text-foreground mb-6 dark:text-white">Upcoming Batches</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {course?.batches && course.batches.length > 0 ? (
+                    course.batches.map((batch, index) => (
+                      <Card key={index} className="bg-secondary/20 dark:bg-[#3a3a3a] border border-border/50 dark:border-[#4a4a4a] rounded-xl shadow-md p-6">
+                        <CardContent className="p-0">
+                          <div className="flex items-center text-muted-foreground mb-3">
+                            <i className="fas fa-calendar-alt mr-3 text-primary"></i>
+                            <span className="font-semibold text-foreground dark:text-white">Start Date:</span>
+                            <span className="ml-2 text-muted-foreground dark:text-[#b0b0b0]">{batch.startDate}</span>
                                 </div>
-                                <div>
-                                  <div className="font-semibold text-foreground">Batch {index + 1}</div>
-                                  <div className="text-sm text-muted-foreground">Starts {batch.startDate}</div>
-                                </div>
-                              </div>
-                              <Badge variant="secondary" className="capitalize">
-                                {batch.mode}
-                              </Badge>
-                            </div>
-                            <div className="space-y-2 text-sm text-muted-foreground">
-                              <div className="flex items-center">
-                                <i className="fas fa-clock mr-2"></i>
-                                {batch.time}
-                              </div>
-                              <div className="flex items-center">
-                                <i className="fas fa-user mr-2"></i>
-                                Instructor: {batch.instructor}
-                              </div>
+                          <div className="flex items-center text-muted-foreground mb-3">
+                            <i className="fas fa-clock mr-3 text-primary"></i>
+                            <span className="font-semibold text-foreground dark:text-white">Time:</span>
+                            <span className="ml-2 text-muted-foreground dark:text-[#b0b0b0]">{batch.startTime} - {batch.endTime}</span>
+                                    </div>
+                          <div className="flex items-center text-muted-foreground mb-3">
+                            <i className="fas fa-laptop-code mr-3 text-primary"></i>
+                            <span className="font-semibold text-foreground dark:text-white">Mode:</span>
+                            <span className="ml-2 capitalize text-muted-foreground dark:text-[#b0b0b0]">{batch.mode}</span>
+                                  </div>
+                          <div className="flex items-center text-muted-foreground">
+                            <i className="fas fa-chalkboard-teacher mr-3 text-primary"></i>
+                            <span className="font-semibold text-foreground dark:text-white">Instructor:</span>
+                            <span className="ml-2 text-muted-foreground dark:text-[#b0b0b0]">{batch.instructor}</span>
                             </div>
                           </CardContent>
                         </Card>
-                      ))}
-                    </div>
+                    ))
                   ) : (
-                    <div className="text-center text-muted-foreground py-8">
-                      <p>Batch schedules will be announced soon.</p>
-                    </div>
+                    <p className="text-muted-foreground dark:text-[#b0b0b0]">No upcoming batches scheduled.</p>
                   )}
-                </div>
-                
-                <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">Schedule Details</h3>
-                  <div className="space-y-6">
-                    <div className="flex items-center">
-                      <i className="fas fa-clock text-primary mr-3"></i>
-                      <div>
-                        <div className="font-medium text-foreground">Class Timings</div>
-                        <div className="text-muted-foreground">Weekdays: 7:00 PM - 9:00 PM</div>
-                        <div className="text-muted-foreground">Weekends: 10:00 AM - 2:00 PM</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <i className="fas fa-calendar text-primary mr-3"></i>
-                      <div>
-                        <div className="font-medium text-foreground">Duration</div>
-                        <div className="text-muted-foreground">{course.duration}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <i className="fas fa-laptop text-primary mr-3"></i>
-                      <div>
-                        <div className="font-medium text-foreground">Mode</div>
-                        <div className="text-muted-foreground capitalize">
-                          {course.mode === "hybrid" ? "Online & Offline Available" : course.mode}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center">
-                      <i className="fas fa-certificate text-primary mr-3"></i>
-                      <div>
-                        <div className="font-medium text-foreground">Certification</div>
-                        <div className="text-muted-foreground">Industry-recognized certificate</div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </TabsContent>
             
-            <TabsContent value="fees" className="mt-8">
-              <div className="grid lg:grid-cols-2 gap-12">
+            {/* Fees Tab */}
+            <TabsContent value="fees" className="mt-10 p-8 bg-card rounded-2xl shadow-lg dark:bg-[#2a2a2a] dark:border-[#3a3a3a]">
                 <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">Fee Structure</h3>
-                  {course.fees && course.fees.length > 0 ? (
-                    <div className="space-y-4">
-                      {course.fees.map((fee, index) => (
-                        <Card key={index}>
-                          <CardContent className="p-6">
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="font-semibold text-foreground">{fee.label}</div>
-                              <div className="text-2xl font-bold text-primary">₹{fee.amount.toLocaleString()}</div>
-                            </div>
-                            <p className="text-sm text-muted-foreground">{fee.notes}</p>
+                <h3 className="text-3xl font-bold text-foreground mb-6 dark:text-white">Fee Structure</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {course?.fees && course.fees.length > 0 ? (
+                    course.fees.map((fee, index) => (
+                      <Card key={index} className="bg-secondary/20 dark:bg-[#3a3a3a] border border-border/50 dark:border-[#4a4a4a] rounded-xl shadow-md p-6">
+                        <CardContent className="p-0">
+                          <h4 className="text-xl font-bold text-foreground mb-2 dark:text-white">{fee.label}</h4>
+                          <p className="text-3xl font-extrabold text-primary mb-4 dark:text-primary-foreground">₹{fee.amount.toLocaleString()}</p>
+                          {fee.notes && <p className="text-muted-foreground text-sm dark:text-[#b0b0b0]">{fee.notes}</p>}
                           </CardContent>
                         </Card>
-                      ))}
-                    </div>
+                    ))
                   ) : (
-                    <Card>
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="font-semibold text-foreground">Course Fee</div>
-                          <div className="text-2xl font-bold text-primary">₹{course.price?.toLocaleString()}</div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    <p className="text-muted-foreground dark:text-[#b0b0b0]">No fee information available.</p>
                   )}
-                  
-                  <div className="mt-6 space-y-4">
-                    <h4 className="font-semibold text-foreground">Payment Options</h4>
-                    <div className="space-y-2 text-sm text-muted-foreground">
-                      <div className="flex items-center">
-                        <i className="fas fa-credit-card mr-2"></i>
-                        Full payment (5% discount)
-                      </div>
-                      <div className="flex items-center">
-                        <i className="fas fa-calendar-alt mr-2"></i>
-                        Installments available
-                      </div>
-                      <div className="flex items-center">
-                        <i className="fas fa-graduation-cap mr-2"></i>
-                        Student discounts available
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-6">What's Included</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center p-4 border rounded-lg">
-                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
-                        <i className="fas fa-book text-blue-600"></i>
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">Study Materials</div>
-                        <div className="text-sm text-muted-foreground">Comprehensive course materials and resources</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center p-4 border rounded-lg">
-                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                        <i className="fas fa-flask text-green-600"></i>
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">Lab Access</div>
-                        <div className="text-sm text-muted-foreground">24/7 access to practice labs and environments</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center p-4 border rounded-lg">
-                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
-                        <i className="fas fa-users text-purple-600"></i>
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">Placement Support</div>
-                        <div className="text-sm text-muted-foreground">Resume building and interview preparation</div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center p-4 border rounded-lg">
-                      <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
-                        <i className="fas fa-certificate text-orange-600"></i>
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground">Industry Certification</div>
-                        <div className="text-sm text-muted-foreground">Recognized certificate upon completion</div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </TabsContent>
@@ -431,69 +366,43 @@ export default function CourseDetail() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 hero-gradient">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
-            Ready to Transform Your Career?
-          </h2>
-          <p className="text-xl text-muted-foreground mb-8">
-            Join thousands of professionals who have advanced their careers with our comprehensive training programs.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="btn-primary text-lg px-8 py-3" onClick={handleEnrollClick}>
-              Enroll Now
-            </Button>
-            <Button 
-              variant="outline" 
-              className="text-lg px-8 py-3"
-              onClick={handleSyllabusDownload}
-            >
-              Download Syllabus
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Lead Form Modal */}
-      {showSyllabusForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-          <div className="bg-background rounded-2xl p-8 max-w-md w-full">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold text-foreground">Download Syllabus</h3>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setShowSyllabusForm(false)}
-              >
-                ×
-              </Button>
-            </div>
-            <LeadForm 
-              onSuccess={() => setShowSyllabusForm(false)}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Quiz Component */}
+      {/* Quiz Section (Remains outside TabsContent for now) */}
       {quiz && (
-        <section className="py-20">
+        <section className="py-16 md:py-24 bg-secondary-background dark:bg-[#121212]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-6">
-                Test Your Knowledge
-              </h2>
-              <p className="text-xl text-muted-foreground">
-                Take our quiz to assess your current understanding and see how this course can help you grow.
-              </p>
-            </div>
-            <QuizComponent courseId={course.id} />
+            <h2 className="text-4xl font-bold text-foreground mb-10 text-center dark:text-white">Test Your Knowledge</h2>
+            <Card className="bg-card dark:bg-[#2a2a2a] border border-border/50 dark:border-[#3a3a3a] rounded-2xl shadow-lg p-6 md:p-8">
+              <CardContent>
+                <QuizComponent quiz={quiz} />
+              </CardContent>
+            </Card>
           </div>
         </section>
       )}
 
       <Footer />
+
+      <Dialog open={isLeadFormOpen} onOpenChange={setIsLeadFormOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {leadFormSource.includes("Enroll Now") ? "Enroll in " : "Download Syllabus for "}
+              {course?.title || "this course"}
+            </DialogTitle>
+            <DialogDescription>
+              Fill in your details to proceed.
+            </DialogDescription>
+          </DialogHeader>
+          <LeadForm
+            source={leadFormSource}
+            courseInterest={course?.title}
+            buttonText={leadFormSource.includes("Enroll Now") ? "Enroll Now" : "Download Syllabus"}
+            onSuccess={() => setIsLeadFormOpen(false)}
+            courseSlug={course?.slug}
+            syllabusDownloadUrl={course?.syllabusUrl}
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

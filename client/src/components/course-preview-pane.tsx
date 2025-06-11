@@ -21,7 +21,8 @@ interface CoursePreviewData {
   }>;
   batches?: Array<{
     startDate: string;
-    time: string;
+    startTime?: string;
+    endTime?: string;
     mode: string;
     instructor: string;
   }>;
@@ -197,7 +198,7 @@ export function CoursePreviewPane({ data }: CoursePreviewPaneProps) {
                             {batch.startDate ? new Date(batch.startDate).toLocaleDateString() : "Start Date TBD"}
                           </p>
                           <p className="text-sm text-gray-600 dark:text-gray-400">
-                            {batch.time || "Time TBD"}
+                            {(batch.startTime && batch.endTime) ? `${batch.startTime} - ${batch.endTime}` : (batch.startTime || batch.endTime || "Time TBD")}
                           </p>
                         </div>
                         <Badge variant="secondary">

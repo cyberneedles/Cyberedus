@@ -1,26 +1,35 @@
-const { Pool } = require('@neondatabase/serverless');
-const { drizzle } = require('drizzle-orm/neon-serverless');
-const { courses } = require('./shared/schema');
+import { db, pool } from './server/db.js';
+import { courses } from './shared/schema.js';
 
 async function testCourseCreation() {
   try {
-    const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-    const db = drizzle(pool);
-
     const newCourse = {
       title: "Certified Ethical Hacker (CEH)",
       slug: "certified-ethical-hacker-ceh",
       description: "The Certified Ethical Hacker (CEH) program is a widely recognized cybersecurity certification that focuses on ethical hacking techniques.",
       duration: "16",
-      mode: "Online",
-      level: "Intermediate",
+      mode: "online",
+      level: "beginner",
       category: "Cybersecurity",
-      icon: "Shield",
+      icon: "shield",
       price: 125000,
-      prerequisites: null,
-      features: ["Hands-on labs", "Industry certification", "Expert instruction"],
-      syllabusUrl: null,
-      batchDates: ["2024-02-01", "2024-03-01"],
+      prerequisites: "",
+      overview: "The CEH course teaches how to:\n\nIdentify system vulnerabilities\n\nAnalyze threats\n\nUse tools and techniques hackers use\n\nPenetrate networks and systems (legally)\n\nSecure and harden systems",
+      mainImage: "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg",
+      logo: "https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg",
+      curriculum: [
+        { sectionTitle: "Introduction to Ethical Hacking", items: ["What is Ethical Hacking?", "Types of Hackers", "Phases of Hacking"] },
+        { sectionTitle: "Footprinting and Reconnaissance", items: ["Google Hacking", "Whois Lookup", "DNS Enumeration"] }
+      ],
+      batches: [
+        { startDate: "2025-06-20", startTime: "10:00", endTime: "12:00", mode: "online", instructor: "John Doe" }
+      ],
+      fees: [
+        { label: "Standard", amount: 12500, notes: "Includes course materials and certification exam voucher" }
+      ],
+      careerOpportunities: ["Ethical Hacker", "Penetration Tester", "Security Analyst"],
+      toolsAndTechnologies: "Nmap\nWireshark\nMetasploit",
+      whatYouWillLearn: "Vulnerability Assessment\nNetwork Scanning\nWeb Application Hacking",
       isActive: true
     };
 
@@ -32,9 +41,6 @@ async function testCourseCreation() {
       .returning();
 
     console.log("Course created successfully:", createdCourse);
-    
-    // Close the connection
-    await pool.end();
     
   } catch (error) {
     console.error("Error creating course:", error);

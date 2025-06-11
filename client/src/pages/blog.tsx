@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { BlogPost } from "@shared/schema";
+import { BackgroundContainer } from "@/components/BackgroundContainer";
 
 export default function Blog() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -66,7 +67,7 @@ export default function Blog() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <BackgroundContainer>
       <Header />
       
       {/* Hero Section */}
@@ -84,7 +85,7 @@ export default function Blog() {
       </section>
 
       {/* Search and Filters */}
-      <section className="py-8 bg-card border-b border-border">
+      <section className="py-8 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
@@ -119,7 +120,7 @@ export default function Blog() {
 
       {/* Featured Post */}
       {featuredPost && (
-        <section className="py-16 bg-muted/50">
+        <section className="py-16 bg-transparent">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-foreground mb-4">Featured Article</h2>
@@ -176,7 +177,7 @@ export default function Blog() {
       )}
 
       {/* Blog Grid */}
-      <section className="py-20">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {filteredPosts.length === 0 ? (
             <div className="text-center py-16">
@@ -314,6 +315,6 @@ export default function Blog() {
       </section>
 
       <Footer />
-    </div>
+    </BackgroundContainer>
   );
 }

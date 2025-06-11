@@ -1,190 +1,114 @@
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, Eye, EyeOff, Loader2 } from "lucide-react";
-import { apiRequest } from "@/lib/queryClient";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { CyberMascot, CyberLoading } from "@/components/ui/cyber-mascot";
+import { signInWithEmailAndPassword } from "@/lib/firebase";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function AdminLogin() {
-  const [, setLocation] = useLocation();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const [showPassword, setShowPassword] = useState(false);
-  const [credentials, setCredentials] = useState({
-    email: "",
-    password: ""
-  });
-  const [error, setError] = useState("");
 
-  // Check if already authenticated
-  const { data: session, isLoading: sessionLoading } = useQuery({
-    queryKey: ['/api/admin/session'],
-    retry: false
-  });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
 
-  const loginMutation = useMutation({
-    mutationFn: async (credentials: { email: string; password: string }) => {
-      const response = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
+    // Debug: Log email and password before attempting login
+    console.log('Attempting login with:', { email: email, password: password });
+
+    try {
+      // First, authenticate with Firebase
+      const userCredential = await signInWithEmailAndPassword(email, password);
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Login failed');
+      // Get Firebase ID token
+      const idToken = await userCredential.user.getIdToken();
+
+      // Then, create a session on the backend by sending the ID token
+      const response = await apiRequest("POST", "/api/auth/login", {
+        idToken: idToken,
+      });
+
+      if (response.ok) {
+        // Store authentication state
+        localStorage.setItem('admin_authenticated', 'true');
+        
+      toast({
+        title: "Login successful",
+        description: "Welcome back, admin!",
+      });
+      navigate("/admin");
+      } else {
+        throw new Error("Backend authentication failed");
       }
-      
-      return response.json();
-    },
-    onSuccess: (data) => {
-      // Store authentication in localStorage for immediate access
-      localStorage.setItem('admin_authenticated', 'true');
-      localStorage.setItem('admin_user', JSON.stringify(data.user));
-      
+    } catch (error) {
+      console.error("Login error:", error);
+      // Debug: Log specific error details
+      if (error instanceof Error) {
+        console.error('Error details:', error.message);
+      }
       toast({
-        title: "Login Successful", 
-        description: "Redirecting to dashboard...",
-      });
-      
-      // Immediate redirect without delay
-      window.location.replace('/admin');
-    },
-    onError: (error: Error) => {
-      setError(error.message);
-      toast({
-        title: "Login Failed",
-        description: error.message,
+        title: "Login failed",
+        description: "Invalid email or password",
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
-  });
-
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    
-    if (!credentials.email || !credentials.password) {
-      setError("Please fill in all fields");
-      return;
-    }
-
-    if (!credentials.email.includes('@')) {
-      setError("Please enter a valid email address");
-      return;
-    }
-
-    loginMutation.mutate(credentials);
   };
 
-  // Show loading while checking session
-  if (sessionLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
-        <CyberLoading message="Initializing secure connection..." />
-      </div>
-    );
-  }
-
-  // Redirect if already authenticated
-  if (session?.authenticated) {
-    window.location.href = '/admin/dashboard';
-    return null;
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-blue-900 dark:to-indigo-900">
-      <Card className="w-full max-w-md mx-4">
-        <CardHeader className="text-center">
-          <div className="mx-auto w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mb-4">
-            <Shield className="w-6 h-6 text-white" />
-          </div>
-          <CardTitle className="text-2xl font-bold">Admin Portal</CardTitle>
-          <CardDescription>
-            Sign in to access the CyberEdu admin dashboard
-          </CardDescription>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <Card className="w-[350px]">
+        <CardHeader>
+          <CardTitle>Admin Login</CardTitle>
+          <CardDescription>Enter your credentials to access the admin dashboard</CardDescription>
         </CardHeader>
-        <CardContent>
-          {error && (
-            <div className="flex flex-col items-center space-y-4 p-4 bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-800 rounded-lg mb-4">
-              <CyberMascot 
-                state="error" 
-                message="Authentication failed!" 
-              />
-              <p className="text-sm text-red-600 dark:text-red-400 text-center">
-                {error}
-              </p>
-            </div>
-          )}
-          
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admin@cyberedu.com"
-                value={credentials.email}
-                onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
-                required
-                disabled={loginMutation.isPending}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
+        <form onSubmit={handleSubmit}>
+          <CardContent>
+            <div className="grid w-full items-center gap-4">
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="admin@cyberedu.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={credentials.password}
-                  onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
-                  disabled={loginMutation.isPending}
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={loginMutation.isPending}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
-                  )}
-                </Button>
               </div>
             </div>
-            <Button 
-              type="submit" 
-              className="w-full" 
-              disabled={loginMutation.isPending}
-            >
-              {loginMutation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Signing In...
-                </>
-              ) : (
-                "Sign In"
-              )}
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button variant="outline" type="button" onClick={() => navigate("/")}>
+              Back to Home
             </Button>
-          </form>
-          
-
-        </CardContent>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? <CyberLoading /> : "Login"}
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
+      <div className="fixed bottom-4 right-4">
+        <CyberMascot state="idle" />
+      </div>
     </div>
   );
 }

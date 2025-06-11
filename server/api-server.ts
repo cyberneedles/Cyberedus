@@ -2,17 +2,41 @@ import express from "express";
 import cors from "cors";
 import { storage } from "./storage.js";
 import session from "express-session";
+import admin from "firebase-admin";
 
-const app = express();
+declare module 'express-session' {
+  interface SessionData {
+    user?: { id: string; email?: string; role: string };
+  }
+}
+
+// Initialize Firebase Admin SDK
+if (!admin.apps.length) {
+  try {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId: "cyberedu-a094a",
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      }),
+    });
+    console.log("Firebase Admin SDK initialized successfully");
+  } catch (error) {
+    console.error("Error initializing Firebase Admin SDK:", error);
+    throw error;
+  }
+}
+
+export const app = express();
 const PORT = 3001;
 
 // Enable CORS for frontend
 app.use(cors({
-  origin: 'http://localhost:5000',
+  origin: ['http://localhost:5173', 'http://localhost:5000'],
   credentials: true
 }));
 
-app.use(express.json());
+app.use(express.json({ limit: '100mb' }));
 
 // Session middleware
 app.use(session({
@@ -36,17 +60,33 @@ const requireAuth = (req: any, res: any, next: any) => {
 
 // Auth routes
 app.post("/auth/login", async (req, res) => {
-  const { email, password } = req.body;
-  
-  if (email === "admin@cyberedus.com" && password === "secure_admin_2024") {
-    const user = await storage.getUserByEmail(email);
-    if (user) {
-      req.session.user = user;
-      return res.json({ authenticated: true, user });
-    }
+  const { idToken } = req.body; // Expect Firebase ID token from frontend
+
+  if (!idToken) {
+    return res.status(400).json({ message: "ID token not provided" });
   }
-  
-  res.status(401).json({ message: "Invalid credentials" });
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const firebaseUid = decodedToken.uid;
+    const firebaseEmail = decodedToken.email; // Get email from decoded token
+
+    // In a real app, you might want to fetch/create user in your DB here
+    // For now, we'll just use the Firebase user info for the session
+    const user = {
+      id: firebaseUid, // Use Firebase UID as user ID
+      email: firebaseEmail,
+      role: 'admin' // Assume admin role for now, or fetch from custom claims if set
+    };
+    
+    // Set session user
+      req.session.user = user;
+    
+      return res.json({ authenticated: true, user });
+  } catch (error) {
+    console.error("Firebase token verification error:", error);
+    return res.status(401).json({ message: "Invalid or expired ID token" });
+  }
 });
 
 app.get("/auth/session", (req, res) => {
@@ -74,10 +114,25 @@ app.get("/courses", async (req, res) => {
   }
 });
 
+app.get("/courses/:slug", async (req, res) => {
+  try {
+    const { slug } = req.params; // Extract the slug from the URL parameters
+    const course = await storage.getCourseBySlug(slug);
+    if (course) {
+      res.json(course);
+    } else {
+      res.status(404).json({ message: "Course not found" });
+    }
+  } catch (error) {
+    console.error('Get course by slug error:', error);
+    res.status(500).json({ message: "Failed to fetch course by slug" });
+  }
+});
+
 app.post("/courses", requireAuth, async (req, res) => {
   try {
     console.log("Creating course with data:", req.body);
-    const course = await storage.createCourse(req.body);
+    const course = await storage.createCourse({ ...req.body, syllabusUrl: req.body.syllabusUrl });
     console.log("Course created successfully:", course);
     res.status(201).json(course);
   } catch (error) {
@@ -89,7 +144,7 @@ app.post("/courses", requireAuth, async (req, res) => {
 app.patch("/courses/:id", requireAuth, async (req, res) => {
   try {
     const courseId = parseInt(req.params.id);
-    const course = await storage.updateCourse(courseId, req.body);
+    const course = await storage.updateCourse(courseId, { ...req.body, syllabusUrl: req.body.syllabusUrl });
     if (course) {
       res.json(course);
     } else {
@@ -124,6 +179,18 @@ app.get("/leads", requireAuth, async (req, res) => {
   }
 });
 
+app.post("/leads", async (req, res) => {
+  try {
+    console.log("Creating lead with data:", req.body);
+    const lead = await storage.createLead(req.body);
+    console.log("Lead created successfully:", lead);
+    res.status(201).json(lead);
+  } catch (error) {
+    console.error('Create lead error:', error);
+    res.status(500).json({ message: "Failed to create lead", error: String(error) });
+  }
+});
+
 app.get("/testimonials", async (req, res) => {
   try {
     const testimonials = await storage.getAllTestimonials(true);
@@ -151,6 +218,10 @@ app.get("/faqs", async (req, res) => {
   }
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`API Server running on port ${PORT}`);
+// Comment out (or remove) the app.listen(...) call below so that only server/index.ts calls listen.
+// (This prevents two servers from listening on the same port.)
+/*
+app.listen(3001, () => {
+  console.log("API Server running on port 3001");
 });
+*/

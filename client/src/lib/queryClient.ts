@@ -12,8 +12,8 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  // Use the same server for API calls
-  const apiUrl = url;
+  // Prepend the backend API base URL from environment variables
+  const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ''}${url}`;
   
   const res = await fetch(apiUrl, {
     method,
@@ -35,9 +35,9 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
-    // Use the same server for API calls
     const url = queryKey[0] as string;
-    const apiUrl = url;
+    // Prepend the backend API base URL from environment variables
+    const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ''}${url}`;
     
     const res = await fetch(apiUrl, {
       credentials: "include",

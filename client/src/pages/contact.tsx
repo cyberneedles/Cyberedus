@@ -7,6 +7,7 @@ import Footer from "@/components/layout/footer";
 import ContactForm from "@/components/forms/contact-form";
 import { useQuery } from "@tanstack/react-query";
 import { FAQ } from "@shared/schema";
+import { BackgroundContainer } from "@/components/BackgroundContainer";
 
 export default function Contact() {
   const observerRef = useRef<IntersectionObserver>();
@@ -34,7 +35,7 @@ export default function Contact() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <BackgroundContainer>
       <Header />
       
       {/* Hero Section */}
@@ -52,7 +53,7 @@ export default function Contact() {
       </section>
 
       {/* Contact Form and Info */}
-      <section className="py-20">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Form */}
@@ -191,7 +192,7 @@ export default function Contact() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-20 bg-transparent">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 animate-on-scroll">
             <h2 className="text-4xl font-bold text-foreground mb-4">Frequently Asked Questions</h2>
@@ -218,7 +219,7 @@ export default function Contact() {
       </section>
 
       {/* Additional Contact Options */}
-      <section className="py-20 bg-card">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 animate-on-scroll">
             <h2 className="text-4xl font-bold text-foreground mb-4">Other Ways to Connect</h2>
@@ -249,11 +250,11 @@ export default function Contact() {
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-4">Video Call</h3>
                 <p className="text-muted-foreground mb-6">
-                  Schedule a video consultation with our education counselors.
+                  Schedule a personalized video consultation with our experts.
                 </p>
-                <Button variant="outline" className="btn-secondary w-full">
-                  <i className="fas fa-calendar mr-2"></i>
-                  Schedule Call
+                <Button className="btn-secondary w-full">
+                  <i className="fas fa-video mr-2"></i>
+                  Book a Call
                 </Button>
               </CardContent>
             </Card>
@@ -261,15 +262,15 @@ export default function Contact() {
             <Card className="hover-lift animate-on-scroll text-center">
               <CardContent className="p-8">
                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <i className="fas fa-building text-3xl text-purple-600"></i>
+                  <i className="fas fa-users text-3xl text-purple-600"></i>
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-4">Campus Visit</h3>
+                <h3 className="text-xl font-bold text-foreground mb-4">Visit Us</h3>
                 <p className="text-muted-foreground mb-6">
-                  Visit our campus and see our state-of-the-art facilities firsthand.
+                  Come say hello! Our team is ready to welcome you at our campus.
                 </p>
-                <Button variant="outline" className="btn-secondary w-full">
+                <Button className="btn-outline w-full">
                   <i className="fas fa-map-marker-alt mr-2"></i>
-                  Book Visit
+                  Get Directions
                 </Button>
               </CardContent>
             </Card>
@@ -288,6 +289,6 @@ export default function Contact() {
       </a>
 
       <Footer />
-    </div>
+    </BackgroundContainer>
   );
 }

@@ -1,0 +1,48 @@
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+
+// Initialize Firebase Admin with service account
+const app = initializeApp({
+  credential: cert({
+    projectId: "cyberedu-a094a",
+    clientEmail: "firebase-adminsdk-fbsvc@cyberedu-a094a.iam.gserviceaccount.com",
+    privateKey: "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDwNOVaBzsxtc/g\nq7O+vO12RC0IpCEKnhN3Df+jTJilZU8tlD/LW6/PcqgTciJOceKvqCE4pbwJvSEr\ni0aLuUc46VE56JjryFcCDggsEi9nsJdmdDHMheP3U9oPeU+ycHFDa5RNLc3Z3G32\nP4BI1Uklr3mHax1POZlo4NXsygYVhkQ+e1g9RpU3auTY78OuYQmCvT7vqntN4bW3\nAciaYgWynHlCaWOGXIiFR5Sya6Ydx8VhusT8MCjO7iOrKRQD5sLS+iJyGBejWw3u\nMUMW+5KVgWikBhBya+Jg16DjyEUddKzlsrgDHMI6bQlTcY4f1FEn5bl7RpBGH6Xq\nh1StUr7JAgMBAAECggEAcLDAML5XvPiI7+RdzUwhM2zEm9s0TSDgDOiaV+glbOLc\nhIuaajM3heFKjOTsx1SSfson28WVNBRwrVcH36Eqkr6TBtHifCte9m3S06osZz7n\nqH82pbbivjOuh7fn9dTerjyYNKUaf+z0AaTE8GZvjKiIIUnVVEe3ewaQFiipNgsA\n2ffXi2gPZweHl8Vt7uliHrzTT5fImgmOie2/Gk/8ucW2iEkrEM2zKzprdVtgw4T7\nmAvs8KsRqfpHcFwLaaYfn+rx60C6rOFuyUV00+gcKQW527FSLqMWmQH6LXIzn5LM\nV+aiECzer3MVlCTNdJUJXNwBYuRjUpXD/vTaUrkaCQKBgQD9di3TUx1XiHPJzqMi\nr7LwNQ5c+vYk+Fl68Fdsm/ApLCF5M7FYAaXvQo2oMpcMs98yC36ZUoDFzcCSn8KE\nxFJQksB+I+NSi2MCBdxApJpJUXaZAW2QpjWT3a/SEBdEu/V8Y8eWXk2e4EvYD5eG\nOkXQ0999D4ogMy9IH1zpDZ/1LwKBgQDynLvhPijzfLd4kSBvd53jJfV49TpsETSP\n8Qs8RTFGK9Y8tMfnVSWr66MBES8OFz9K+Q0ea0mvzCxfWRKQ3b/3K974TKbsg3Xc\nBomuSj1Q6qKxHaX9JFf3yPEPoHtJvL/aJDTRwTGqCREdOMZIw3s8FjtfUTGafyNm\n1HepOaf9hwKBgFyTSp+SDviGtUvzdnBX3jKQHmPlofvU3dHicPwRZMGVBdDgCZlM\nWNAv7c+OUs9n71C3FBFqKfCVew3S3lhh4HLfdwFbmE7w7EOz4kOWG2hGIdw2wk7/\n9jfA09QU3nrTcBFz3FVWsmEiKXGMGFsFc7SXflyOTXP/Xfiow+W3fUIvAoGAFv4Z\npDAi62h/btK6MzYv5W4chHkhL0q2I4ohmXWpRNA0vo4Xf+oG5vMvAJPjVL+JRQ6z\nWpWqZxm/fs3PP6F0ZvVmbTu+eh2/Vrnb5IOuqfOCtaxspcADAj2t8uAvrv5PZFoY\nE2Tu0wGG+LD/wbec/0XQHKlyPQUdkspCCOyo6hMCgYADeFMUQBceeUNB8tUVFY/V\nmmmA3txuYdDXjP2O7nubkgIfWl6HJQSOX9DFkx8X/8Us7HbGBXgbdhsH2rmzsnCw\nExp/K2cXwG7mImY4Aqd9ckBO3/3TP/uGVTaqlQApGV/wHgM98EUuO/eiwbOb5g4i\nk2mHUqzlsSh2TusWJlp0Hg==\n-----END PRIVATE KEY-----\n"
+  }),
+});
+
+const auth = getAuth(app);
+
+async function createAdminUser() {
+  try {
+    // Check if user already exists
+    try {
+      const user = await auth.getUserByEmail('admin@cyberedu.com');
+      console.log('Admin user already exists:', user.uid);
+      return;
+    } catch (error: any) {
+      if (error.code !== 'auth/user-not-found') {
+        throw error;
+      }
+    }
+
+    // Create the admin user
+    const userRecord = await auth.createUser({
+      email: 'admin@cyberedu.com',
+      password: 'admin123',
+      displayName: 'Admin User',
+      emailVerified: true,
+    });
+
+    // Set custom claims to mark as admin
+    await auth.setCustomUserClaims(userRecord.uid, { admin: true });
+
+    console.log('Successfully created admin user:', userRecord.uid);
+  } catch (error) {
+    console.error('Error creating admin user:', error);
+    process.exit(1);
+  } finally {
+    process.exit(0);
+  }
+}
+
+createAdminUser(); 

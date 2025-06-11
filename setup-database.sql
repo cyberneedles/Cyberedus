@@ -25,6 +25,15 @@ CREATE TABLE IF NOT EXISTS courses (
     batch_dates TEXT[],
     icon VARCHAR(100) NOT NULL,
     category VARCHAR(100) NOT NULL,
+    overview TEXT,
+    main_image TEXT,
+    logo TEXT,
+    curriculum JSONB,
+    batches JSONB,
+    fees JSONB,
+    career_opportunities TEXT[],
+    tools_and_technologies TEXT,
+    what_you_will_learn TEXT,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT NOW()
 );
@@ -39,6 +48,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
 );
 
 -- Leads table
+DROP TABLE IF EXISTS leads CASCADE;
 CREATE TABLE IF NOT EXISTS leads (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -48,6 +58,7 @@ CREATE TABLE IF NOT EXISTS leads (
     source VARCHAR(100) NOT NULL,
     experience VARCHAR(100),
     message TEXT,
+    current_location TEXT,
     quiz_results JSONB,
     created_at TIMESTAMP DEFAULT NOW()
 );

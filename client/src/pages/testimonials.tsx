@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Testimonial, Course } from "@shared/schema";
+import { BackgroundContainer } from "@/components/BackgroundContainer";
 
 export default function Testimonials() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -74,7 +75,7 @@ export default function Testimonials() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <BackgroundContainer>
       <Header />
       
       {/* Hero Section */}
@@ -92,7 +93,7 @@ export default function Testimonials() {
       </section>
 
       {/* Search and Filters */}
-      <section className="py-8 bg-card border-b border-border">
+      <section className="py-8 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
@@ -127,7 +128,7 @@ export default function Testimonials() {
       </section>
 
       {/* Statistics */}
-      <section className="py-16 bg-muted/50">
+      <section className="py-16 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="animate-on-scroll">
@@ -151,7 +152,7 @@ export default function Testimonials() {
       </section>
 
       {/* Testimonials Grid */}
-      <section className="py-20">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {filteredTestimonials.length === 0 ? (
             <div className="text-center py-16">
@@ -212,7 +213,7 @@ export default function Testimonials() {
       </section>
 
       {/* Course-wise Success Rate */}
-      <section className="py-20 bg-muted/50">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 animate-on-scroll">
             <h2 className="text-4xl font-bold text-foreground mb-4">Success Across All Programs</h2>
@@ -254,25 +255,31 @@ export default function Testimonials() {
         </div>
       </section>
 
-      {/* Call to Action */}
+      {/* CTA Section */}
       <section className="py-20 bg-card">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center animate-on-scroll">
-          <h2 className="text-4xl font-bold text-foreground mb-6">Ready to Write Your Success Story?</h2>
+          <h2 className="text-4xl font-bold text-foreground mb-6">Ready to Join Our Community?</h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Join thousands of students who have transformed their careers with our hands-on approach
+            Be part of India's fastest-growing cybersecurity and development education community
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="btn-primary text-lg">
-              <i className="fas fa-graduation-cap mr-2"></i>Start Your Journey
+            <Button 
+              className="btn-primary"
+              onClick={() => trackEvent("cta_click", "testimonials_page", "Talk to our team")} >
+              <i className="fas fa-phone mr-2"></i>Talk to Our Team
             </Button>
-            <Button variant="outline" className="btn-secondary text-lg">
-              <i className="fas fa-phone mr-2"></i>Talk to Alumni
+            <Button 
+              variant="outline" 
+              className="btn-secondary"
+              onClick={() => trackEvent("cta_click", "testimonials_page", "Schedule demo")}
+            >
+              <i className="fas fa-calendar mr-2"></i>Schedule Demo
             </Button>
           </div>
         </div>
       </section>
 
       <Footer />
-    </div>
+    </BackgroundContainer>
   );
 }

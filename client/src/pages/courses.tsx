@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,11 +10,18 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { Course } from "@shared/schema";
 import { trackEvent } from "@/lib/analytics";
+import LeadForm from "@/components/forms/lead-form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { BackgroundContainer } from "@/components/BackgroundContainer";
 
 export default function Courses() {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [levelFilter, setLevelFilter] = useState("all");
+  const [isLeadFormOpen, setIsLeadFormOpen] = useState(false);
+  const [selectedCourseTitle, setSelectedCourseTitle] = useState<string | undefined>(undefined);
+  const [selectedCourseSlug, setSelectedCourseSlug] = useState<string | undefined>(undefined);
+  const [syllabusDownloadUrl, setSyllabusDownloadUrl] = useState<string | undefined>(undefined);
 
   const { data: courses = [], isLoading } = useQuery<Course[]>({
     queryKey: ["/api/courses"],
@@ -29,10 +36,12 @@ export default function Courses() {
     return matchesSearch && matchesCategory && matchesLevel;
   });
 
-  const handleSyllabusDownload = (courseSlug: string) => {
-    trackEvent("syllabus_download", "course", courseSlug);
-    // In a real app, this would trigger the lead form modal for syllabus download
-    alert("Please fill the form to download syllabus - this would open a lead form modal");
+  const handleSyllabusDownload = (courseTitle: string, courseSlug: string, syllabusUrl: string) => {
+    trackEvent("syllabus_download", "course", courseTitle);
+    setSelectedCourseTitle(courseTitle);
+    setSelectedCourseSlug(courseSlug);
+    setSyllabusDownloadUrl(syllabusUrl);
+    setIsLeadFormOpen(true);
   };
 
   if (isLoading) {
@@ -52,7 +61,7 @@ export default function Courses() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <BackgroundContainer>
       <Header />
       
       {/* Hero Section */}
@@ -70,7 +79,7 @@ export default function Courses() {
       </section>
 
       {/* Search and Filters */}
-      <section className="py-8 bg-card border-b border-border">
+      <section className="py-8 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex-1">
@@ -111,7 +120,7 @@ export default function Courses() {
       </section>
 
       {/* Courses Grid */}
-      <section className="py-20">
+      <section className="py-20 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {filteredCourses.length === 0 ? (
             <div className="text-center py-16">
@@ -202,15 +211,31 @@ export default function Courses() {
                         </div>
                       </div>
                     )}
-                    
+
+                    {/* Tools & Technologies */}
+                    {course.toolsAndTechnologies && course.toolsAndTechnologies.trim() !== '' && (
+                      <div className="mb-6">
+                        <h4 className="text-sm font-semibold text-foreground mb-3">Tools & Technologies:</h4>
+                        <p className="text-sm text-muted-foreground line-clamp-3">{course.toolsAndTechnologies}</p>
+                      </div>
+                    )}
+
+                    {/* What You'll Learn */}
+                    {course.whatYouWillLearn && course.whatYouWillLearn.trim() !== '' && (
+                      <div className="mb-6">
+                        <h4 className="text-sm font-semibold text-foreground mb-3">What You'll Learn:</h4>
+                        <p className="text-sm text-muted-foreground line-clamp-3">{course.whatYouWillLearn}</p>
+                      </div>
+                    )}
+
                     <div className="flex justify-between items-center pt-6 border-t border-border">
-                      <Link href={`/courses/${course.slug}`}>
+                      <Link to={`/course/${course.slug}`}>
                         <Button className="btn-primary">View Details</Button>
                       </Link>
                       <Button 
                         variant="ghost" 
                         className="text-primary hover:text-secondary"
-                        onClick={() => handleSyllabusDownload(course.slug)}
+                        onClick={() => handleSyllabusDownload(course.title, course.slug, course.syllabusUrl)}
                       >
                         <i className="fas fa-download mr-1"></i>Syllabus
                       </Button>
@@ -231,7 +256,7 @@ export default function Courses() {
             Get personalized course recommendations from our education counselors
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/contact">
+            <Link to="/contact">
               <Button className="btn-primary">
                 <i className="fas fa-phone mr-2"></i>Talk to Counselor
               </Button>
@@ -244,6 +269,25 @@ export default function Courses() {
       </section>
 
       <Footer />
-    </div>
+
+      <Dialog open={isLeadFormOpen} onOpenChange={setIsLeadFormOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Download Syllabus</DialogTitle>
+            <DialogDescription>
+              Fill in your details to download the syllabus for {selectedCourseTitle || "this course"}.
+            </DialogDescription>
+          </DialogHeader>
+          <LeadForm
+            source="Courses Page - Syllabus"
+            courseInterest={selectedCourseTitle}
+            buttonText="Download Syllabus"
+            onSuccess={() => setIsLeadFormOpen(false)}
+            courseSlug={selectedCourseSlug}
+            syllabusDownloadUrl={syllabusDownloadUrl}
+          />
+        </DialogContent>
+      </Dialog>
+    </BackgroundContainer>
   );
 }

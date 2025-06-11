@@ -50,11 +50,12 @@ export const courses = pgTable("courses", {
     label: string;
     amount: number;
     notes: string;
-  }[]>(),
+  }>(),
   
   // Additional course details
-  careerOpportunities: jsonb("career_opportunities").$type<string[]>(),
+  careerOpportunities: text("career_opportunities").array(),
   toolsAndTechnologies: text("tools_and_technologies"),
+  whatYouWillLearn: text("what_you_will_learn"), // What You'll Learn section
   
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -77,6 +78,7 @@ export const leads = pgTable("leads", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
+  currentLocation: text("current_location"),
   courseInterest: text("course_interest"),
   source: text("source").notNull(), // "contact_form", "quiz", "syllabus_download", etc.
   experience: text("experience"),
@@ -149,6 +151,8 @@ export const insertCourseSchema = createInsertSchema(courses).omit({
     notes: z.string(),
   })).optional(),
   careerOpportunities: z.array(z.string()).optional(),
+  whatYouWillLearn: z.string().optional(),
+  syllabusUrl: z.string().optional(),
 });
 
 export const insertQuizSchema = createInsertSchema(quizzes).omit({

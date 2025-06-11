@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { useEffect } from "react";
 import { initGA } from "@/lib/analytics";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { BackgroundContainer } from "@/components/BackgroundContainer";
 
 // Pages
 import Home from "@/pages/home";
@@ -27,21 +28,21 @@ function Router() {
   useAnalytics();
   
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/courses" component={Courses} />
-      <Route path="/course/:slug" component={CourseDetail} />
-      <Route path="/about" component={About} />
-      <Route path="/testimonials" component={Testimonials} />
-      <Route path="/blog" component={Blog} />
-      <Route path="/contact" component={Contact} />
-      <Route path="/cyberedus-agent" component={AdminLogin} />
-      <Route path="/admin" component={AdminDashboard} />
-      <Route path="/admin/dashboard" component={AdminDashboard} />
-      <Route path="/admin/courses/new" component={CourseEditor} />
-      <Route path="/mascot-demo" component={MascotDemo} />
-      <Route component={NotFound} />
-    </Switch>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/courses" element={<Courses />} />
+      <Route path="/course/:slug" element={<CourseDetail />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/testimonials" element={<Testimonials />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/contact" element={<Contact />} />
+      <Route path="/cyberedus-agent" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin-dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/courses/new" element={<CourseEditor />} />
+      <Route path="/mascot-demo" element={<MascotDemo />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 
@@ -60,7 +61,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
-          <Router />
+          <BrowserRouter>
+            <BackgroundContainer>
+            <Router />
+            </BackgroundContainer>
+          </BrowserRouter>
           <Toaster />
         </TooltipProvider>
       </ThemeProvider>
