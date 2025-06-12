@@ -17,7 +17,7 @@ if (!admin.apps.length) {
       credential: admin.credential.cert({
         projectId: "cyberedu-a094a",
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\\\n/g, '\\n'),
       }),
     });
     console.log("Firebase Admin SDK initialized successfully");
@@ -28,7 +28,6 @@ if (!admin.apps.length) {
 }
 
 export const app = express();
-const PORT = 5001;
 
 // Enable CORS for frontend
 app.use(cors({
@@ -53,9 +52,9 @@ app.use(session({
 }));
 
 // Auth middleware
-const requireAuth = (req: any, res: any, next: any) => {
-  if (!req.session.user) {
-    return res.status(401).json({ message: "Authentication required" });
+const requireAuth = (_req: any, _res: any, next: any) => {
+  if (!_req.session.user) {
+    return _res.status(401).json({ message: "Authentication required" });
   }
   next();
 };
@@ -82,11 +81,11 @@ app.post("/auth/login", async (req, res) => {
       email: firebaseEmail,
       role: 'admin'
     };
-    
+
     // Set session user
     req.session.user = user;
     console.log("Session created for user:", user.email);
-    
+
     return res.json({ authenticated: true, user });
   } catch (error) {
     console.error("Firebase token verification error:", error);
@@ -94,22 +93,22 @@ app.post("/auth/login", async (req, res) => {
   }
 });
 
-app.get("/auth/session", (req, res) => {
-  if (req.session.user) {
-    res.json({ authenticated: true, user: req.session.user });
+app.get("/auth/session", (_req, res) => {
+  if (_req.session.user) {
+    res.json({ authenticated: true, user: _req.session.user });
   } else {
     res.json({ authenticated: false });
   }
 });
 
-app.post("/auth/logout", (req, res) => {
-  req.session.destroy(() => {
+app.post("/auth/logout", (_req, res) => {
+  _req.session.destroy(() => {
     res.json({ message: "Logged out successfully" });
   });
 });
 
 // Course routes
-app.get("/courses", async (req, res) => {
+app.get("/courses", async (_req, res) => {
   try {
     const courses = await storage.getAllCourses();
     res.json(courses);
@@ -175,7 +174,7 @@ app.delete("/courses/:id", requireAuth, async (req, res) => {
 });
 
 // Other API routes
-app.get("/leads", requireAuth, async (req, res) => {
+app.get("/leads", requireAuth, async (_req, res) => {
   try {
     const leads = await storage.getAllLeads();
     res.json(leads);
@@ -196,7 +195,7 @@ app.post("/leads", async (req, res) => {
   }
 });
 
-app.get("/testimonials", async (req, res) => {
+app.get("/testimonials", async (_req, res) => {
   try {
     const testimonials = await storage.getAllTestimonials(true);
     res.json(testimonials);
@@ -205,28 +204,140 @@ app.get("/testimonials", async (req, res) => {
   }
 });
 
-app.get("/blog", async (req, res) => {
+app.post("/testimonials", async (req, res) => {
   try {
-    const posts = await storage.getAllBlogPosts(true);
-    res.json(posts);
+    const testimonial = await storage.createTestimonial(req.body);
+    res.status(201).json(testimonial);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch blog posts" });
+    res.status(500).json({ message: "Failed to create testimonial" });
   }
 });
 
-app.get("/faqs", async (req, res) => {
+app.patch("/testimonials/:id", async (req, res) => {
   try {
-    const faqs = await storage.getAllFAQs(true);
+    const testimonialId = parseInt(req.params.id);
+    const testimonial = await storage.updateTestimonial(testimonialId, req.body);
+    if (testimonial) {
+      res.json(testimonial);
+    } else {
+      res.status(404).json({ message: "Testimonial not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update testimonial" });
+  }
+});
+
+app.delete("/testimonials/:id", async (req, res) => {
+  try {
+    const testimonialId = parseInt(req.params.id);
+    const success = await storage.deleteTestimonial(testimonialId);
+    if (success) {
+      res.json({ message: "Testimonial deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Testimonial not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete testimonial" });
+  }
+});
+
+app.get("/faqs", async (_req, res) => {
+  try {
+    const faqs = await storage.getAllFaqs(true);
     res.json(faqs);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch FAQs" });
   }
 });
 
-// Comment out (or remove) the app.listen(...) call below so that only server/index.ts calls listen.
-// (This prevents two servers from listening on the same port.)
-/*
-app.listen(3001, () => {
-  console.log("API Server running on port 3001");
+app.post("/faqs", requireAuth, async (req, res) => {
+  try {
+    const faq = await storage.createFaq(req.body);
+    res.status(201).json(faq);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create FAQ" });
+  }
 });
-*/
+
+app.patch("/faqs/:id", requireAuth, async (req, res) => {
+  try {
+    const faqId = parseInt(req.params.id);
+    const faq = await storage.updateFaq(faqId, req.body);
+    if (faq) {
+      res.json(faq);
+    } else {
+      res.status(404).json({ message: "FAQ not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update FAQ" });
+  }
+});
+
+app.delete("/faqs/:id", requireAuth, async (req, res) => {
+  try {
+    const faqId = parseInt(req.params.id);
+    const success = await storage.deleteFaq(faqId);
+    if (success) {
+      res.json({ message: "FAQ deleted successfully" });
+    } else {
+      res.status(404).json({ message: "FAQ not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete FAQ" });
+  }
+});
+
+app.get("/quiz/:id", async (req, res) => {
+  try {
+    const quizId = parseInt(req.params.id);
+    const quiz = await storage.getQuizById(quizId);
+    if (quiz) {
+      res.json(quiz);
+    } else {
+      res.status(404).json({ message: "Quiz not found" });
+    }
+  } catch (error) {
+    console.error('Get quiz by ID error:', error);
+    res.status(500).json({ message: "Failed to fetch quiz by ID" });
+  }
+});
+
+app.post("/quiz", requireAuth, async (req, res) => {
+  try {
+    const quiz = await storage.createQuiz(req.body);
+    res.status(201).json(quiz);
+  } catch (error) {
+    console.error('Create quiz error:', error);
+    res.status(500).json({ message: "Failed to create quiz" });
+  }
+});
+
+app.patch("/quiz/:id", requireAuth, async (req, res) => {
+  try {
+    const quizId = parseInt(req.params.id);
+    const quiz = await storage.updateQuiz(quizId, req.body);
+    if (quiz) {
+      res.json(quiz);
+    } else {
+      res.status(404).json({ message: "Quiz not found" });
+    }
+  } catch (error) {
+    console.error('Update quiz error:', error);
+    res.status(500).json({ message: "Failed to update quiz" });
+  }
+});
+
+app.delete("/quiz/:id", requireAuth, async (req, res) => {
+  try {
+    const quizId = parseInt(req.params.id);
+    const success = await storage.deleteQuiz(quizId);
+    if (success) {
+      res.json({ message: "Quiz deleted successfully" });
+    } else {
+      res.status(404).json({ message: "Quiz not found" });
+    }
+  } catch (error) {
+    console.error('Delete quiz error:', error);
+    res.status(500).json({ message: "Failed to delete quiz" });
+  }
+});
