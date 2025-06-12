@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "dev": "concurrently \"tsx -r dotenv/config server/index.ts\" \"cd client && vite\"",
-    "build": "tsc && vite build && tsc -p tsconfig.server.json && cp -r dist/* .",
+    "build": "tsc && vite build && tsc -p tsconfig.server.json",
     "vercel-build": "npm run build",
     "start": "NODE_ENV=production node dist/server/index.js",
     "preview": "vite preview",
