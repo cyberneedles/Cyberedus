@@ -18,6 +18,12 @@ export interface Course {
   category: string;
   batchDates: string[];
   isActive: boolean;
+  batches?: any;
+  curriculum?: any;
+  fees?: any;
+  careerOpportunities?: string;
+  toolsAndTechnologies?: string;
+  whatYouWillLearn?: string;
 }
 
 export interface Quiz {

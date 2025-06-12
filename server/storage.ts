@@ -21,7 +21,7 @@ export interface IStorage {
   updateQuiz(id: number, quiz: Partial<Quiz>): Promise<Quiz | null>;
   deleteQuiz(id: number): Promise<boolean>;
   
-  // Lead operations (simplified to Omit<User, ...> as Lead type is currently problematic)
+  // Lead operations
   createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>>;
   getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>[]>;
   
@@ -47,196 +47,13 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  // All methods in DatabaseStorage will be placeholder implementations
-  async getUser(id: number): Promise<User | undefined> {
-    return undefined;
-  }
-
-  async getUserByEmail(email: string): Promise<User | undefined> {
-    return undefined;
-  }
-
-  async createUser(user: Omit<User, 'id' | 'createdAt'>): Promise<User> {
-    return {
-      ...user,
-      id: 1,
-      createdAt: new Date(),
-    };
-  }
-
-  async updateUser(id: number, user: Partial<User>): Promise<User | null> {
-    return null;
-  }
-
-  async deleteUser(id: number): Promise<boolean> {
-    return false;
-  }
-
-  async getAllCourses(): Promise<Course[]> {
-    return [];
-  }
-
-  async getCourseBySlug(slug: string): Promise<Course | null> {
-    return null;
-  }
-
-  async createCourse(course: Omit<Course, 'id' | 'createdAt'>): Promise<Course> {
-    const newCourse: Course = {
-      ...course,
-      id: 1,
-      createdAt: new Date(),
-      isActive: true,
-      syllabusUrl: null,
-      overview: null,
-      mainImage: null,
-      logo: null,
-      price: null,
-      features: null,
-      batchDates: [],
-      category: course.category,
-      icon: course.icon,
-      prerequisites: course.prerequisites ?? null,
-      level: course.level,
-      duration: course.duration,
-      description: course.description,
-      mode: course.mode,
-      title: course.title
-    };
-    this.courses.push(newCourse);
-    return newCourse;
-  }
-
-  async updateCourse(id: number, course: Partial<Course>): Promise<Course | null> {
-    return null;
-  }
-
-  async deleteCourse(id: number): Promise<boolean> {
-    return false;
-  }
-
-  async getQuizByCourseId(courseId: number): Promise<Quiz | undefined> {
-    return undefined;
-  }
-
-  async createQuiz(quiz: Omit<Quiz, 'id' | 'createdAt'>): Promise<Quiz> {
-    return {
-      ...quiz,
-      id: 1,
-      createdAt: new Date(),
-      courseId: quiz.courseId ?? null,
-      questions: quiz.questions
-    };
-  }
-
-  async updateQuiz(id: number, quiz: Partial<Quiz>): Promise<Quiz | null> {
-    return null;
-  }
-
-  async deleteQuiz(id: number): Promise<boolean> {
-    return false;
-  }
-
-  async createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt' >> {
-    // This is a dummy implementation, as Lead type is simplified to Omit User for now
-    return {
-      // Provide dummy values for the omitted properties to satisfy the return type
-      // These fields are included in the Omit, so they won't be explicitly in the object
-    };
-  }
-
-  async getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>[]> {
-    return [];
-  }
-
-  async getAllBlogPosts(published?: boolean): Promise<BlogPost[]> {
-    return [];
-  }
-
-  async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
-    return undefined;
-  }
-
-  async createBlogPost(post: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>): Promise<BlogPost> {
-    return {
-      ...post,
-      id: 1,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      featuredImage: post.featuredImage ?? null,
-      authorId: post.authorId ?? null,
-      isPublished: post.isPublished ?? false,
-      readingTime: post.readingTime ?? 0
-    };
-  }
-
-  async updateBlogPost(id: number, post: Partial<BlogPost>): Promise<BlogPost | null> {
-    return null;
-  }
-
-  async deleteBlogPost(id: number): Promise<boolean> {
-    return false;
-  }
-
-  async getAllTestimonials(approved?: boolean): Promise<Testimonial[]> {
-    return [];
-  }
-
-  async getTestimonialsByCourse(courseId: number): Promise<Testimonial[]> {
-    return [];
-  }
-
-  async createTestimonial(testimonial: Omit<Testimonial, 'id' | 'createdAt'>): Promise<Testimonial> {
-    return {
-      ...testimonial,
-      id: 1,
-      createdAt: new Date(),
-      courseId: testimonial.courseId ?? null,
-      jobTitle: testimonial.jobTitle ?? null,
-      company: testimonial.company ?? null,
-      image: testimonial.image ?? null,
-      isApproved: testimonial.isApproved ?? false
-    };
-  }
-
-  async updateTestimonial(id: number, testimonial: Partial<Testimonial>): Promise<Testimonial | null> {
-    return null;
-  }
-
-  async deleteTestimonial(id: number): Promise<boolean> {
-    return false;
-  }
-
-  async getAllFAQs(active?: boolean): Promise<FAQ[]> {
-    return [];
-  }
-
-  async createFAQ(faq: Omit<FAQ, 'id'>): Promise<FAQ> {
-    return {
-      ...faq,
-      id: 1,
-      isActive: faq.isActive ?? true,
-      order: faq.order ?? 0
-    };
-  }
-
-  async updateFAQ(id: number, faq: Partial<FAQ>): Promise<FAQ | null> {
-    return null;
-  }
-
-  async deleteFAQ(id: number): Promise<boolean> {
-    return false;
-  }
-}
-
-export class MemStorage implements IStorage {
   private users: User[] = [];
   private courses: Course[] = [];
   private quizzes: Quiz[] = [];
   private blogPosts: BlogPost[] = [];
   private testimonials: Testimonial[] = [];
   private faqs: FAQ[] = [];
-  private leads: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>[] = []; // Simplified Lead storage
-
+  private leads: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>[] = [];
   private nextId: number = 1;
 
   constructor() {
@@ -354,15 +171,14 @@ export class MemStorage implements IStorage {
     return this.quizzes.length < initialLength;
   }
 
-  async createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt' >> {
-    const newLead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'> = {
-      ...lead,
+  async createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>> {
+    this.leads.push(lead);
+    return {
+      email: lead.email
     };
-    this.leads.push(newLead);
-    return newLead;
   }
 
-  async getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role'>[]> {
+  async getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>[]> {
     return this.leads;
   }
 

@@ -3,9 +3,7 @@ import fs from "fs";
 import path from "path";
 import { createServer, createLogger } from "vite";
 import { Server } from "http";
-import viteConfig from "../vite.config";
 import { nanoid } from "nanoid";
-import { IncomingMessage, ServerResponse } from "http";
 
 const viteLogger = createLogger();
 
@@ -35,12 +33,6 @@ export async function createViteServer(server: Server) {
 }
 
 export async function setupVite(app: Express, server: Server) {
-  const serverOptions = {
-    middlewareMode: true,
-    hmr: { server },
-    allowedHosts: ['all'],
-  };
-
   const vite = await createViteServer(server);
 
   app.use(vite.middlewares);
