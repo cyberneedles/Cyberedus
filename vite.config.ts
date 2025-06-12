@@ -11,11 +11,11 @@ export default defineConfig({
   plugins: [react(), runtimeErrorOverlay()],
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"),
-      "@components": resolve(__dirname, "./src/components"),
-      "@pages": resolve(__dirname, "./src/pages"),
-      "@lib": resolve(__dirname, "./src/lib"),
-      "@hooks": resolve(__dirname, "./src/hooks"),
+      "@": resolve(__dirname, "./client/src"),
+      "@components": resolve(__dirname, "./client/src/components"),
+      "@pages": resolve(__dirname, "./client/src/pages"),
+      "@lib": resolve(__dirname, "./client/src/lib"),
+      "@hooks": resolve(__dirname, "./client/src/hooks"),
       "@shared": resolve(__dirname, "../shared"),
       "@assets": resolve(__dirname, "../attached_assets"),
     },
