@@ -6,7 +6,6 @@ import { Server } from "http";
 import { nanoid } from "nanoid";
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
-import { createLogger } from 'vite';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,7 +38,6 @@ export async function createViteServer() {
 
 export async function setupVite(app: Express, server: Server) {
   const vite = await createViteServer();
-
   app.use(vite.middlewares);
   app.use("*", async (req, res, next) => {
     const url = req.originalUrl;
@@ -65,6 +63,7 @@ export async function setupVite(app: Express, server: Server) {
       next(e);
     }
   });
+  return vite;
 }
 
 export function serveStatic(app: Express) {
