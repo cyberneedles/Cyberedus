@@ -24,6 +24,16 @@ export default defineConfig({
   build: {
     outDir: resolve(__dirname, "../dist"),
     emptyOutDir: true,
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui': ['@headlessui/react', '@heroicons/react'],
+          'utils': ['axios', 'date-fns', 'nanoid']
+        }
+      }
+    }
   },
   server: {
     proxy: {
