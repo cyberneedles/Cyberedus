@@ -50,7 +50,7 @@ export const courses = pgTable("courses", {
     label: string;
     amount: number;
     notes: string;
-  }>(),
+  }[]>(),
   
   // Additional course details
   careerOpportunities: text("career_opportunities").array(),

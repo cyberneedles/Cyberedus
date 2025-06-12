@@ -32,7 +32,7 @@ export interface IStorage {
   
   // Course operations
   getAllCourses(): Promise<Course[]>;
-  getCourseBySlug(slug: string): Promise<Course | undefined>;
+  getCourseBySlug(slug: string): Promise<Course | null>;
   createCourse(course: InsertCourse): Promise<Course>;
   updateCourse(id: number, course: Partial<InsertCourse>): Promise<Course | undefined>;
   deleteCourse(id: number): Promise<boolean>;
@@ -41,6 +41,7 @@ export interface IStorage {
   getQuizByCourseId(courseId: number): Promise<Quiz | undefined>;
   createQuiz(quiz: InsertQuiz): Promise<Quiz>;
   updateQuiz(id: number, quiz: Partial<InsertQuiz>): Promise<Quiz | undefined>;
+  deleteQuiz(id: number): Promise<boolean>;
   
   // Lead operations
   createLead(lead: InsertLead): Promise<Lead>;
@@ -63,6 +64,8 @@ export interface IStorage {
   // FAQ operations
   getAllFAQs(active?: boolean): Promise<FAQ[]>;
   createFAQ(faq: InsertFAQ): Promise<FAQ>;
+  updateFAQ(id: number, faq: Partial<InsertFAQ>): Promise<FAQ | undefined>;
+  deleteFAQ(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -92,14 +95,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAllCourses(): Promise<Course[]> {
-    return await db.select().from(courses);
+    // TODO: Implement database storage
+    return [];
   }
 
-  async getCourseBySlug(slug: string): Promise<Course | undefined> {
-    console.log("DatabaseStorage: Attempting to fetch course by slug:", slug);
-    const [course] = await db.select().from(courses).where(eq(courses.slug, slug));
-    console.log("DatabaseStorage: Course fetched by slug:", course);
-    return course || undefined;
+  async getCourseBySlug(slug: string): Promise<Course | null> {
+    // TODO: Implement database storage
+    return null;
   }
 
   async createCourse(insertCourse: InsertCourse): Promise<Course> {
@@ -180,6 +182,11 @@ export class DatabaseStorage implements IStorage {
       .where(eq(quizzes.id, id))
       .returning();
     return quiz || undefined;
+  }
+
+  async deleteQuiz(id: number): Promise<boolean> {
+    const result = await db.delete(quizzes).where(eq(quizzes.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 
   async createLead(insertLead: InsertLead): Promise<Lead> {
@@ -290,6 +297,20 @@ export class DatabaseStorage implements IStorage {
       .values(insertFaq)
       .returning();
     return faq;
+  }
+
+  async updateFAQ(id: number, faqUpdate: Partial<InsertFAQ>): Promise<FAQ | undefined> {
+    const [faq] = await db
+      .update(faqs)
+      .set(faqUpdate)
+      .where(eq(faqs.id, id))
+      .returning();
+    return faq || undefined;
+  }
+
+  async deleteFAQ(id: number): Promise<boolean> {
+    const result = await db.delete(faqs).where(eq(faqs.id, id));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 }
 
@@ -551,8 +572,8 @@ export class MemStorage implements IStorage {
     return Array.from(this.courses.values()).filter(course => course.isActive);
   }
 
-  async getCourseBySlug(slug: string): Promise<Course | undefined> {
-    return Array.from(this.courses.values()).find(course => course.slug === slug);
+  async getCourseBySlug(slug: string): Promise<Course | null> {
+    return Array.from(this.courses.values()).find(course => course.slug === slug) || null;
   }
 
   async createCourse(insertCourse: InsertCourse): Promise<Course> {
@@ -707,6 +728,43 @@ export class MemStorage implements IStorage {
     };
     this.faqs.set(id, faq);
     return faq;
+  }
+
+  async updateTestimonial(id: number, testimonialUpdate: Partial<InsertTestimonial>): Promise<Testimonial | undefined> {
+    const testimonial = this.testimonials.get(id);
+    if (!testimonial) return undefined;
+
+    const updatedTestimonial = {
+      ...testimonial,
+      ...testimonialUpdate,
+      id,
+      createdAt: testimonial.createdAt
+    };
+    this.testimonials.set(id, updatedTestimonial);
+    return updatedTestimonial;
+  }
+
+  async deleteTestimonial(id: number): Promise<boolean> {
+    return this.testimonials.delete(id);
+  }
+
+  async updateFAQ(id: number, faqUpdate: Partial<InsertFAQ>): Promise<FAQ | undefined> {
+    const faq = this.faqs.get(id);
+    if (!faq) return undefined;
+
+    const updatedFaq = {
+      ...faq,
+      ...faqUpdate,
+      id,
+      isActive: faqUpdate.isActive ?? faq.isActive,
+      order: faqUpdate.order ?? faq.order
+    };
+    this.faqs.set(id, updatedFaq);
+    return updatedFaq;
+  }
+
+  async deleteFAQ(id: number): Promise<boolean> {
+    return this.faqs.delete(id);
   }
 }
 
