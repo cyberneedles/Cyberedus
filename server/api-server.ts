@@ -243,7 +243,7 @@ app.delete("/testimonials/:id", async (req, res) => {
 
 app.get("/faqs", async (_req, res) => {
   try {
-    const faqs = await storage.getAllFaqs(true);
+    const faqs = await storage.getAllFAQs(true);
     res.json(faqs);
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch FAQs" });
@@ -252,7 +252,7 @@ app.get("/faqs", async (_req, res) => {
 
 app.post("/faqs", requireAuth, async (req, res) => {
   try {
-    const faq = await storage.createFaq(req.body);
+    const faq = await storage.createFAQ(req.body);
     res.status(201).json(faq);
   } catch (error) {
     res.status(500).json({ message: "Failed to create FAQ" });
@@ -262,7 +262,7 @@ app.post("/faqs", requireAuth, async (req, res) => {
 app.patch("/faqs/:id", requireAuth, async (req, res) => {
   try {
     const faqId = parseInt(req.params.id);
-    const faq = await storage.updateFaq(faqId, req.body);
+    const faq = await storage.updateFAQ(faqId, req.body);
     if (faq) {
       res.json(faq);
     } else {
@@ -276,7 +276,7 @@ app.patch("/faqs/:id", requireAuth, async (req, res) => {
 app.delete("/faqs/:id", requireAuth, async (req, res) => {
   try {
     const faqId = parseInt(req.params.id);
-    const success = await storage.deleteFaq(faqId);
+    const success = await storage.deleteFAQ(faqId);
     if (success) {
       res.json({ message: "FAQ deleted successfully" });
     } else {
@@ -290,7 +290,7 @@ app.delete("/faqs/:id", requireAuth, async (req, res) => {
 app.get("/quiz/:id", async (req, res) => {
   try {
     const quizId = parseInt(req.params.id);
-    const quiz = await storage.getQuizById(quizId);
+    const quiz = await storage.getQuizByCourseId(quizId);
     if (quiz) {
       res.json(quiz);
     } else {
