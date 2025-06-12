@@ -235,7 +235,7 @@ export default function Courses() {
                       <Button 
                         variant="ghost" 
                         className="text-primary hover:text-secondary"
-                        onClick={() => handleSyllabusDownload(course.title, course.slug, course.syllabusUrl || "")}
+                        onClick={() => handleSyllabusDownload(course.title, course.slug, course.syllabusUrl)}
                       >
                         <i className="fas fa-download mr-1"></i>Syllabus
                       </Button>

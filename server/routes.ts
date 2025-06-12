@@ -2,8 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import express, { type Request, Response, NextFunction } from "express";
 import session from 'express-session';
-import { pool } from "./db";
-import { insertLeadSchema, insertBlogPostSchema, insertTestimonialSchema } from "@shared/schema";
+import { pool } from "./db.js";
+import { insertLeadSchema, insertBlogPostSchema, insertTestimonialSchema } from "../shared/schema.js";
 import { z } from "zod";
 
 // Simple in-memory session store for development

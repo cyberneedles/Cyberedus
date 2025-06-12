@@ -73,6 +73,26 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(
+      45deg,
+      #a8dadc, /* Soft Blue */
+      #457b9d, /* Muted Steel Blue */
+      #1d3557, /* Dark Blue */
+      #f4a261, /* Muted Orange */
+      #e76f51, /* Terracotta */
+      #ef476f, /* Rose Pink */
+      #ffd166, /* Soft Yellow */
+      #06d6a0, /* Jade Green */
+      #118ab2, /* Deep Cyan */
+      #073b4c /* Dark Teal */
+    );
+    background-size: 600% 600%; /* Increased size for more diffusion and blending */
+    animation: gradientAnimation 25s ease infinite; /* Slower and smoother animation */
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -639,51 +659,53 @@
 .gradient-orb {
   position: absolute;
   border-radius: 50%;
-  opacity: 0.1; /* Low opacity */
-  filter: blur(80px); /* Medium blur */
+  opacity: 0.2; /* Slightly increased opacity for more visibility */
+  filter: blur(70px); /* Reduced blur for subtle visibility, dopamine-friendly */
   background: var(--accent);
   will-change: transform, opacity, filter;
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1); /* Existing transition */
 }
 
+/* Default orb colors (more muted) */
 .gradient-orb-1 {
-  width: 450px;
-  height: 450px;
+  width: 400px;
+  height: 400px;
   top: 15%;
   left: 10%;
-  background: linear-gradient(135deg, rgba(255, 69, 0, 0.6), rgba(0, 0, 255, 0.6)); /* Orange to Blue */
+  background: linear-gradient(135deg, rgba(173, 216, 230, 0.6), rgba(153, 102, 204, 0.6)); /* Light Blue to Medium Purple */
 }
 
 .gradient-orb-2 {
-  width: 550px;
-  height: 550px;
+  width: 500px;
+  height: 500px;
   top: 65%;
   left: 70%;
-  background: linear-gradient(135deg, rgba(0, 128, 0, 0.6), rgba(255, 0, 0, 0.6)); /* Green to Red */
+  background: linear-gradient(135deg, rgba(144, 238, 144, 0.6), rgba(255, 182, 193, 0.6)); /* Light Green to Light Pink */
 }
 
 .gradient-orb-3 {
-  width: 500px;
-  height: 500px;
+  width: 450px;
+  height: 450px;
   top: 30%;
   left: 40%;
-  background: linear-gradient(135deg, rgba(0, 0, 139, 0.6), rgba(255, 165, 0, 0.6)); /* Dark Blue to Orange */
+  background: linear-gradient(135deg, rgba(100, 149, 237, 0.6), rgba(255, 223, 0, 0.6)); /* Cornflower Blue to Gold */
 }
 
 .dark .gradient-orb {
-  filter: blur(90px); /* Slightly reduced blur for better mixing */
-  opacity: 0.25; /* Slightly increased opacity for better visibility */
+  filter: blur(80px); /* Slightly more blur in dark mode for softer glow */
+  opacity: 0.25; /* Slightly increased opacity in dark mode */
 }
 
 .dark .gradient-orb-1 {
-  background: linear-gradient(135deg, #FF4500, #4169E1); /* OrangeRed to RoyalBlue */
+  background: linear-gradient(135deg, #87CEEB, #9370DB); /* SkyBlue to MediumPurple */
 }
 
 .dark .gradient-orb-2 {
-  background: linear-gradient(135deg, #008000, #DC143C); /* Green to Crimson */
+  background: linear-gradient(135deg, #90EE90, #FFB6C1); /* LightGreen to LightPink */
 }
 
 .dark .gradient-orb-3 {
-  background: linear-gradient(135deg, #00008B, #FFA500); /* DarkBlue to Orange */
+  background: linear-gradient(135deg, #6495ED, #FFD700); /* CornflowerBlue to Gold */
 }
 
 @keyframes floatGently {
@@ -693,182 +715,161 @@
 }
 
 .mood-energetic .gradient-orb {
-  animation: energeticPulse 0.75s ease-out infinite alternate;
-}
-
-.mood-calm .gradient-orb {
-  animation: floatGently 3s ease-in-out infinite alternate;
-  }
-
-.mood-focused .gradient-orb {
-  animation: focusedGlow 1s ease-in-out infinite alternate;
-}
-
-.mood-interactive .gradient-orb {
-  animation: interactiveBounce 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite alternate;
-}
-
-/* Dynamic mood states with smooth transitions */
-.gradient-orb {
-  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.mood-energetic .gradient-orb {
   animation: floatGently 8s ease-in-out infinite, energeticPulse 3s ease-in-out infinite;
-  opacity: 0.12;
-  filter: blur(80px);
+  opacity: 0.15; /* Adjusted for less vibrancy */
+  filter: blur(90px); /* Adjusted blur */
   transform-origin: center;
 }
 
 .mood-calm .gradient-orb {
   animation: floatGently 30s ease-in-out infinite;
-  opacity: 0.06;
-  filter: blur(120px);
+  opacity: 0.08; /* Adjusted for more visibility */
+  filter: blur(100px); /* Adjusted blur */
 }
 
 .mood-focused .gradient-orb {
   animation: floatGently 15s ease-in-out infinite, focusedGlow 4s ease-in-out infinite;
-  opacity: 0.1;
-  filter: blur(100px);
+  opacity: 0.12; /* Adjusted for more visibility */
+  filter: blur(90px); /* Adjusted blur */
 }
 
 .mood-interactive .gradient-orb {
   animation: floatGently 5s ease-in-out infinite, interactiveBounce 2s ease-in-out infinite;
-  opacity: 0.15;
-  filter: blur(70px);
+  opacity: 0.18; /* Adjusted for more visibility */
+  filter: blur(60px); /* Adjusted blur */
   transform-origin: center;
 }
 
 /* Dynamic color transitions - Enhanced for light mode visibility */
 .mood-energetic .gradient-orb-1 {
-  background: linear-gradient(45deg, #ff4757, #ff6348);
+  background: linear-gradient(45deg, #A7C7E7, #ADD8E6); /* Softer Blues */
   transition: background 1.5s ease, transform 0.3s ease;
 }
 
 .mood-energetic .gradient-orb-2 {
-  background: linear-gradient(45deg, #1dd1a1, #10ac84);
+  background: linear-gradient(45deg, #C7B0E3, #DDA0DD); /* Softer Purples */
   transition: background 1.5s ease, transform 0.3s ease;
 }
 
 .mood-energetic .gradient-orb-3 {
-  background: linear-gradient(45deg, #a55eea, #8e44ad);
+  background: linear-gradient(45deg, #FFDAB9, #FFE4B5); /* Softer Peaches */
   transition: background 1.5s ease, transform 0.3s ease;
 }
 
 .mood-calm .gradient-orb-1 {
-  background: linear-gradient(45deg, #74b9ff, #0984e3);
+  background: linear-gradient(45deg, #B0E0E6, #87CEEB); /* Powdery Blue to Sky Blue */
   transition: background 1.5s ease, opacity 1.5s ease;
 }
 
 .mood-calm .gradient-orb-2 {
-  background: linear-gradient(45deg, #fd79a8, #e84393);
+  background: linear-gradient(45deg, #F08080, #FA8072); /* Light Coral to Salmon */
   transition: background 1.5s ease, opacity 1.5s ease;
 }
 
 .mood-calm .gradient-orb-3 {
-  background: linear-gradient(45deg, #fdcb6e, #e17055);
+  background: linear-gradient(45deg, #FFD700, #DAA520); /* Gold to Goldenrod */
   transition: background 1.5s ease, opacity 1.5s ease;
 }
 
 .mood-focused .gradient-orb-1 {
-  background: linear-gradient(45deg, #5f27cd, #341f97);
+  background: linear-gradient(45deg, #6A5ACD, #483D8B); /* Slate Blue to Dark Slate Blue */
   transition: background 1.5s ease, filter 1.5s ease;
 }
 
 .mood-focused .gradient-orb-2 {
-  background: linear-gradient(45deg, #ff3838, #ff4757);
+  background: linear-gradient(45deg, #FF6347, #FF4500); /* Tomato to Orange Red */
   transition: background 1.5s ease, filter 1.5s ease;
 }
 
 .mood-focused .gradient-orb-3 {
-  background: linear-gradient(45deg, #0abde3, #006ba6);
+  background: linear-gradient(45deg, #4682B4, #5F9EA0); /* Steel Blue to Cadet Blue */
   transition: background 1.5s ease, filter 1.5s ease;
 }
 
 @keyframes energeticPulse {
-  0% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.7; }
+  0% { transform: scale(1); opacity: 0.6; } /* Adjusted opacity */
+  50% { transform: scale(1.08); opacity: 0.9; } /* Adjusted scale and opacity */
+  100% { transform: scale(1); opacity: 0.6; } /* Adjusted opacity */
 }
 
 @keyframes focusedGlow {
-  0% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 15px var(--accent); }
-  50% { transform: scale(1); opacity: 1; box-shadow: 0 0 30px var(--accent); }
-  100% { transform: scale(0.9); opacity: 0.6; box-shadow: 0 0 15px var(--accent); }
+  0% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 10px var(--accent); } /* Adjusted scale, opacity, shadow */
+  50% { transform: scale(1); opacity: 0.8; box-shadow: 0 0 20px var(--accent); } /* Adjusted scale, opacity, shadow */
+  100% { transform: scale(0.95); opacity: 0.5; box-shadow: 0 0 10px var(--accent); } /* Adjusted scale, opacity, shadow */
 }
 
 @keyframes interactiveBounce {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-15px) scale(1.1); }
+  0%, 100% { transform: translateY(0) scale(1); } 
+  50% { transform: translateY(-10px) scale(1.05); } /* Reduced bounce and scale */
 }
 
 @keyframes interactiveRipple {
-  0% { transform: scale(0); opacity: 0.5; }
-  100% { transform: scale(1); opacity: 0; }
+  0% { transform: scale(0); opacity: 0.5; } 
+  100% { transform: scale(1); opacity: 0; } 
 }
 
 .dark .mood-energetic .gradient-orb {
-  background: linear-gradient(135deg, #ff6b6b, #ee5253);
+  background: linear-gradient(135deg, #9BBFE0, #A2D9E7); /* Softer Blues for dark mode */
 }
 
 .dark .mood-energetic .gradient-orb-1 {
-  background: linear-gradient(135deg, #ff9ff3, #feca57);
+  background: linear-gradient(135deg, #D4A9DD, #E0BBE4); /* Softer Purples for dark mode */
 }
 
 .dark .mood-energetic .gradient-orb-2 {
-  background: linear-gradient(135deg, #54a0ff, #00d2d3);
+  background: linear-gradient(135deg, #87CEFA, #ADD8E6); /* Softer Blues for dark mode */
 }
 
 .dark .mood-energetic .gradient-orb-3 {
-  background: linear-gradient(135deg, #5f27cd, #a55eea);
+  background: linear-gradient(135deg, #FFDAB9, #FFE4B5); /* Softer Peaches for dark mode */
 }
 
 .dark .mood-calm .gradient-orb {
-  background: linear-gradient(135deg, #a4b0be, #d1d8e0);
+  background: linear-gradient(135deg, #B0E0E6, #87CEEB); /* Powdery Blue to Sky Blue */
 }
 
 .dark .mood-calm .gradient-orb-1 {
-  background: linear-gradient(135deg, #0abde3, #2e86de);
+  background: linear-gradient(135deg, #F08080, #FA8072); /* Light Coral to Salmon */
 }
 
 .dark .mood-calm .gradient-orb-2 {
-  background: linear-gradient(135deg, #feca57, #ff9f43);
+  background: linear-gradient(135deg, #FFD700, #DAA520); /* Gold to Goldenrod */
 }
 
 .dark .mood-calm .gradient-orb-3 {
-  background: linear-gradient(135deg, #ee5253, #eb4d4b);
+  background: linear-gradient(135deg, #6A5ACD, #483D8B); /* Slate Blue to Dark Slate Blue */
 }
 
 .dark .mood-focused .gradient-orb {
-  background: linear-gradient(135deg, #5f27cd, #341f97);
+  background: linear-gradient(135deg, #FF6347, #FF4500); /* Tomato to Orange Red */
 }
 
 .dark .mood-focused .gradient-orb-1 {
-  background: linear-gradient(135deg, #ff6b6b, #eb3b5f);
+  background: linear-gradient(135deg, #4682B4, #5F9EA0); /* Steel Blue to Cadet Blue */
 }
 
 .dark .mood-focused .gradient-orb-2 {
-  background: linear-gradient(135deg, #1dd1a1, #10ac84);
+  background: linear-gradient(135deg, #DDA0DD, #C7B0E3); /* Plum to Thistle */
 }
 
 .dark .mood-focused .gradient-orb-3 {
-  background: linear-gradient(135deg, #a55eea, #8e44ad);
+  background: linear-gradient(135deg, #B0E0E6, #87CEEB); /* Powdery Blue to Sky Blue */
 }
 
 .dark .mood-interactive .gradient-orb {
-  background: linear-gradient(135deg, #48dbfb, #0abde3);
+  background: linear-gradient(135deg, #A7C7E7, #ADD8E6); /* Softer Blues */
 }
 
 .dark .mood-interactive .gradient-orb-1 {
-  background: linear-gradient(135deg, #ff4757, #ff6348);
+  background: linear-gradient(135deg, #C7B0E3, #DDA0DD); /* Softer Purples */
 }
 
 .dark .mood-interactive .gradient-orb-2 {
-  background: linear-gradient(135deg, #1dd1a1, #10ac84);
+  background: linear-gradient(135deg, #FFDAB9, #FFE4B5); /* Softer Peaches */
 }
 
 .dark .mood-interactive .gradient-orb-3 {
-  background: linear-gradient(135deg, #a55eea, #8e44ad);
+  background: linear-gradient(135deg, #F08080, #FA8072); /* Light Coral to Salmon */
 }
 
 .mesh-gradient {
@@ -877,42 +878,33 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at 10% 20%, 
-    rgba(255, 0, 0, 0.15) 0%, 
-    rgba(0, 0, 139, 0.15) 30%, 
-    rgba(0, 255, 0, 0.15) 60%, 
-    rgba(255, 165, 0, 0.15) 100%
-  );
-  filter: blur(150px);
-  opacity: 0.35;
-  transform: scale(1.5);
-  animation: rotateGlow 20s linear infinite;
+  background: radial-gradient(circle at 10% 20%, rgba(255, 0, 0, 0.08) 0%, rgba(0, 0, 139, 0.08) 50%, rgba(0, 255, 0, 0.08) 100%); /* Reduced opacity for subtlety */
+  background-blend-mode: overlay;
+  opacity: 0.25; /* Reduced opacity for subtlety */
+  filter: blur(150px); /* Increased blur for more diffused look */
+  transform: scale(1.5); /* Maintain scale for coverage */
+  animation: rotateGlow 20s linear infinite; /* Maintain rotation */
 }
 
 .dark .mesh-gradient {
-  background: radial-gradient(circle at 10% 20%, 
-    rgba(255, 0, 0, 0.2) 0%, 
-    rgba(0, 0, 139, 0.2) 30%, 
-    rgba(0, 255, 0, 0.2) 60%, 
-    rgba(255, 165, 0, 0.2) 100%
-  );
-  filter: blur(120px);
-  opacity: 0.4;
+  background: radial-gradient(circle at 10% 20%, rgba(255, 0, 0, 0.1) 0%, rgba(0, 0, 139, 0.1) 50%, rgba(0, 255, 0, 0.1) 100%); /* Slightly more opacity in dark mode */
+  filter: blur(100px); /* Adjusted blur for dark mode */
+  opacity: 0.3; /* Adjusted opacity for dark mode */
 }
 
 @keyframes sophisticatedFadeIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% { opacity: 0; transform: translateY(20px); } 
+  100% { opacity: 1; transform: translateY(0); } 
 }
 
 @keyframes glowPulse {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.05); opacity: 1; }
+  0%, 100% { transform: scale(1); opacity: 0.7; } /* Adjusted opacity */
+  50% { transform: scale(1.03); opacity: 0.9; } /* Adjusted scale and opacity */
 }
 
 @keyframes shimmerEffect {
-  0% { background-position: -100% 0; }
-  100% { background-position: 100% 0; }
+  0% { background-position: -100% 0; } 
+  100% { background-position: 100% 0; } 
 }
 
 @keyframes floatSophisticated {
@@ -920,13 +912,13 @@
     transform: translateY(0px) rotateZ(0deg);
   }
   25% {
-    transform: translateY(-5px) rotateZ(0.5deg);
+    transform: translateY(-4px) rotateZ(0.5deg); /* Reduced movement */
   }
   50% {
-    transform: translateY(-10px) rotateZ(0deg);
+    transform: translateY(-8px) rotateZ(0deg); /* Reduced movement */
   }
   75% {
-    transform: translateY(-5px) rotateZ(-0.5deg);
+    transform: translateY(-4px) rotateZ(-0.5deg); /* Reduced movement */
   }
 }
 
@@ -1080,274 +1072,65 @@ html {
   @apply fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110;
 }
 
-/* Random Orb Movement - Enhanced mixing and separating effects */
+/* Random Orb Movement - Adjusted for darker, mixing, and random movement in both modes */
 @keyframes randomOrbMovement {
-  0% { transform: translate(0, 0) rotate(0deg) scale(0.9); opacity: 0.15; filter: blur(100px); } 
-  10% { transform: translate(150px, -100px) rotate(45deg) scale(1.1); opacity: 0.25; filter: blur(80px); }
-  20% { transform: translate(300px, 0px) rotate(90deg) scale(1.2); opacity: 0.3; filter: blur(70px); }
-  30% { transform: translate(200px, 200px) rotate(135deg) scale(1.1); opacity: 0.25; filter: blur(80px); }
-  40% { transform: translate(0px, 300px) rotate(180deg) scale(0.9); opacity: 0.2; filter: blur(90px); }
-  50% { transform: translate(-200px, 200px) rotate(225deg) scale(0.8); opacity: 0.15; filter: blur(100px); }
-  60% { transform: translate(-300px, 0px) rotate(270deg) scale(0.9); opacity: 0.2; filter: blur(90px); }
-  70% { transform: translate(-150px, -200px) rotate(315deg) scale(1.0); opacity: 0.25; filter: blur(80px); }
-  80% { transform: translate(0px, -300px) rotate(360deg) scale(1.1); opacity: 0.3; filter: blur(70px); }
-  90% { transform: translate(150px, -150px) rotate(405deg) scale(1.0); opacity: 0.25; filter: blur(80px); }
-  100% { transform: translate(0, 0) rotate(720deg) scale(0.9); opacity: 0.15; filter: blur(100px); }
-}
-
-/* Add new keyframes for mixing effect */
-@keyframes orbMixing {
-  0% { transform: translate(0, 0) scale(1); opacity: 0.15; }
-  25% { transform: translate(100px, 100px) scale(1.2); opacity: 0.3; }
-  50% { transform: translate(0, 0) scale(1.4); opacity: 0.4; }
-  75% { transform: translate(-100px, -100px) scale(1.2); opacity: 0.3; }
-  100% { transform: translate(0, 0) scale(1); opacity: 0.15; }
+  0% { transform: translate(0, 0) rotate(0deg) scale(0.85); opacity: 0.18; filter: blur(90px); } /* Adjusted opacity and blur */
+  10% { transform: translate(90px, -45px) rotate(30deg) scale(0.9); opacity: 0.22; filter: blur(80px); } /* Adjusted values */
+  20% { transform: translate(180px, 0px) rotate(60deg) scale(0.95); opacity: 0.28; filter: blur(70px); } /* Adjusted values */
+  30% { transform: translate(135px, 135px) rotate(90deg) scale(0.9); opacity: 0.22; filter: blur(80px); } /* Adjusted values */
+  40% { transform: translate(0px, 180px) rotate(120deg) scale(0.85); opacity: 0.18; filter: blur(90px); } /* Adjusted values */
+  50% { transform: translate(-135px, 135px) rotate(150deg) scale(0.8); opacity: 0.15; filter: blur(100px); } /* Adjusted values */
+  60% { transform: translate(-180px, 0px) rotate(180deg) scale(0.85); opacity: 0.18; filter: blur(90px); } /* Adjusted values */
+  70% { transform: translate(-90px, -135px) rotate(210deg) scale(0.9); opacity: 0.22; filter: blur(80px); } /* Adjusted values */
+  80% { transform: translate(0px, -180px) rotate(240deg) scale(0.95); opacity: 0.28; filter: blur(70px); } /* Adjusted values */
+  90% { transform: translate(135px, -90px) rotate(270deg) scale(0.9); opacity: 0.22; filter: blur(80px); } /* Adjusted values */
+  100% { transform: translate(0, 0) rotate(360deg) scale(0.85); opacity: 0.18; filter: blur(90px); } /* Adjusted opacity and blur */
 }
 
 .mood-random-neon .gradient-orb {
-  animation: randomOrbMovement 25s ease-in-out infinite;
+  animation: randomOrbMovement 40s ease-in-out infinite; /* Slower and smoother circular movement */
+  /* Ensure no other animations interfere with position */
+  left: auto;
+  top: auto;
+  right: auto;
+  bottom: auto;
+  /* Opacity and blur adjusted within keyframes for light/dark specific effects */
 }
 
 .mood-random-neon .gradient-orb-1 {
-  animation-delay: 0s;
+    top: 5%;
+    left: 5%;
 }
 
 .mood-random-neon .gradient-orb-2 {
-  animation-delay: -8s;
+    top: 70%;
+    left: 80%;
 }
 
 .mood-random-neon .gradient-orb-3 {
-  animation-delay: -16s;
+    top: 25%;
+    left: 20%;
 }
 
-/* Adjust orb sizes and positions for better mixing */
-.gradient-orb-1 {
-  width: 450px;
-  height: 450px;
-  top: 15%;
-  left: 10%;
-  background: linear-gradient(135deg, rgba(255, 69, 0, 0.6), rgba(0, 0, 255, 0.6)); /* Orange to Blue */
-}
-
-.gradient-orb-2 {
-  width: 550px;
-  height: 550px;
-  top: 65%;
-  left: 70%;
-  background: linear-gradient(135deg, rgba(0, 128, 0, 0.6), rgba(255, 0, 0, 0.6)); /* Green to Red */
-}
-
-.gradient-orb-3 {
-  width: 500px;
-  height: 500px;
-  top: 30%;
-  left: 40%;
-  background: linear-gradient(135deg, rgba(0, 0, 139, 0.6), rgba(255, 165, 0, 0.6)); /* Dark Blue to Orange */
-}
-
-.dark .gradient-orb {
-  filter: blur(90px);
-  opacity: 0.25;
-}
-
-.mesh-gradient {
-  background: radial-gradient(circle at 10% 20%, 
-    rgba(255, 0, 0, 0.15) 0%, 
-    rgba(0, 0, 139, 0.15) 30%, 
-    rgba(0, 255, 0, 0.15) 60%, 
-    rgba(255, 165, 0, 0.15) 100%
-  );
-  filter: blur(150px);
-  opacity: 0.35;
-}
-
-.dark .mesh-gradient {
-  background: radial-gradient(circle at 10% 20%, 
-    rgba(255, 0, 0, 0.2) 0%, 
-    rgba(0, 0, 139, 0.2) 30%, 
-    rgba(0, 255, 0, 0.2) 60%, 
-    rgba(255, 165, 0, 0.2) 100%
-  );
-  filter: blur(120px);
-  opacity: 0.4;
-}
-
-@keyframes sophisticatedFadeIn {
-  0% { opacity: 0; transform: translateY(20px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes glowPulse {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.05); opacity: 1; }
-}
-
-@keyframes shimmerEffect {
-  0% { background-position: -100% 0; }
-  100% { background-position: 100% 0; }
-}
-
-@keyframes floatSophisticated {
-  0%, 100% {
-    transform: translateY(0px) rotateZ(0deg);
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+    background-size: 400% 400%; /* Start with moderate size */
   }
   25% {
-    transform: translateY(-5px) rotateZ(0.5deg);
+    background-position: 100% 20%;
+    background-size: 500% 500%; /* Expand and move for mixing */
   }
   50% {
-    transform: translateY(-10px) rotateZ(0deg);
+    background-position: 50% 100%;
+    background-size: 600% 600%; /* Fully diffused and blended */
   }
   75% {
-    transform: translateY(-5px) rotateZ(-0.5deg);
-  }
-}
-
-@keyframes textShimmer {
-  0% {
-    background-position: -200% 0;
+    background-position: 20% 0%;
+    background-size: 500% 500%; /* Contract and move for separation */
   }
   100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes cardEntry {
-  0% {
-    opacity: 0;
-    transform: translateY(40px) scale(0.9) rotateX(10deg);
-    filter: blur(10px);
-  }
-  60% {
-    opacity: 0.8;
-    transform: translateY(-8px) scale(1.02) rotateX(0deg);
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1) rotateX(0deg);
-    filter: blur(0px);
-  }
-}
-
-@keyframes backgroundShift {
-  0%, 100% {
     background-position: 0% 50%;
+    background-size: 400% 400%; /* Return to start, ready for next cycle */
   }
-  50% {
-    background-position: 100% 50%;
-  }
-}
-
-@keyframes rotateGlow {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-muted;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-muted-foreground/30 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-muted-foreground/50;
-}
-
-/* Smooth scroll behavior */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Typography improvements */
-.prose {
-  @apply max-w-none;
-}
-
-.prose h1, .prose h2, .prose h3, .prose h4 {
-  @apply font-bold text-foreground;
-}
-
-.prose p {
-  @apply text-muted-foreground leading-relaxed;
-}
-
-.prose a {
-  @apply text-primary hover:text-primary/80 transition-colors;
-}
-
-/* Form improvements */
-.form-input {
-  @apply w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200;
-}
-
-.form-input:focus {
-  @apply outline-none ring-2 ring-primary/20 border-primary;
-}
-
-/* Loading spinner */
-.spinner {
-  @apply animate-spin rounded-full border-2 border-primary/20 border-t-primary;
-}
-
-/* Card hover effects */
-.card-hover {
-  @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
-}
-
-/* FAQ accordion styles */
-.faq-toggle {
-  @apply w-full text-left flex justify-between items-center p-4 hover:bg-muted/50 transition-colors;
-}
-
-.faq-content {
-  @apply p-4 pt-0 text-muted-foreground;
-}
-
-/* Testimonial card styles */
-.testimonial-card {
-  @apply bg-card border border-border rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow;
-}
-
-/* Course card styles */
-.course-card {
-  @apply bg-card border border-border rounded-xl p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2;
-}
-
-/* Blog card styles */
-.blog-card {
-  @apply bg-card border border-border rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-2;
-}
-
-/* Hero section styles */
-.hero-gradient {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
-}
-
-.dark .hero-gradient {
-  background: linear-gradient(135deg, #0c1426 0%, #1e293b 50%, #0c1426 100%);
-}
-
-/* Navigation styles */
-.nav-link {
-  @apply text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium;
-}
-
-.nav-link.active {
-  @apply text-foreground;
-}
-
-/* WhatsApp floating button */
-.whatsapp-float {
-  @apply fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 hover:scale-110;
 }

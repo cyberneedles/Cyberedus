@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 import { getAnalytics } from 'firebase/analytics';
 import { signInWithEmailAndPassword as firebaseAuthSignInWithEmailAndPassword } from 'firebase/auth';
 
@@ -9,7 +9,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCdKNvIUrvDGuidfn-Jfmh2HVBE3KYOQDI",
   authDomain: "cyberedu-a094a.firebaseapp.com",
   projectId: "cyberedu-a094a",
-  storageBucket: "cyberedu-a094a.firebasestorage.app",
+  storageBucket: "cyberedu-a094a.appspot.com",
   messagingSenderId: "273080704756",
   appId: "1:273080704756:web:d0965576ac6f9c48fc08a1",
   measurementId: "G-0L1L830GMY"
@@ -87,7 +87,7 @@ export interface Lead {
 
 // Helper functions for Firebase operations
 export const createCourse = async (courseData: Omit<Course, 'id' | 'createdAt' | 'updatedAt'>) => {
-  const docRef = await addDoc(collection(db, 'courses'), {
+  const docRef = await db.collection('courses').add({
     ...courseData,
     createdAt: new Date(),
     updatedAt: new Date()
@@ -96,7 +96,7 @@ export const createCourse = async (courseData: Omit<Course, 'id' | 'createdAt' |
 };
 
 export const getCourses = async () => {
-  const snapshot = await getDocs(collection(db, 'courses'));
+  const snapshot = await db.collection('courses').get();
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -104,7 +104,7 @@ export const getCourses = async () => {
 };
 
 export const createTestimonial = async (testimonialData: Omit<Testimonial, 'id' | 'createdAt'>) => {
-  const docRef = await addDoc(collection(db, 'testimonials'), {
+  const docRef = await db.collection('testimonials').add({
     ...testimonialData,
     createdAt: new Date()
   });
@@ -112,7 +112,7 @@ export const createTestimonial = async (testimonialData: Omit<Testimonial, 'id' 
 };
 
 export const getTestimonials = async () => {
-  const snapshot = await getDocs(collection(db, 'testimonials'));
+  const snapshot = await db.collection('testimonials').get();
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -120,7 +120,7 @@ export const getTestimonials = async () => {
 };
 
 export const createBlogPost = async (postData: Omit<BlogPost, 'id' | 'createdAt' | 'updatedAt'>) => {
-  const docRef = await addDoc(collection(db, 'blog'), {
+  const docRef = await db.collection('blog').add({
     ...postData,
     createdAt: new Date(),
     updatedAt: new Date()
@@ -129,7 +129,7 @@ export const createBlogPost = async (postData: Omit<BlogPost, 'id' | 'createdAt'
 };
 
 export const getBlogPosts = async () => {
-  const snapshot = await getDocs(collection(db, 'blog'));
+  const snapshot = await db.collection('blog').get();
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -137,7 +137,7 @@ export const getBlogPosts = async () => {
 };
 
 export const createFAQ = async (faqData: Omit<FAQ, 'id' | 'createdAt'>) => {
-  const docRef = await addDoc(collection(db, 'faqs'), {
+  const docRef = await db.collection('faqs').add({
     ...faqData,
     createdAt: new Date()
   });
@@ -145,7 +145,7 @@ export const createFAQ = async (faqData: Omit<FAQ, 'id' | 'createdAt'>) => {
 };
 
 export const getFAQs = async () => {
-  const snapshot = await getDocs(collection(db, 'faqs'));
+  const snapshot = await db.collection('faqs').get();
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -153,7 +153,7 @@ export const getFAQs = async () => {
 };
 
 export const createLead = async (leadData: Omit<Lead, 'id' | 'createdAt'>) => {
-  const docRef = await addDoc(collection(db, 'leads'), {
+  const docRef = await db.collection('leads').add({
     ...leadData,
     createdAt: new Date(),
     status: 'new'
@@ -162,7 +162,7 @@ export const createLead = async (leadData: Omit<Lead, 'id' | 'createdAt'>) => {
 };
 
 export const getLeads = async () => {
-  const snapshot = await getDocs(collection(db, 'leads'));
+  const snapshot = await db.collection('leads').get();
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data()
@@ -171,7 +171,13 @@ export const getLeads = async () => {
 
 // Authentication functions
 export const signInWithEmailAndPassword = async (email: string, password: string) => {
-  return firebaseAuthSignInWithEmailAndPassword(auth, email, password);
+  try {
+    const userCredential = await firebaseAuthSignInWithEmailAndPassword(auth, email, password);
+    return userCredential;
+  } catch (error) {
+    console.error('Firebase auth error:', error);
+    throw error;
+  }
 };
 
 export const signOut = async () => {

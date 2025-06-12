@@ -20,9 +20,6 @@ export default function AdminLogin() {
     e.preventDefault();
     setIsLoading(true);
 
-    // Debug: Log email and password before attempting login
-    console.log('Attempting login with:', { email: email, password: password });
-
     try {
       // First, authenticate with Firebase
       const userCredential = await signInWithEmailAndPassword(email, password);
@@ -39,20 +36,16 @@ export default function AdminLogin() {
         // Store authentication state
         localStorage.setItem('admin_authenticated', 'true');
         
-      toast({
-        title: "Login successful",
-        description: "Welcome back, admin!",
-      });
-      navigate("/admin");
+        toast({
+          title: "Login successful",
+          description: "Welcome back, admin!",
+        });
+        navigate("/admin");
       } else {
         throw new Error("Backend authentication failed");
       }
     } catch (error) {
       console.error("Login error:", error);
-      // Debug: Log specific error details
-      if (error instanceof Error) {
-        console.error('Error details:', error.message);
-      }
       toast({
         title: "Login failed",
         description: "Invalid email or password",

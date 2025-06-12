@@ -28,11 +28,11 @@ if (!admin.apps.length) {
 }
 
 export const app = express();
-const PORT = 3001;
+const PORT = 5001;
 
 // Enable CORS for frontend
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5000'],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5184', 'http://localhost:5185'],
   credentials: true
 }));
 
@@ -60,29 +60,32 @@ const requireAuth = (req: any, res: any, next: any) => {
 
 // Auth routes
 app.post("/auth/login", async (req, res) => {
-  const { idToken } = req.body; // Expect Firebase ID token from frontend
+  const { idToken } = req.body;
 
   if (!idToken) {
     return res.status(400).json({ message: "ID token not provided" });
   }
 
   try {
+    console.log("Verifying Firebase ID token...");
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const firebaseUid = decodedToken.uid;
-    const firebaseEmail = decodedToken.email; // Get email from decoded token
+    console.log("Token verified successfully:", decodedToken.email);
 
-    // In a real app, you might want to fetch/create user in your DB here
-    // For now, we'll just use the Firebase user info for the session
+    const firebaseUid = decodedToken.uid;
+    const firebaseEmail = decodedToken.email;
+
+    // Create user session
     const user = {
-      id: firebaseUid, // Use Firebase UID as user ID
+      id: firebaseUid,
       email: firebaseEmail,
-      role: 'admin' // Assume admin role for now, or fetch from custom claims if set
+      role: 'admin'
     };
     
     // Set session user
-      req.session.user = user;
+    req.session.user = user;
+    console.log("Session created for user:", user.email);
     
-      return res.json({ authenticated: true, user });
+    return res.json({ authenticated: true, user });
   } catch (error) {
     console.error("Firebase token verification error:", error);
     return res.status(401).json({ message: "Invalid or expired ID token" });

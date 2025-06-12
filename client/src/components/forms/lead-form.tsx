@@ -17,7 +17,7 @@ interface LeadFormProps {
   buttonText?: string;
   title?: string;
   description?: string;
-  onSubmit?: (data: any) => void;
+  onSubmit?: () => void;
   onSuccess?: () => void;
   courseSlug?: string;
   syllabusDownloadUrl?: string;
@@ -99,7 +99,7 @@ export default function LeadForm({
         message: "",
       });
 
-      onSubmit?.({});
+      onSubmit?.();
       onSuccess?.();
 
       // Trigger syllabus download if applicable

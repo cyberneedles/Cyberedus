@@ -29,21 +29,19 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // --- Database Initialization and Seeding --- //
-// Commenting out this function as setup-db.ts now handles initialization
-/*
 async function initializeDatabase() {
   const client = await pool.connect();
   try {
     console.log("Attempting to initialize database...");
 
-    // Read the SQL from setup-database.sql (moved inside the async function)
+    // Read the SQL from setup-database.sql
     const setupSql = await fs.readFile(join(__dirname, '..', 'setup-database.sql'), 'utf8');
     
-    // Run the setup SQL (create tables if not exist) from setup-database.sql
+    // Run the setup SQL (create tables if not exist)
     await client.query(setupSql);
     console.log("Database tables created (if not exist) from setup-database.sql.");
 
-    // Then add the 'what_you_will_learn' column (if it does not exist) to the courses table.
+    // Add the 'what_you_will_learn' column if it does not exist
     console.log("Adding 'what_you_will_learn' column to courses table...");
     await client.query("ALTER TABLE courses ADD COLUMN IF NOT EXISTS what_you_will_learn TEXT;");
     
@@ -68,18 +66,14 @@ async function initializeDatabase() {
     console.log("Database initialization completed successfully.");
   } catch (err) {
     console.error("Error during database initialization/seeding:", err);
-    throw err; // Re-throw to handle in the calling code
+    throw err;
   } finally {
     client.release();
   }
 }
-*/
 
 // Call the initialization function when the module is loaded
-// Commenting out this call as setup-db.ts now handles initialization
-/*
 initializeDatabase().catch(err => {
   console.error("Unhandled error during database initialization:", err);
-  process.exit(1); // Exit if database initialization fails
+  process.exit(1);
 });
-*/

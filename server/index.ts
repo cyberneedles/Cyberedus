@@ -5,15 +5,15 @@ import { createServer } from "node:http";
 import { log } from "./vite.js";
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = 5001; // Fixed port to match previous working state
 
 // Mount API routes
 app.use('/api', apiApp);
 
 // Register other routes (including Vite middleware)
-  const server = await registerRoutes(app);
-  
+const server = await registerRoutes(app);
+
 // Start the server
 server.listen(PORT, () => {
   log(`serving on port ${PORT}`);
-  });
+});
