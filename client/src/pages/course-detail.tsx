@@ -1,18 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import { useState, useCallback } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
-import LeadForm from "@/components/forms/lead-form";
-import QuizComponent from "@/components/quiz/quiz-component";
+import { Card, CardContent } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion";
+import Header from "../components/layout/header";
+import Footer from "../components/layout/footer";
+import LeadForm from "../components/forms/lead-form";
+import QuizComponent from "../components/quiz/quiz-component";
 import type { Course } from "@shared/schema";
-import { FormLabel } from "@/components/ui/form";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { FormLabel } from "../components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../components/ui/dialog";
 
 export default function CourseDetail() {
   const { slug } = useParams<{ slug: string }>();
@@ -366,14 +366,20 @@ export default function CourseDetail() {
         </div>
       </section>
 
-      {/* Quiz Section (Remains outside TabsContent for now) */}
+      {/* Quiz Section */}
       {quiz && (
         <section className="py-16 md:py-24 bg-secondary-background dark:bg-[#121212]">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-4xl font-bold text-foreground mb-10 text-center dark:text-white">Test Your Knowledge</h2>
             <Card className="bg-card dark:bg-[#2a2a2a] border border-border/50 dark:border-[#3a3a3a] rounded-2xl shadow-lg p-6 md:p-8">
               <CardContent>
-                <QuizComponent quiz={quiz} />
+                <QuizComponent 
+                  quizId={quiz.id} 
+                  onComplete={(score: number) => {
+                    console.log('Quiz completed with score:', score);
+                    // Add any additional logic for quiz completion
+                  }} 
+                />
               </CardContent>
             </Card>
           </div>

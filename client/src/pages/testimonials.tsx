@@ -9,6 +9,11 @@ import Footer from "@/components/layout/footer";
 import { Testimonial, Course } from "@shared/schema";
 import { BackgroundContainer } from "@/components/BackgroundContainer";
 
+// Dummy trackEvent for build safety
+function trackEvent(event: string, category?: string, label?: string) {
+  // No-op for now
+}
+
 export default function Testimonials() {
   const [searchTerm, setSearchTerm] = useState("");
   const [courseFilter, setCourseFilter] = useState("all");

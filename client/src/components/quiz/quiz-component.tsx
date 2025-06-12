@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Label } from "../ui/label";
+import { Progress } from "../ui/progress";
 import { useQuery } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
-import { trackEvent } from "@/lib/analytics";
-import LeadForm from "@/components/forms/lead-form";
+import { useToast } from "../../hooks/use-toast";
+import { apiRequest } from "../../lib/queryClient";
+import { trackEvent } from "../../lib/analytics";
+import LeadForm from "../forms/lead-form";
 import { Quiz } from "@shared/schema";
 
 interface QuizComponentProps {
   courseId?: number;
 }
 
-export default function QuizComponent({ courseId }: QuizComponentProps) {
+const QuizComponent: React.FC<QuizComponentProps> = ({ courseId }) => {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState<"lead" | "quiz" | "results">("lead");
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -273,4 +273,6 @@ export default function QuizComponent({ courseId }: QuizComponentProps) {
       </Card>
     </div>
   );
-}
+};
+
+export default QuizComponent;

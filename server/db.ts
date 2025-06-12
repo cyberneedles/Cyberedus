@@ -10,16 +10,22 @@ import { dirname, join } from 'path';
 dotenv.config();
 
 const DATABASE_URL = process.env.DATABASE_URL;
+const NEON_DATABASE_URL = process.env.NEON_DATABASE_URL;
 
-if (!DATABASE_URL) {
-  throw new Error("DATABASE_URL is not set in the .env file.");
+if (!DATABASE_URL && !NEON_DATABASE_URL) {
+  throw new Error("Neither DATABASE_URL nor NEON_DATABASE_URL is set in the environment variables.");
 }
 
+// Use NEON_DATABASE_URL in production, fallback to DATABASE_URL
+const connectionString = process.env.NODE_ENV === 'production' 
+  ? NEON_DATABASE_URL 
+  : DATABASE_URL;
+
 export const pool = new Pool({ 
-  connectionString: DATABASE_URL,
-  ssl: {
+  connectionString,
+  ssl: process.env.NODE_ENV === 'production' ? {
     rejectUnauthorized: false
-  }
+  } : undefined
 });
 
 export const db = drizzle(pool, { schema });
@@ -45,22 +51,24 @@ async function initializeDatabase() {
     console.log("Adding 'what_you_will_learn' column to courses table...");
     await client.query("ALTER TABLE courses ADD COLUMN IF NOT EXISTS what_you_will_learn TEXT;");
     
-    // Create admin user if not exists
-    const adminEmail = "admin@cyberedu.com";
-    const adminPassword = "admin123";
-    const hashedPassword = await bcrypt.hash(adminPassword, 10);
-    
-    const { rows: [existingAdmin] } = await client.query(
-      "SELECT * FROM users WHERE email = $1 AND role = 'admin'",
-      [adminEmail]
-    );
-    
-    if (!existingAdmin) {
-      await client.query(
-        "INSERT INTO users (email, password, role) VALUES ($1, $2, 'admin')",
-        [adminEmail, hashedPassword]
+    // Only create admin user in development
+    if (process.env.NODE_ENV !== 'production') {
+      const adminEmail = "admin@cyberedu.com";
+      const adminPassword = "admin123";
+      const hashedPassword = await bcrypt.hash(adminPassword, 10);
+      
+      const { rows: [existingAdmin] } = await client.query(
+        "SELECT * FROM users WHERE email = $1 AND role = 'admin'",
+        [adminEmail]
       );
-      console.log("Admin user created successfully");
+      
+      if (!existingAdmin) {
+        await client.query(
+          "INSERT INTO users (email, password, role) VALUES ($1, $2, 'admin')",
+          [adminEmail, hashedPassword]
+        );
+        console.log("Admin user created successfully");
+      }
     }
     
     console.log("Database initialization completed successfully.");

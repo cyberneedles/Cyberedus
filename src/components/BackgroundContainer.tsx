@@ -73,31 +73,33 @@ const BackgroundContainer: React.FC<{ children: React.ReactNode }> = ({ children
         background: 'radial-gradient(circle at center, #1a1a1a 0%, #000000 100%)',
       }}
     >
-      <style jsx>{`
-        .neon-light {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(40px);
-          opacity: 0;
-          transform: translate(-50%, -50%);
-          pointer-events: none;
-        }
+      <style>
+        {`
+          .neon-light {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+          }
 
-        @keyframes pulse {
-          0% {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.8);
+          @keyframes pulse {
+            0% {
+              opacity: 0;
+              transform: translate(-50%, -50%) scale(0.8);
+            }
+            50% {
+              opacity: 0.3;
+              transform: translate(-50%, -50%) scale(1.2);
+            }
+            100% {
+              opacity: 0;
+              transform: translate(-50%, -50%) scale(0.8);
+            }
           }
-          50% {
-            opacity: 0.3;
-            transform: translate(-50%, -50%) scale(1.2);
-          }
-          100% {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.8);
-          }
-        }
-      `}</style>
+        `}
+      </style>
       {children}
     </div>
   );

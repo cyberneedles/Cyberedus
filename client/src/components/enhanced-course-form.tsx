@@ -68,7 +68,7 @@ export const enhancedCourseSchema = z.object({
   return true;
 }, { message: "" }); // Generic message to be overridden by specific checks
 
-export type EnhancedCourseFormData = z.infer<typeof enhancedCourseSchema>;
+export type EnhancedCourseFormData = z.infer<typeof enhancedCourseSchema> & { title?: string };
 
 interface EnhancedCourseFormProps {
   initialData?: Partial<EnhancedCourseFormData>;
