@@ -81,7 +81,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createCourse(course: Omit<Course, 'id' | 'createdAt'>): Promise<Course> {
-    return {
+    const newCourse: Course = {
       ...course,
       id: 1,
       createdAt: new Date(),
@@ -100,14 +100,10 @@ export class DatabaseStorage implements IStorage {
       duration: course.duration,
       description: course.description,
       mode: course.mode,
-      title: course.title,
-      batches: course.batches ?? null,
-      curriculum: course.curriculum ?? null,
-      fees: course.fees ?? null,
-      careerOpportunities: course.careerOpportunities ?? '',
-      toolsAndTechnologies: course.toolsAndTechnologies ?? '',
-      whatYouWillLearn: course.whatYouWillLearn ?? ''
+      title: course.title
     };
+    this.courses.push(newCourse);
+    return newCourse;
   }
 
   async updateCourse(id: number, course: Partial<Course>): Promise<Course | null> {
@@ -230,22 +226,6 @@ export class DatabaseStorage implements IStorage {
   async deleteFAQ(id: number): Promise<boolean> {
     return false;
   }
-
-  async createUser(user: Omit<User, 'id' | 'createdAt'>): Promise<User> {
-    return {
-      ...user,
-      id: 1,
-      createdAt: new Date(),
-    };
-  }
-
-  async updateUser(id: number, user: Partial<User>): Promise<User | null> {
-    return null;
-  }
-
-  async deleteUser(id: number): Promise<boolean> {
-    return false;
-  }
 }
 
 export class MemStorage implements IStorage {
@@ -311,14 +291,14 @@ export class MemStorage implements IStorage {
       ...course,
       id: this.getNextId(),
       createdAt: new Date(),
-      isActive: course.isActive ?? true,
-      syllabusUrl: course.syllabusUrl ?? null,
-      overview: course.overview ?? null,
-      mainImage: course.mainImage ?? null,
-      logo: course.logo ?? null,
-      price: course.price ?? null,
-      features: course.features ?? null,
-      batchDates: course.batchDates ?? [],
+      isActive: true,
+      syllabusUrl: null,
+      overview: null,
+      mainImage: null,
+      logo: null,
+      price: null,
+      features: null,
+      batchDates: [],
       category: course.category,
       icon: course.icon,
       prerequisites: course.prerequisites ?? null,
@@ -326,13 +306,7 @@ export class MemStorage implements IStorage {
       duration: course.duration,
       description: course.description,
       mode: course.mode,
-      title: course.title,
-      batches: course.batches ?? null,
-      curriculum: course.curriculum ?? null,
-      fees: course.fees ?? null,
-      careerOpportunities: course.careerOpportunities ?? '',
-      toolsAndTechnologies: course.toolsAndTechnologies ?? '',
-      whatYouWillLearn: course.whatYouWillLearn ?? ''
+      title: course.title
     };
     this.courses.push(newCourse);
     return newCourse;
@@ -643,5 +617,30 @@ export class MemStorage implements IStorage {
       }
     ];
     faqsData.forEach(faq => this.createFAQ(faq));
+
+    // Add some sample courses
+    this.courses.push({
+      id: 1,
+      title: "Web Development Bootcamp",
+      slug: "web-development-bootcamp",
+      description: "Learn full-stack web development",
+      duration: "12 weeks",
+      prerequisites: "Basic computer knowledge",
+      level: "Beginner",
+      price: 999,
+      features: ["HTML", "CSS", "JavaScript", "React", "Node.js"],
+      syllabusUrl: null,
+      overview: null,
+      mainImage: null,
+      logo: null,
+      icon: "code",
+      category: "Web Development",
+      batchDates: ["2024-03-01", "2024-04-01"],
+      isActive: true,
+      mode: "online",
+      createdAt: new Date()
+    });
   }
 }
+
+export const storage = new DatabaseStorage();
