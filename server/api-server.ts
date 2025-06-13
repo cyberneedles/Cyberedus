@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-import { DatabaseStorage } from "./storage.js";
+import { storage } from "./storage.js";
 import session from "express-session";
 import admin from "firebase-admin";
 
@@ -17,7 +17,7 @@ if (!admin.apps.length) {
       credential: admin.credential.cert({
         projectId: "cyberedu-a094a",
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\\\n/g, '\\n'),
       }),
     });
     console.log("Firebase Admin SDK initialized successfully");
@@ -28,8 +28,6 @@ if (!admin.apps.length) {
 }
 
 export const app = express();
-
-const storage = new DatabaseStorage();
 
 // Enable CORS for frontend
 app.use(cors({
@@ -62,7 +60,7 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 // Auth routes
-app.post("/api/auth/login", async (req, res) => {
+app.post("/auth/login", async (req, res) => {
   const { idToken } = req.body;
 
   if (!idToken) {
@@ -95,7 +93,7 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-app.get("/api/auth/session", (req, res) => {
+app.get("/auth/session", (req, res) => {
   if (req.session.user) {
     res.json({ authenticated: true, user: req.session.user });
   } else {
@@ -103,14 +101,14 @@ app.get("/api/auth/session", (req, res) => {
   }
 });
 
-app.post("/api/auth/logout", (req, res) => {
+app.post("/auth/logout", (req, res) => {
   req.session.destroy(() => {
     res.json({ message: "Logged out successfully" });
   });
 });
 
 // Course routes
-app.get("/api/courses", async (_req, res) => {
+app.get("/courses", async (req, res) => {
   try {
     const courses = await storage.getAllCourses();
     res.json(courses);
@@ -120,7 +118,7 @@ app.get("/api/courses", async (_req, res) => {
   }
 });
 
-app.get("/api/courses/:slug", async (req, res) => {
+app.get("/courses/:slug", async (req, res) => {
   try {
     const { slug } = req.params; // Extract the slug from the URL parameters
     const course = await storage.getCourseBySlug(slug);
@@ -135,7 +133,7 @@ app.get("/api/courses/:slug", async (req, res) => {
   }
 });
 
-app.post("/api/courses", requireAuth, async (req, res) => {
+app.post("/courses", requireAuth, async (req, res) => {
   try {
     console.log("Creating course with data:", req.body);
     const course = await storage.createCourse({ ...req.body, syllabusUrl: req.body.syllabusUrl });
@@ -147,7 +145,7 @@ app.post("/api/courses", requireAuth, async (req, res) => {
   }
 });
 
-app.patch("/api/courses/:id", requireAuth, async (req, res) => {
+app.patch("/courses/:id", requireAuth, async (req, res) => {
   try {
     const courseId = parseInt(req.params.id);
     const course = await storage.updateCourse(courseId, { ...req.body, syllabusUrl: req.body.syllabusUrl });
@@ -161,7 +159,7 @@ app.patch("/api/courses/:id", requireAuth, async (req, res) => {
   }
 });
 
-app.delete("/api/courses/:id", requireAuth, async (req, res) => {
+app.delete("/courses/:id", requireAuth, async (req, res) => {
   try {
     const courseId = parseInt(req.params.id);
     const success = await storage.deleteCourse(courseId);
@@ -176,7 +174,7 @@ app.delete("/api/courses/:id", requireAuth, async (req, res) => {
 });
 
 // Other API routes
-app.get("/api/leads", requireAuth, async (_req, res) => {
+app.get("/leads", requireAuth, async (req, res) => {
   try {
     const leads = await storage.getAllLeads();
     res.json(leads);
@@ -185,7 +183,7 @@ app.get("/api/leads", requireAuth, async (_req, res) => {
   }
 });
 
-app.post("/api/leads", async (req, res) => {
+app.post("/leads", async (req, res) => {
   try {
     console.log("Creating lead with data:", req.body);
     const lead = await storage.createLead(req.body);
@@ -197,7 +195,7 @@ app.post("/api/leads", async (req, res) => {
   }
 });
 
-app.get("/api/testimonials", async (_req, res) => {
+app.get("/testimonials", async (req, res) => {
   try {
     const testimonials = await storage.getAllTestimonials(true);
     res.json(testimonials);
@@ -206,7 +204,7 @@ app.get("/api/testimonials", async (_req, res) => {
   }
 });
 
-app.post("/api/testimonials", async (req, res) => {
+app.post("/testimonials", async (req, res) => {
   try {
     const testimonial = await storage.createTestimonial(req.body);
     res.status(201).json(testimonial);
@@ -215,7 +213,7 @@ app.post("/api/testimonials", async (req, res) => {
   }
 });
 
-app.patch("/api/testimonials/:id", async (req, res) => {
+app.patch("/testimonials/:id", async (req, res) => {
   try {
     const testimonialId = parseInt(req.params.id);
     const testimonial = await storage.updateTestimonial(testimonialId, req.body);
@@ -229,7 +227,7 @@ app.patch("/api/testimonials/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/testimonials/:id", async (req, res) => {
+app.delete("/testimonials/:id", async (req, res) => {
   try {
     const testimonialId = parseInt(req.params.id);
     const success = await storage.deleteTestimonial(testimonialId);
@@ -243,7 +241,7 @@ app.delete("/api/testimonials/:id", async (req, res) => {
   }
 });
 
-app.get("/api/faqs", async (_req, res) => {
+app.get("/faqs", async (req, res) => {
   try {
     const faqs = await storage.getAllFAQs(true);
     res.json(faqs);
@@ -252,7 +250,7 @@ app.get("/api/faqs", async (_req, res) => {
   }
 });
 
-app.post("/api/faqs", requireAuth, async (req, res) => {
+app.post("/faqs", requireAuth, async (req, res) => {
   try {
     const faq = await storage.createFAQ(req.body);
     res.status(201).json(faq);
@@ -261,7 +259,7 @@ app.post("/api/faqs", requireAuth, async (req, res) => {
   }
 });
 
-app.patch("/api/faqs/:id", requireAuth, async (req, res) => {
+app.patch("/faqs/:id", requireAuth, async (req, res) => {
   try {
     const faqId = parseInt(req.params.id);
     const faq = await storage.updateFAQ(faqId, req.body);
@@ -275,7 +273,7 @@ app.patch("/api/faqs/:id", requireAuth, async (req, res) => {
   }
 });
 
-app.delete("/api/faqs/:id", requireAuth, async (req, res) => {
+app.delete("/faqs/:id", requireAuth, async (req, res) => {
   try {
     const faqId = parseInt(req.params.id);
     const success = await storage.deleteFAQ(faqId);
@@ -289,7 +287,7 @@ app.delete("/api/faqs/:id", requireAuth, async (req, res) => {
   }
 });
 
-app.get("/api/quizzes/:courseId", async (req, res) => {
+app.get("/quizzes/:courseId", async (req, res) => {
   try {
     const courseId = parseInt(req.params.courseId);
     const quiz = await storage.getQuizByCourseId(courseId);
@@ -303,7 +301,7 @@ app.get("/api/quizzes/:courseId", async (req, res) => {
   }
 });
 
-app.post("/api/quizzes", requireAuth, async (req, res) => {
+app.post("/quizzes", requireAuth, async (req, res) => {
   try {
     const quiz = await storage.createQuiz(req.body);
     res.status(201).json(quiz);
@@ -312,7 +310,7 @@ app.post("/api/quizzes", requireAuth, async (req, res) => {
   }
 });
 
-app.patch("/api/quizzes/:id", requireAuth, async (req, res) => {
+app.patch("/quizzes/:id", requireAuth, async (req, res) => {
   try {
     const quizId = parseInt(req.params.id);
     const quiz = await storage.updateQuiz(quizId, req.body);
@@ -326,7 +324,7 @@ app.patch("/api/quizzes/:id", requireAuth, async (req, res) => {
   }
 });
 
-app.delete("/api/quizzes/:id", requireAuth, async (req, res) => {
+app.delete("/quizzes/:id", requireAuth, async (req, res) => {
   try {
     const quizId = parseInt(req.params.id);
     const success = await storage.deleteQuiz(quizId);
