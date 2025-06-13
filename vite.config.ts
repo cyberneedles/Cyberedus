@@ -9,6 +9,7 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   plugins: [react(), runtimeErrorOverlay()],
+  base: '/cyberedus',
   resolve: {
     alias: {
       "@": resolve(__dirname, "./client/src"),

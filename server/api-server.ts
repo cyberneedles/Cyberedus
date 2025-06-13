@@ -13,11 +13,17 @@ declare module 'express-session' {
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
   try {
+    const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+    
+    if (!process.env.FIREBASE_CLIENT_EMAIL || !privateKey || !process.env.FIREBASE_PROJECT_ID) {
+      throw new Error("Missing required Firebase environment variables");
+    }
+
     admin.initializeApp({
       credential: admin.credential.cert({
-        projectId: "cyberedu-a094a",
+        projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        privateKey: privateKey,
       }),
     });
     console.log("Firebase Admin SDK initialized successfully");
@@ -34,23 +40,27 @@ const storage = new DatabaseStorage();
 // Enable CORS for frontend
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? [process.env.FRONTEND_URL || 'https://your-production-domain.com']
+    ? [process.env.FRONTEND_URL || 'https://cyberedu.vercel.app', 'https://cyberedu-agent.vercel.app']
     : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5184', 'http://localhost:5185'],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
 
 app.use(express.json({ limit: '100mb' }));
 
-// Session middleware
+// Session middleware with production-ready configuration
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'cyberedus-secret-key-2024',
+  secret: process.env.SESSION_SECRET || 'cyberedus-secret-key-2024-production',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+  },
+  name: 'cyberedu-session'
 }));
 
 // Auth middleware
@@ -109,6 +119,37 @@ app.post("/auth/logout", (req, res) => {
   });
 });
 
+// Health check endpoint
+app.get("/health", async (_req, res) => {
+  try {
+    // Test database operations
+    const courses = await storage.getAllCourses();
+    const testimonials = await storage.getAllTestimonials();
+    const faqs = await storage.getAllFAQs();
+    
+    res.json({ 
+      status: 'ok',
+      database: 'Neon PostgreSQL',
+      authentication: 'Firebase',
+      reliability: 'Production-ready',
+      environment: process.env.NODE_ENV || 'development',
+      data: {
+        courses: courses.length,
+        testimonials: testimonials.length,
+        faqs: faqs.length
+      },
+      message: 'All systems operational - Real databases connected successfully'
+    });
+  } catch (error) {
+    console.error('Health check error:', error);
+    res.status(500).json({ 
+      status: 'error',
+      message: 'Database health check failed',
+      error: String(error)
+    });
+  }
+});
+
 // Course routes
 app.get("/courses", async (_req, res) => {
   try {
@@ -116,13 +157,13 @@ app.get("/courses", async (_req, res) => {
     res.json(courses);
   } catch (error) {
     console.error('Get courses error:', error);
-    res.status(500).json({ message: "Failed to fetch courses" });
+    res.status(500).json({ message: "Failed to fetch courses", error: String(error) });
   }
 });
 
 app.get("/courses/:slug", async (req, res) => {
   try {
-    const { slug } = req.params; // Extract the slug from the URL parameters
+    const { slug } = req.params;
     const course = await storage.getCourseBySlug(slug);
     if (course) {
       res.json(course);
@@ -131,7 +172,7 @@ app.get("/courses/:slug", async (req, res) => {
     }
   } catch (error) {
     console.error('Get course by slug error:', error);
-    res.status(500).json({ message: "Failed to fetch course by slug" });
+    res.status(500).json({ message: "Failed to fetch course by slug", error: String(error) });
   }
 });
 
@@ -157,7 +198,8 @@ app.patch("/courses/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Course not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to update course" });
+    console.error('Update course error:', error);
+    res.status(500).json({ message: "Failed to update course", error: String(error) });
   }
 });
 
@@ -171,7 +213,8 @@ app.delete("/courses/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Course not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete course" });
+    console.error('Delete course error:', error);
+    res.status(500).json({ message: "Failed to delete course", error: String(error) });
   }
 });
 
@@ -181,7 +224,8 @@ app.get("/leads", requireAuth, async (_req, res) => {
     const leads = await storage.getAllLeads();
     res.json(leads);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch leads" });
+    console.error('Get leads error:', error);
+    res.status(500).json({ message: "Failed to fetch leads", error: String(error) });
   }
 });
 
@@ -202,7 +246,8 @@ app.get("/testimonials", async (_req, res) => {
     const testimonials = await storage.getAllTestimonials(true);
     res.json(testimonials);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch testimonials" });
+    console.error('Get testimonials error:', error);
+    res.status(500).json({ message: "Failed to fetch testimonials", error: String(error) });
   }
 });
 
@@ -211,7 +256,8 @@ app.post("/testimonials", async (req, res) => {
     const testimonial = await storage.createTestimonial(req.body);
     res.status(201).json(testimonial);
   } catch (error) {
-    res.status(500).json({ message: "Failed to create testimonial" });
+    console.error('Create testimonial error:', error);
+    res.status(500).json({ message: "Failed to create testimonial", error: String(error) });
   }
 });
 
@@ -225,7 +271,8 @@ app.patch("/testimonials/:id", async (req, res) => {
       res.status(404).json({ message: "Testimonial not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to update testimonial" });
+    console.error('Update testimonial error:', error);
+    res.status(500).json({ message: "Failed to update testimonial", error: String(error) });
   }
 });
 
@@ -239,7 +286,8 @@ app.delete("/testimonials/:id", async (req, res) => {
       res.status(404).json({ message: "Testimonial not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete testimonial" });
+    console.error('Delete testimonial error:', error);
+    res.status(500).json({ message: "Failed to delete testimonial", error: String(error) });
   }
 });
 
@@ -248,7 +296,8 @@ app.get("/faqs", async (_req, res) => {
     const faqs = await storage.getAllFAQs(true);
     res.json(faqs);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch FAQs" });
+    console.error('Get FAQs error:', error);
+    res.status(500).json({ message: "Failed to fetch FAQs", error: String(error) });
   }
 });
 
@@ -257,7 +306,8 @@ app.post("/faqs", requireAuth, async (req, res) => {
     const faq = await storage.createFAQ(req.body);
     res.status(201).json(faq);
   } catch (error) {
-    res.status(500).json({ message: "Failed to create FAQ" });
+    console.error('Create FAQ error:', error);
+    res.status(500).json({ message: "Failed to create FAQ", error: String(error) });
   }
 });
 
@@ -271,7 +321,8 @@ app.patch("/faqs/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "FAQ not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to update FAQ" });
+    console.error('Update FAQ error:', error);
+    res.status(500).json({ message: "Failed to update FAQ", error: String(error) });
   }
 });
 
@@ -285,7 +336,8 @@ app.delete("/faqs/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "FAQ not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete FAQ" });
+    console.error('Delete FAQ error:', error);
+    res.status(500).json({ message: "Failed to delete FAQ", error: String(error) });
   }
 });
 
@@ -299,7 +351,8 @@ app.get("/quizzes/:courseId", async (req, res) => {
       res.status(404).json({ message: "Quiz not found for this course" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch quiz" });
+    console.error('Get quiz error:', error);
+    res.status(500).json({ message: "Failed to fetch quiz", error: String(error) });
   }
 });
 
@@ -308,7 +361,8 @@ app.post("/quizzes", requireAuth, async (req, res) => {
     const quiz = await storage.createQuiz(req.body);
     res.status(201).json(quiz);
   } catch (error) {
-    res.status(500).json({ message: "Failed to create quiz" });
+    console.error('Create quiz error:', error);
+    res.status(500).json({ message: "Failed to create quiz", error: String(error) });
   }
 });
 
@@ -322,7 +376,8 @@ app.patch("/quizzes/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Quiz not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to update quiz" });
+    console.error('Update quiz error:', error);
+    res.status(500).json({ message: "Failed to update quiz", error: String(error) });
   }
 });
 
@@ -336,6 +391,7 @@ app.delete("/quizzes/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Quiz not found" });
     }
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete quiz" });
+    console.error('Delete quiz error:', error);
+    res.status(500).json({ message: "Failed to delete quiz", error: String(error) });
   }
 });

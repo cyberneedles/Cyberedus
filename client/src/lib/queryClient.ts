@@ -12,10 +12,8 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  // Prepend the backend API base URL from environment variables
-  const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ''}${url}`;
-  
-  const res = await fetch(apiUrl, {
+  // Use the URL directly since Vite proxy handles the routing
+  const res = await fetch(url, {
     method,
     headers: {
       "Content-Type": "application/json",
@@ -36,10 +34,8 @@ export const getQueryFn: <T>(options: {
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
     const url = queryKey[0] as string;
-    // Prepend the backend API base URL from environment variables
-    const apiUrl = `${import.meta.env.VITE_API_BASE_URL || ''}${url}`;
-    
-    const res = await fetch(apiUrl, {
+    // Use the URL directly since Vite proxy handles the routing
+    const res = await fetch(url, {
       credentials: "include",
     });
 
