@@ -1,14 +1,14 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { IStorage } from './storage';
 
 export function setupRoutes(app: express.Application, storage: IStorage) {
   // Health check endpoint
-  app.get('/health', (_, res) => {
+  app.get('/health', (_: Request, res: Response) => {
     res.json({ status: 'ok' });
   });
 
   // API routes
-  app.get('/api/courses', async (_, res) => {
+  app.get('/api/courses', async (_: Request, res: Response) => {
     try {
       const courses = await storage.getAllCourses();
       res.json(courses);
@@ -18,7 +18,7 @@ export function setupRoutes(app: express.Application, storage: IStorage) {
     }
   });
 
-  app.get('/api/courses/:slug', async (req, res) => {
+  app.get('/api/courses/:slug', async (req: Request, res: Response) => {
     try {
       const course = await storage.getCourseBySlug(req.params.slug);
       if (!course) {

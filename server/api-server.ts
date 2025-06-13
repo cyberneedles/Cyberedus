@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-import { storage } from "./storage.js";
+import { DatabaseStorage } from "./storage.js";
 import session from "express-session";
 import admin from "firebase-admin";
 
@@ -28,6 +28,8 @@ if (!admin.apps.length) {
 }
 
 export const app = express();
+
+const storage = new DatabaseStorage();
 
 // Enable CORS for frontend
 app.use(cors({
@@ -108,7 +110,7 @@ app.post("/auth/logout", (req, res) => {
 });
 
 // Course routes
-app.get("/courses", async (req, res) => {
+app.get("/courses", async (_req, res) => {
   try {
     const courses = await storage.getAllCourses();
     res.json(courses);
@@ -174,7 +176,7 @@ app.delete("/courses/:id", requireAuth, async (req, res) => {
 });
 
 // Other API routes
-app.get("/leads", requireAuth, async (req, res) => {
+app.get("/leads", requireAuth, async (_req, res) => {
   try {
     const leads = await storage.getAllLeads();
     res.json(leads);
@@ -195,7 +197,7 @@ app.post("/leads", async (req, res) => {
   }
 });
 
-app.get("/testimonials", async (req, res) => {
+app.get("/testimonials", async (_req, res) => {
   try {
     const testimonials = await storage.getAllTestimonials(true);
     res.json(testimonials);
@@ -241,7 +243,7 @@ app.delete("/testimonials/:id", async (req, res) => {
   }
 });
 
-app.get("/faqs", async (req, res) => {
+app.get("/faqs", async (_req, res) => {
   try {
     const faqs = await storage.getAllFAQs(true);
     res.json(faqs);

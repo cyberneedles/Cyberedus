@@ -22,8 +22,8 @@ export interface IStorage {
   deleteQuiz(id: number): Promise<boolean>;
   
   // Lead operations
-  createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>>;
-  getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>[]>;
+  createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role'>>;
+  getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role'>[]>;
   
   // Blog operations
   getAllBlogPosts(published?: boolean): Promise<BlogPost[]>;
@@ -109,13 +109,13 @@ export class DatabaseStorage implements IStorage {
       id: this.getNextId(),
       createdAt: new Date(),
       isActive: true,
-      syllabusUrl: null,
-      overview: null,
-      mainImage: null,
-      logo: null,
-      price: null,
-      features: null,
-      batchDates: [],
+      syllabusUrl: course.syllabusUrl ?? null,
+      overview: course.overview ?? null,
+      mainImage: course.mainImage ?? null,
+      logo: course.logo ?? null,
+      price: course.price ?? null,
+      features: course.features ?? null,
+      batchDates: course.batchDates || [],
       category: course.category,
       icon: course.icon,
       prerequisites: course.prerequisites ?? null,
@@ -171,14 +171,12 @@ export class DatabaseStorage implements IStorage {
     return this.quizzes.length < initialLength;
   }
 
-  async createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>> {
+  async createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role'>> {
     this.leads.push(lead);
-    return {
-      email: lead.email
-    };
+    return lead;
   }
 
-  async getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>[]> {
+  async getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role'>[]> {
     return this.leads;
   }
 
@@ -387,7 +385,7 @@ export class DatabaseStorage implements IStorage {
         category: 'General',
         isActive: true,
         question: 'How do I enroll in a course?',
-        answer: 'You can enroll by visiting the course page and clicking the "Enroll Now" button.',
+        answer: 'You can enroll by visiting the course page and clicking the \"Enroll Now\" button.',
         order: 1,
       });
     }
@@ -457,13 +455,13 @@ export class MemStorage implements IStorage {
       id: this.getNextId(),
       createdAt: new Date(),
       isActive: true,
-      syllabusUrl: null,
-      overview: null,
-      mainImage: null,
-      logo: null,
-      price: null,
-      features: null,
-      batchDates: [],
+      syllabusUrl: course.syllabusUrl ?? null,
+      overview: course.overview ?? null,
+      mainImage: course.mainImage ?? null,
+      logo: course.logo ?? null,
+      price: course.price ?? null,
+      features: course.features ?? null,
+      batchDates: course.batchDates || [],
       category: course.category,
       icon: course.icon,
       prerequisites: course.prerequisites ?? null,
@@ -519,14 +517,12 @@ export class MemStorage implements IStorage {
     return this.quizzes.length < initialLength;
   }
 
-  async createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>> {
+  async createLead(lead: Omit<User, 'id' | 'createdAt' | 'password' | 'role'>): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role'>> {
     this.leads.push(lead);
-    return {
-      email: lead.email
-    };
+    return lead;
   }
 
-  async getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role' | 'email' | 'createdAt'>[]> {
+  async getAllLeads(): Promise<Omit<User, 'id' | 'createdAt' | 'password' | 'role'>[]> {
     return this.leads;
   }
 
@@ -735,11 +731,9 @@ export class MemStorage implements IStorage {
         category: 'General',
         isActive: true,
         question: 'How do I enroll in a course?',
-        answer: 'You can enroll by visiting the course page and clicking the "Enroll Now" button.',
+        answer: 'You can enroll by visiting the course page and clicking the \"Enroll Now\" button.',
         order: 1,
       });
     }
   }
 }
-
-export const storage = new DatabaseStorage();
