@@ -21,18 +21,11 @@ const connectionString = process.env.NODE_ENV === 'production'
   ? NEON_DATABASE_URL 
   : DATABASE_URL;
 
-if (!connectionString) {
-  throw new Error(`Database connection string not found for environment: ${process.env.NODE_ENV}`);
-}
-
 export const pool = new Pool({ 
   connectionString,
   ssl: process.env.NODE_ENV === 'production' ? {
     rejectUnauthorized: false
-  } : undefined,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  } : undefined
 });
 
 export const db = drizzle(pool, { schema });

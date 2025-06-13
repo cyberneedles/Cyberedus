@@ -29,20 +29,6 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'dist',
-    sourcemap: false,
-    minify: 'terser',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-toast'],
-          firebase: ['firebase', '@firebase/auth', '@firebase/firestore']
-        }
-      }
-    }
-  },
-  define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    outDir: 'dist'
   }
 }); 

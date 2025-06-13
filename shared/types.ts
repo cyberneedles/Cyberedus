@@ -21,7 +21,7 @@ export interface Course {
   batches?: any;
   curriculum?: any;
   fees?: any;
-  careerOpportunities?: string[];
+  careerOpportunities?: string;
   toolsAndTechnologies?: string;
   whatYouWillLearn?: string;
 }

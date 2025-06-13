@@ -13,17 +13,11 @@ declare module 'express-session' {
 // Initialize Firebase Admin SDK
 if (!admin.apps.length) {
   try {
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-    
-    if (!process.env.FIREBASE_CLIENT_EMAIL || !privateKey || !process.env.FIREBASE_PROJECT_ID) {
-      throw new Error("Missing required Firebase environment variables");
-    }
-
     admin.initializeApp({
       credential: admin.credential.cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
+        projectId: "cyberedu-a094a",
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: privateKey,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
       }),
     });
     console.log("Firebase Admin SDK initialized successfully");
@@ -40,27 +34,23 @@ const storage = new DatabaseStorage();
 // Enable CORS for frontend
 app.use(cors({
   origin: process.env.NODE_ENV === 'production'
-    ? [process.env.FRONTEND_URL || 'https://cyberedu.vercel.app', 'https://cyberedu-agent.vercel.app']
+    ? [process.env.FRONTEND_URL || 'https://your-production-domain.com']
     : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5184', 'http://localhost:5185'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+  credentials: true
 }));
 
 app.use(express.json({ limit: '100mb' }));
 
-// Session middleware with production-ready configuration
+// Session middleware
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'cyberedus-secret-key-2024-production',
+  secret: process.env.SESSION_SECRET || 'cyberedus-secret-key-2024',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
-  },
-  name: 'cyberedu-session'
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 }));
 
 // Auth middleware
@@ -72,7 +62,7 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 };
 
 // Auth routes
-app.post("/auth/login", async (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
   const { idToken } = req.body;
 
   if (!idToken) {
@@ -105,7 +95,7 @@ app.post("/auth/login", async (req, res) => {
   }
 });
 
-app.get("/auth/session", (req, res) => {
+app.get("/api/auth/session", (req, res) => {
   if (req.session.user) {
     res.json({ authenticated: true, user: req.session.user });
   } else {
@@ -113,57 +103,26 @@ app.get("/auth/session", (req, res) => {
   }
 });
 
-app.post("/auth/logout", (req, res) => {
+app.post("/api/auth/logout", (req, res) => {
   req.session.destroy(() => {
     res.json({ message: "Logged out successfully" });
   });
 });
 
-// Health check endpoint
-app.get("/health", async (_req, res) => {
-  try {
-    // Test database operations
-    const courses = await storage.getAllCourses();
-    const testimonials = await storage.getAllTestimonials();
-    const faqs = await storage.getAllFAQs();
-    
-    res.json({ 
-      status: 'ok',
-      database: 'Neon PostgreSQL',
-      authentication: 'Firebase',
-      reliability: 'Production-ready',
-      environment: process.env.NODE_ENV || 'development',
-      data: {
-        courses: courses.length,
-        testimonials: testimonials.length,
-        faqs: faqs.length
-      },
-      message: 'All systems operational - Real databases connected successfully'
-    });
-  } catch (error) {
-    console.error('Health check error:', error);
-    res.status(500).json({ 
-      status: 'error',
-      message: 'Database health check failed',
-      error: String(error)
-    });
-  }
-});
-
 // Course routes
-app.get("/courses", async (_req, res) => {
+app.get("/api/courses", async (_req, res) => {
   try {
     const courses = await storage.getAllCourses();
     res.json(courses);
   } catch (error) {
     console.error('Get courses error:', error);
-    res.status(500).json({ message: "Failed to fetch courses", error: String(error) });
+    res.status(500).json({ message: "Failed to fetch courses" });
   }
 });
 
-app.get("/courses/:slug", async (req, res) => {
+app.get("/api/courses/:slug", async (req, res) => {
   try {
-    const { slug } = req.params;
+    const { slug } = req.params; // Extract the slug from the URL parameters
     const course = await storage.getCourseBySlug(slug);
     if (course) {
       res.json(course);
@@ -172,11 +131,11 @@ app.get("/courses/:slug", async (req, res) => {
     }
   } catch (error) {
     console.error('Get course by slug error:', error);
-    res.status(500).json({ message: "Failed to fetch course by slug", error: String(error) });
+    res.status(500).json({ message: "Failed to fetch course by slug" });
   }
 });
 
-app.post("/courses", requireAuth, async (req, res) => {
+app.post("/api/courses", requireAuth, async (req, res) => {
   try {
     console.log("Creating course with data:", req.body);
     const course = await storage.createCourse({ ...req.body, syllabusUrl: req.body.syllabusUrl });
@@ -188,7 +147,7 @@ app.post("/courses", requireAuth, async (req, res) => {
   }
 });
 
-app.patch("/courses/:id", requireAuth, async (req, res) => {
+app.patch("/api/courses/:id", requireAuth, async (req, res) => {
   try {
     const courseId = parseInt(req.params.id);
     const course = await storage.updateCourse(courseId, { ...req.body, syllabusUrl: req.body.syllabusUrl });
@@ -198,12 +157,11 @@ app.patch("/courses/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Course not found" });
     }
   } catch (error) {
-    console.error('Update course error:', error);
-    res.status(500).json({ message: "Failed to update course", error: String(error) });
+    res.status(500).json({ message: "Failed to update course" });
   }
 });
 
-app.delete("/courses/:id", requireAuth, async (req, res) => {
+app.delete("/api/courses/:id", requireAuth, async (req, res) => {
   try {
     const courseId = parseInt(req.params.id);
     const success = await storage.deleteCourse(courseId);
@@ -213,23 +171,21 @@ app.delete("/courses/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Course not found" });
     }
   } catch (error) {
-    console.error('Delete course error:', error);
-    res.status(500).json({ message: "Failed to delete course", error: String(error) });
+    res.status(500).json({ message: "Failed to delete course" });
   }
 });
 
 // Other API routes
-app.get("/leads", requireAuth, async (_req, res) => {
+app.get("/api/leads", requireAuth, async (_req, res) => {
   try {
     const leads = await storage.getAllLeads();
     res.json(leads);
   } catch (error) {
-    console.error('Get leads error:', error);
-    res.status(500).json({ message: "Failed to fetch leads", error: String(error) });
+    res.status(500).json({ message: "Failed to fetch leads" });
   }
 });
 
-app.post("/leads", async (req, res) => {
+app.post("/api/leads", async (req, res) => {
   try {
     console.log("Creating lead with data:", req.body);
     const lead = await storage.createLead(req.body);
@@ -241,27 +197,25 @@ app.post("/leads", async (req, res) => {
   }
 });
 
-app.get("/testimonials", async (_req, res) => {
+app.get("/api/testimonials", async (_req, res) => {
   try {
     const testimonials = await storage.getAllTestimonials(true);
     res.json(testimonials);
   } catch (error) {
-    console.error('Get testimonials error:', error);
-    res.status(500).json({ message: "Failed to fetch testimonials", error: String(error) });
+    res.status(500).json({ message: "Failed to fetch testimonials" });
   }
 });
 
-app.post("/testimonials", async (req, res) => {
+app.post("/api/testimonials", async (req, res) => {
   try {
     const testimonial = await storage.createTestimonial(req.body);
     res.status(201).json(testimonial);
   } catch (error) {
-    console.error('Create testimonial error:', error);
-    res.status(500).json({ message: "Failed to create testimonial", error: String(error) });
+    res.status(500).json({ message: "Failed to create testimonial" });
   }
 });
 
-app.patch("/testimonials/:id", async (req, res) => {
+app.patch("/api/testimonials/:id", async (req, res) => {
   try {
     const testimonialId = parseInt(req.params.id);
     const testimonial = await storage.updateTestimonial(testimonialId, req.body);
@@ -271,12 +225,11 @@ app.patch("/testimonials/:id", async (req, res) => {
       res.status(404).json({ message: "Testimonial not found" });
     }
   } catch (error) {
-    console.error('Update testimonial error:', error);
-    res.status(500).json({ message: "Failed to update testimonial", error: String(error) });
+    res.status(500).json({ message: "Failed to update testimonial" });
   }
 });
 
-app.delete("/testimonials/:id", async (req, res) => {
+app.delete("/api/testimonials/:id", async (req, res) => {
   try {
     const testimonialId = parseInt(req.params.id);
     const success = await storage.deleteTestimonial(testimonialId);
@@ -286,32 +239,29 @@ app.delete("/testimonials/:id", async (req, res) => {
       res.status(404).json({ message: "Testimonial not found" });
     }
   } catch (error) {
-    console.error('Delete testimonial error:', error);
-    res.status(500).json({ message: "Failed to delete testimonial", error: String(error) });
+    res.status(500).json({ message: "Failed to delete testimonial" });
   }
 });
 
-app.get("/faqs", async (_req, res) => {
+app.get("/api/faqs", async (_req, res) => {
   try {
     const faqs = await storage.getAllFAQs(true);
     res.json(faqs);
   } catch (error) {
-    console.error('Get FAQs error:', error);
-    res.status(500).json({ message: "Failed to fetch FAQs", error: String(error) });
+    res.status(500).json({ message: "Failed to fetch FAQs" });
   }
 });
 
-app.post("/faqs", requireAuth, async (req, res) => {
+app.post("/api/faqs", requireAuth, async (req, res) => {
   try {
     const faq = await storage.createFAQ(req.body);
     res.status(201).json(faq);
   } catch (error) {
-    console.error('Create FAQ error:', error);
-    res.status(500).json({ message: "Failed to create FAQ", error: String(error) });
+    res.status(500).json({ message: "Failed to create FAQ" });
   }
 });
 
-app.patch("/faqs/:id", requireAuth, async (req, res) => {
+app.patch("/api/faqs/:id", requireAuth, async (req, res) => {
   try {
     const faqId = parseInt(req.params.id);
     const faq = await storage.updateFAQ(faqId, req.body);
@@ -321,12 +271,11 @@ app.patch("/faqs/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "FAQ not found" });
     }
   } catch (error) {
-    console.error('Update FAQ error:', error);
-    res.status(500).json({ message: "Failed to update FAQ", error: String(error) });
+    res.status(500).json({ message: "Failed to update FAQ" });
   }
 });
 
-app.delete("/faqs/:id", requireAuth, async (req, res) => {
+app.delete("/api/faqs/:id", requireAuth, async (req, res) => {
   try {
     const faqId = parseInt(req.params.id);
     const success = await storage.deleteFAQ(faqId);
@@ -336,12 +285,11 @@ app.delete("/faqs/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "FAQ not found" });
     }
   } catch (error) {
-    console.error('Delete FAQ error:', error);
-    res.status(500).json({ message: "Failed to delete FAQ", error: String(error) });
+    res.status(500).json({ message: "Failed to delete FAQ" });
   }
 });
 
-app.get("/quizzes/:courseId", async (req, res) => {
+app.get("/api/quizzes/:courseId", async (req, res) => {
   try {
     const courseId = parseInt(req.params.courseId);
     const quiz = await storage.getQuizByCourseId(courseId);
@@ -351,22 +299,20 @@ app.get("/quizzes/:courseId", async (req, res) => {
       res.status(404).json({ message: "Quiz not found for this course" });
     }
   } catch (error) {
-    console.error('Get quiz error:', error);
-    res.status(500).json({ message: "Failed to fetch quiz", error: String(error) });
+    res.status(500).json({ message: "Failed to fetch quiz" });
   }
 });
 
-app.post("/quizzes", requireAuth, async (req, res) => {
+app.post("/api/quizzes", requireAuth, async (req, res) => {
   try {
     const quiz = await storage.createQuiz(req.body);
     res.status(201).json(quiz);
   } catch (error) {
-    console.error('Create quiz error:', error);
-    res.status(500).json({ message: "Failed to create quiz", error: String(error) });
+    res.status(500).json({ message: "Failed to create quiz" });
   }
 });
 
-app.patch("/quizzes/:id", requireAuth, async (req, res) => {
+app.patch("/api/quizzes/:id", requireAuth, async (req, res) => {
   try {
     const quizId = parseInt(req.params.id);
     const quiz = await storage.updateQuiz(quizId, req.body);
@@ -376,12 +322,11 @@ app.patch("/quizzes/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Quiz not found" });
     }
   } catch (error) {
-    console.error('Update quiz error:', error);
-    res.status(500).json({ message: "Failed to update quiz", error: String(error) });
+    res.status(500).json({ message: "Failed to update quiz" });
   }
 });
 
-app.delete("/quizzes/:id", requireAuth, async (req, res) => {
+app.delete("/api/quizzes/:id", requireAuth, async (req, res) => {
   try {
     const quizId = parseInt(req.params.id);
     const success = await storage.deleteQuiz(quizId);
@@ -391,7 +336,6 @@ app.delete("/quizzes/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Quiz not found" });
     }
   } catch (error) {
-    console.error('Delete quiz error:', error);
-    res.status(500).json({ message: "Failed to delete quiz", error: String(error) });
+    res.status(500).json({ message: "Failed to delete quiz" });
   }
 });
