@@ -288,107 +288,157 @@ export class DatabaseStorage implements IStorage {
   }
 
   private seedData() {
-    // Seed initial data for development/testing
-    if (this.users.length === 0) {
-      this.users.push({
-        id: this.getNextId(),
-        email: 'admin@example.com',
-        password: 'hashed_password', // In a real app, this would be hashed
-        role: 'admin',
-        createdAt: new Date(),
-      });
-      this.users.push({
-        id: this.getNextId(),
-        email: 'user@example.com',
-        password: 'hashed_password',
-        role: 'user',
-        createdAt: new Date(),
-      });
-    }
+    this.users.push(
+      { id: this.getNextId(), createdAt: new Date(), email: 'admin@example.com', password: 'password', role: 'admin' },
+      { id: this.getNextId(), createdAt: new Date(), email: 'user@example.com', password: 'password', role: 'user' }
+    );
 
-    if (this.courses.length === 0) {
-      this.courses.push({
+    this.courses.push(
+      {
         id: this.getNextId(),
-        mode: 'online',
         createdAt: new Date(),
-        title: 'Introduction to Cybersecurity',
-        slug: 'intro-cybersecurity',
+        title: 'Cybersecurity Fundamentals',
+        slug: 'cybersecurity-fundamentals',
         description: 'Learn the basics of cybersecurity.',
-        duration: '4 weeks',
-        prerequisites: null,
-        level: 'Beginner',
+        overview: 'This course provides a comprehensive introduction to cybersecurity, covering essential concepts, principles, and practices.',
         price: 499,
-        features: ['Live classes', 'Certificate'],
-        syllabusUrl: '',
-        overview: '',
-        mainImage: '',
-        logo: '',
-        icon: 'shield',
-        category: 'Cybersecurity',
+        features: ['Video Lectures', 'Quizzes', 'Certificate'],
         batchDates: ['2024-09-01', '2024-10-01'],
+        category: 'Cybersecurity',
+        icon: 'ShieldCheckIcon',
+        prerequisites: 'None',
+        level: 'Beginner',
+        duration: '4 weeks',
+        mode: 'Online',
+        syllabusUrl: 'https://example.com/syllabus/cybersecurity-fundamentals.pdf',
+        mainImage: 'https://example.com/images/cybersecurity-fundamentals.jpg',
+        logo: 'https://example.com/logos/cybersecurity.png',
         isActive: true,
-      });
-    }
-
-    if (this.quizzes.length === 0) {
-      this.quizzes.push({
+      },
+      {
         id: this.getNextId(),
         createdAt: new Date(),
+        title: 'Ethical Hacking Masterclass',
+        slug: 'ethical-hacking-masterclass',
+        description: 'Become a certified ethical hacker.',
+        overview: 'Dive deep into the world of ethical hacking, learning advanced techniques for penetration testing, vulnerability assessment, and digital forensics.',
+        price: 999,
+        features: ['Live Sessions', 'Hands-on Labs', 'Certification Prep'],
+        batchDates: ['2024-09-15', '2024-11-01'],
+        category: 'Ethical Hacking',
+        icon: 'CodeBracketIcon',
+        prerequisites: 'Basic networking knowledge',
+        level: 'Advanced',
+        duration: '8 weeks',
+        mode: 'Hybrid',
+        syllabusUrl: 'https://example.com/syllabus/ethical-hacking-masterclass.pdf',
+        mainImage: 'https://example.com/images/ethical-hacking-masterclass.jpg',
+        logo: 'https://example.com/logos/ethical-hacking.png',
+        isActive: true,
+      }
+    );
+
+    this.quizzes.push(
+      {
+        id: this.getNextId(),
+        createdAt: new Date(),
+        courseId: 1, // Cybersecurity Fundamentals
         title: 'Cybersecurity Basics Quiz',
-        courseId: 1,
         questions: [
-          {
-            question: 'What is phishing?',
-            options: ['A type of malware', 'A social engineering attack', 'A network protocol', 'A security tool'],
-            correct: 1,
-          },
+          { question: 'What is phishing?', options: ['A type of fishing', 'A cyber attack', 'A programming language'], correct: 1 },
+          { question: 'What does VPN stand for?', options: ['Virtual Private Network', 'Very Personal Network', 'Vast Public Network'], correct: 0 },
         ],
-      });
-    }
-
-    if (this.blogPosts.length === 0) {
-      this.blogPosts.push({
+      },
+      {
         id: this.getNextId(),
         createdAt: new Date(),
+        courseId: 2, // Ethical Hacking Masterclass
+        title: 'Ethical Hacking Concepts Quiz',
+        questions: [
+          { question: 'What is a zero-day exploit?', options: ['An exploit for a new software', 'An exploit with no known patch', 'An exploit that only works on day zero'], correct: 1 },
+          { question: 'What is the purpose of penetration testing?', options: ['To develop new software', 'To identify vulnerabilities in a system', 'To create a secure network'], correct: 1 },
+        ],
+      }
+    );
+
+    this.blogPosts.push(
+      {
+        id: this.getNextId(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
         title: 'The Importance of Data Encryption',
-        slug: 'data-encryption',
-        category: 'Security',
-        content: 'Detailed content about data encryption...',
-        excerpt: 'A brief overview of data encryption.',
-        featuredImage: null,
+        slug: 'importance-of-data-encryption',
+        category: 'Cybersecurity',
+        content: 'Data encryption is crucial for protecting sensitive information from unauthorized access...',
+        excerpt: 'Learn why data encryption is essential for modern cybersecurity.',
         authorId: 1,
+        featuredImage: 'https://example.com/images/encryption.jpg',
         isPublished: true,
         readingTime: 5,
-        updatedAt: new Date(),
-      });
-    }
-
-    if (this.testimonials.length === 0) {
-      this.testimonials.push({
+      },
+      {
         id: this.getNextId(),
-        name: 'John Doe',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: 'Understanding Social Engineering Attacks',
+        slug: 'understanding-social-engineering',
+        category: 'Cybersecurity',
+        content: 'Social engineering preys on human psychology to gain access to systems or information...',
+        excerpt: 'Discover how social engineering attacks work and how to defend against them.',
+        authorId: 1,
+        featuredImage: 'https://example.com/images/social-engineering.jpg',
+        isPublished: true,
+        readingTime: 7,
+      }
+    );
+
+    this.testimonials.push(
+      {
+        id: this.getNextId(),
         createdAt: new Date(),
         courseId: 1,
-        courseName: 'Introduction to Cybersecurity',
+        name: 'Alice Johnson',
+        courseName: 'Cybersecurity Fundamentals',
+        review: 'Excellent course, highly recommend!',
         rating: 5,
-        review: 'Great course, highly recommend!',
+        image: 'https://example.com/images/alice.jpg',
         jobTitle: 'Software Engineer',
-        company: 'Tech Corp',
-        image: null,
+        company: 'Tech Solutions Inc.',
         isApproved: true,
-      });
-    }
-
-    if (this.faqs.length === 0) {
-      this.faqs.push({
+      },
+      {
         id: this.getNextId(),
+        createdAt: new Date(),
+        courseId: 2,
+        name: 'Bob Williams',
+        courseName: 'Ethical Hacking Masterclass',
+        review: 'Learned so much in the ethical hacking masterclass.',
+        rating: 4,
+        image: 'https://example.com/images/bob.jpg',
+        jobTitle: 'Security Analyst',
+        company: 'SecureNet Corp.',
+        isApproved: true,
+      }
+    );
+
+    this.faqs.push(
+      {
+        id: this.getNextId(),
+        question: 'What is CyberEdu?',
+        answer: 'CyberEdu is an online learning platform specializing in cybersecurity education.',
         category: 'General',
         isActive: true,
-        question: 'How do I enroll in a course?',
-        answer: 'You can enroll by visiting the course page and clicking the \"Enroll Now\" button.',
         order: 1,
-      });
-    }
+      },
+      {
+        id: this.getNextId(),
+        question: 'Do you offer certifications?',
+        answer: 'Yes, many of our courses offer completion certificates and prepare you for industry certifications.',
+        category: 'Courses',
+        isActive: true,
+        order: 2,
+      }
+    );
   }
 }
 
@@ -634,106 +684,156 @@ export class MemStorage implements IStorage {
   }
 
   private seedData() {
-    // Seed initial data for development/testing
-    if (this.users.length === 0) {
-      this.users.push({
-        id: this.getNextId(),
-        email: 'admin@example.com',
-        password: 'hashed_password', // In a real app, this would be hashed
-        role: 'admin',
-        createdAt: new Date(),
-      });
-      this.users.push({
-        id: this.getNextId(),
-        email: 'user@example.com',
-        password: 'hashed_password',
-        role: 'user',
-        createdAt: new Date(),
-      });
-    }
+    this.users.push(
+      { id: this.getNextId(), createdAt: new Date(), email: 'admin@example.com', password: 'password', role: 'admin' },
+      { id: this.getNextId(), createdAt: new Date(), email: 'user@example.com', password: 'password', role: 'user' }
+    );
 
-    if (this.courses.length === 0) {
-      this.courses.push({
+    this.courses.push(
+      {
         id: this.getNextId(),
-        mode: 'online',
         createdAt: new Date(),
-        title: 'Introduction to Cybersecurity',
-        slug: 'intro-cybersecurity',
+        title: 'Cybersecurity Fundamentals',
+        slug: 'cybersecurity-fundamentals',
         description: 'Learn the basics of cybersecurity.',
-        duration: '4 weeks',
-        prerequisites: null,
-        level: 'Beginner',
+        overview: 'This course provides a comprehensive introduction to cybersecurity, covering essential concepts, principles, and practices.',
         price: 499,
-        features: ['Live classes', 'Certificate'],
-        syllabusUrl: '',
-        overview: '',
-        mainImage: '',
-        logo: '',
-        icon: 'shield',
-        category: 'Cybersecurity',
+        features: ['Video Lectures', 'Quizzes', 'Certificate'],
         batchDates: ['2024-09-01', '2024-10-01'],
+        category: 'Cybersecurity',
+        icon: 'ShieldCheckIcon',
+        prerequisites: 'None',
+        level: 'Beginner',
+        duration: '4 weeks',
+        mode: 'Online',
+        syllabusUrl: 'https://example.com/syllabus/cybersecurity-fundamentals.pdf',
+        mainImage: 'https://example.com/images/cybersecurity-fundamentals.jpg',
+        logo: 'https://example.com/logos/cybersecurity.png',
         isActive: true,
-      });
-    }
-
-    if (this.quizzes.length === 0) {
-      this.quizzes.push({
+      },
+      {
         id: this.getNextId(),
         createdAt: new Date(),
+        title: 'Ethical Hacking Masterclass',
+        slug: 'ethical-hacking-masterclass',
+        description: 'Become a certified ethical hacker.',
+        overview: 'Dive deep into the world of ethical hacking, learning advanced techniques for penetration testing, vulnerability assessment, and digital forensics.',
+        price: 999,
+        features: ['Live Sessions', 'Hands-on Labs', 'Certification Prep'],
+        batchDates: ['2024-09-15', '2024-11-01'],
+        category: 'Ethical Hacking',
+        icon: 'CodeBracketIcon',
+        prerequisites: 'Basic networking knowledge',
+        level: 'Advanced',
+        duration: '8 weeks',
+        mode: 'Hybrid',
+        syllabusUrl: 'https://example.com/syllabus/ethical-hacking-masterclass.pdf',
+        mainImage: 'https://example.com/images/ethical-hacking-masterclass.jpg',
+        logo: 'https://example.com/logos/ethical-hacking.png',
+        isActive: true,
+      }
+    );
+
+    this.quizzes.push(
+      {
+        id: this.getNextId(),
+        createdAt: new Date(),
+        courseId: 1, // Cybersecurity Fundamentals
         title: 'Cybersecurity Basics Quiz',
-        courseId: 1,
         questions: [
-          {
-            question: 'What is phishing?',
-            options: ['A type of malware', 'A social engineering attack', 'A network protocol', 'A security tool'],
-            correct: 1,
-          },
+          { question: 'What is phishing?', options: ['A type of fishing', 'A cyber attack', 'A programming language'], correct: 1 },
+          { question: 'What does VPN stand for?', options: ['Virtual Private Network', 'Very Personal Network', 'Vast Public Network'], correct: 0 },
         ],
-      });
-    }
-
-    if (this.blogPosts.length === 0) {
-      this.blogPosts.push({
+      },
+      {
         id: this.getNextId(),
         createdAt: new Date(),
+        courseId: 2, // Ethical Hacking Masterclass
+        title: 'Ethical Hacking Concepts Quiz',
+        questions: [
+          { question: 'What is a zero-day exploit?', options: ['An exploit for a new software', 'An exploit with no known patch', 'An exploit that only works on day zero'], correct: 1 },
+          { question: 'What is the purpose of penetration testing?', options: ['To develop new software', 'To identify vulnerabilities in a system', 'To create a secure network'], correct: 1 },
+        ],
+      }
+    );
+
+    this.blogPosts.push(
+      {
+        id: this.getNextId(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
         title: 'The Importance of Data Encryption',
-        slug: 'data-encryption',
-        category: 'Security',
-        content: 'Detailed content about data encryption...',
-        excerpt: 'A brief overview of data encryption.',
-        featuredImage: null,
+        slug: 'importance-of-data-encryption',
+        category: 'Cybersecurity',
+        content: 'Data encryption is crucial for protecting sensitive information from unauthorized access...',
+        excerpt: 'Learn why data encryption is essential for modern cybersecurity.',
         authorId: 1,
+        featuredImage: 'https://example.com/images/encryption.jpg',
         isPublished: true,
         readingTime: 5,
-        updatedAt: new Date(),
-      });
-    }
-
-    if (this.testimonials.length === 0) {
-      this.testimonials.push({
+      },
+      {
         id: this.getNextId(),
-        name: 'John Doe',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        title: 'Understanding Social Engineering Attacks',
+        slug: 'understanding-social-engineering',
+        category: 'Cybersecurity',
+        content: 'Social engineering preys on human psychology to gain access to systems or information...',
+        excerpt: 'Discover how social engineering attacks work and how to defend against them.',
+        authorId: 1,
+        featuredImage: 'https://example.com/images/social-engineering.jpg',
+        isPublished: true,
+        readingTime: 7,
+      }
+    );
+
+    this.testimonials.push(
+      {
+        id: this.getNextId(),
         createdAt: new Date(),
         courseId: 1,
-        courseName: 'Introduction to Cybersecurity',
+        name: 'Alice Johnson',
+        courseName: 'Cybersecurity Fundamentals',
+        review: 'Excellent course, highly recommend!',
         rating: 5,
-        review: 'Great course, highly recommend!',
+        image: 'https://example.com/images/alice.jpg',
         jobTitle: 'Software Engineer',
-        company: 'Tech Corp',
-        image: null,
+        company: 'Tech Solutions Inc.',
         isApproved: true,
-      });
-    }
-
-    if (this.faqs.length === 0) {
-      this.faqs.push({
+      },
+      {
         id: this.getNextId(),
+        createdAt: new Date(),
+        courseId: 2,
+        name: 'Bob Williams',
+        courseName: 'Ethical Hacking Masterclass',
+        review: 'Learned so much in the ethical hacking masterclass.',
+        rating: 4,
+        image: 'https://example.com/images/bob.jpg',
+        jobTitle: 'Security Analyst',
+        company: 'SecureNet Corp.',
+        isApproved: true,
+      }
+    );
+
+    this.faqs.push(
+      {
+        id: this.getNextId(),
+        question: 'What is CyberEdu?',
+        answer: 'CyberEdu is an online learning platform specializing in cybersecurity education.',
         category: 'General',
         isActive: true,
-        question: 'How do I enroll in a course?',
-        answer: 'You can enroll by visiting the course page and clicking the \"Enroll Now\" button.',
         order: 1,
-      });
-    }
+      },
+      {
+        id: this.getNextId(),
+        question: 'Do you offer certifications?',
+        answer: 'Yes, many of our courses offer completion certificates and prepare you for industry certifications.',
+        category: 'Courses',
+        isActive: true,
+        order: 2,
+      }
+    );
   }
 }
