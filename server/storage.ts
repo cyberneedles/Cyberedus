@@ -50,6 +50,59 @@ export interface IStorage {
   deleteFAQ(id: number): Promise<boolean>;
 }
 
+// Helper function to convert database row to Course type
+function convertDbRowToCourse(row: any): Course {
+  return {
+    ...row,
+    features: row.features ?? [],
+    batchDates: row.batchDates ?? [],
+    careerOpportunities: Array.isArray(row.careerOpportunities) 
+      ? row.careerOpportunities 
+      : typeof row.careerOpportunities === 'string' 
+        ? [row.careerOpportunities] 
+        : [],
+    toolsAndTechnologies: row.toolsAndTechnologies ?? '',
+    whatYouWillLearn: row.whatYouWillLearn ?? '',
+    batches: row.batches ?? [],
+    curriculum: row.curriculum ?? [],
+    fees: row.fees ?? []
+  };
+}
+
+// Helper function to sanitize course data for database operations
+function sanitizeCourseForDb(course: Partial<Course>): any {
+  const sanitized = { ...course };
+  
+  // Ensure arrays are properly formatted
+  if (typeof sanitized.careerOpportunities === 'string') {
+    sanitized.careerOpportunities = [sanitized.careerOpportunities];
+  } else if (!Array.isArray(sanitized.careerOpportunities)) {
+    sanitized.careerOpportunities = [];
+  }
+  
+  if (!Array.isArray(sanitized.features)) {
+    sanitized.features = [];
+  }
+  
+  if (!Array.isArray(sanitized.batchDates)) {
+    sanitized.batchDates = [];
+  }
+  
+  if (!Array.isArray(sanitized.batches)) {
+    sanitized.batches = [];
+  }
+  
+  if (!Array.isArray(sanitized.curriculum)) {
+    sanitized.curriculum = [];
+  }
+  
+  if (!Array.isArray(sanitized.fees)) {
+    sanitized.fees = [];
+  }
+  
+  return sanitized;
+}
+
 export class DatabaseStorage implements IStorage {
   constructor() {
     console.log('✅ Real database storage initialized (Neon PostgreSQL)');
@@ -109,7 +162,8 @@ export class DatabaseStorage implements IStorage {
   // Course operations
   async getAllCourses(): Promise<Course[]> {
     try {
-      return await db.select().from(courses).orderBy(desc(courses.createdAt));
+      const result = await db.select().from(courses).orderBy(desc(courses.createdAt));
+      return result.map(convertDbRowToCourse);
     } catch (error) {
       console.error('Error getting all courses:', error);
       throw error;
@@ -119,7 +173,7 @@ export class DatabaseStorage implements IStorage {
   async getCourseBySlug(slug: string): Promise<Course | null> {
     try {
       const result = await db.select().from(courses).where(eq(courses.slug, slug)).limit(1);
-      return result[0] || null;
+      return result[0] ? convertDbRowToCourse(result[0]) : null;
     } catch (error) {
       console.error('Error getting course by slug:', error);
       throw error;
@@ -128,8 +182,9 @@ export class DatabaseStorage implements IStorage {
 
   async createCourse(course: Omit<Course, 'id' | 'createdAt'>): Promise<Course> {
     try {
-      const result = await db.insert(courses).values(course as InsertCourse).returning();
-      return result[0];
+      const sanitizedCourse = sanitizeCourseForDb(course);
+      const result = await db.insert(courses).values(sanitizedCourse as InsertCourse).returning();
+      return convertDbRowToCourse(result[0]);
     } catch (error) {
       console.error('Error creating course:', error);
       throw error;
@@ -138,8 +193,9 @@ export class DatabaseStorage implements IStorage {
 
   async updateCourse(id: number, course: Partial<Course>): Promise<Course | null> {
     try {
-      const result = await db.update(courses).set(course).where(eq(courses.id, id)).returning();
-      return result[0] || null;
+      const sanitizedCourse = sanitizeCourseForDb(course);
+      const result = await db.update(courses).set(sanitizedCourse).where(eq(courses.id, id)).returning();
+      return result[0] ? convertDbRowToCourse(result[0]) : null;
     } catch (error) {
       console.error('Error updating course:', error);
       throw error;
