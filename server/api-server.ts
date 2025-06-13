@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { storage } from "./storage.js";
 import session from "express-session";
@@ -52,9 +52,9 @@ app.use(session({
 }));
 
 // Auth middleware
-const requireAuth = (_req: any, _res: any, next: any) => {
-  if (!_req.session.user) {
-    return _res.status(401).json({ message: "Authentication required" });
+const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: "Authentication required" });
   }
   next();
 };
@@ -93,22 +93,22 @@ app.post("/auth/login", async (req, res) => {
   }
 });
 
-app.get("/auth/session", (_req, res) => {
-  if (_req.session.user) {
-    res.json({ authenticated: true, user: _req.session.user });
+app.get("/auth/session", (req, res) => {
+  if (req.session.user) {
+    res.json({ authenticated: true, user: req.session.user });
   } else {
     res.json({ authenticated: false });
   }
 });
 
-app.post("/auth/logout", (_req, res) => {
-  _req.session.destroy(() => {
+app.post("/auth/logout", (req, res) => {
+  req.session.destroy(() => {
     res.json({ message: "Logged out successfully" });
   });
 });
 
 // Course routes
-app.get("/courses", async (_req, res) => {
+app.get("/courses", async (req, res) => {
   try {
     const courses = await storage.getAllCourses();
     res.json(courses);
@@ -174,7 +174,7 @@ app.delete("/courses/:id", requireAuth, async (req, res) => {
 });
 
 // Other API routes
-app.get("/leads", requireAuth, async (_req, res) => {
+app.get("/leads", requireAuth, async (req, res) => {
   try {
     const leads = await storage.getAllLeads();
     res.json(leads);
@@ -195,7 +195,7 @@ app.post("/leads", async (req, res) => {
   }
 });
 
-app.get("/testimonials", async (_req, res) => {
+app.get("/testimonials", async (req, res) => {
   try {
     const testimonials = await storage.getAllTestimonials(true);
     res.json(testimonials);
@@ -241,7 +241,7 @@ app.delete("/testimonials/:id", async (req, res) => {
   }
 });
 
-app.get("/faqs", async (_req, res) => {
+app.get("/faqs", async (req, res) => {
   try {
     const faqs = await storage.getAllFAQs(true);
     res.json(faqs);
@@ -287,32 +287,30 @@ app.delete("/faqs/:id", requireAuth, async (req, res) => {
   }
 });
 
-app.get("/quiz/:id", async (req, res) => {
+app.get("/quizzes/:courseId", async (req, res) => {
   try {
-    const quizId = parseInt(req.params.id);
-    const quiz = await storage.getQuizByCourseId(quizId);
+    const courseId = parseInt(req.params.courseId);
+    const quiz = await storage.getQuizByCourseId(courseId);
     if (quiz) {
       res.json(quiz);
     } else {
-      res.status(404).json({ message: "Quiz not found" });
+      res.status(404).json({ message: "Quiz not found for this course" });
     }
   } catch (error) {
-    console.error('Get quiz by ID error:', error);
-    res.status(500).json({ message: "Failed to fetch quiz by ID" });
+    res.status(500).json({ message: "Failed to fetch quiz" });
   }
 });
 
-app.post("/quiz", requireAuth, async (req, res) => {
+app.post("/quizzes", requireAuth, async (req, res) => {
   try {
     const quiz = await storage.createQuiz(req.body);
     res.status(201).json(quiz);
   } catch (error) {
-    console.error('Create quiz error:', error);
     res.status(500).json({ message: "Failed to create quiz" });
   }
 });
 
-app.patch("/quiz/:id", requireAuth, async (req, res) => {
+app.patch("/quizzes/:id", requireAuth, async (req, res) => {
   try {
     const quizId = parseInt(req.params.id);
     const quiz = await storage.updateQuiz(quizId, req.body);
@@ -322,12 +320,11 @@ app.patch("/quiz/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Quiz not found" });
     }
   } catch (error) {
-    console.error('Update quiz error:', error);
     res.status(500).json({ message: "Failed to update quiz" });
   }
 });
 
-app.delete("/quiz/:id", requireAuth, async (req, res) => {
+app.delete("/quizzes/:id", requireAuth, async (req, res) => {
   try {
     const quizId = parseInt(req.params.id);
     const success = await storage.deleteQuiz(quizId);
@@ -337,7 +334,6 @@ app.delete("/quiz/:id", requireAuth, async (req, res) => {
       res.status(404).json({ message: "Quiz not found" });
     }
   } catch (error) {
-    console.error('Delete quiz error:', error);
     res.status(500).json({ message: "Failed to delete quiz" });
   }
 });
